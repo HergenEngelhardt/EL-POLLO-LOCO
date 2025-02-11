@@ -5,6 +5,9 @@ class World {
         new Chicken(),
         new Chicken()
     ]
+    cloud = [
+        new Clouds()];
+    background = new Background();
     canvas;
     ctx;
 
@@ -24,7 +27,12 @@ class World {
             this.ctx.drawImage(enemy.img,enemy.x, enemy.y, enemy.width, enemy.height)
         })
 
+        this.cloud.forEach(cloud => {
+            this.ctx.drawImage(cloud.img, cloud.x, cloud.y, cloud.width, cloud.height)
+        })
 
+
+        this.ctx.drawImage(this.background.img, this.background.x, this.background.y, this.background.width, this.background.height)
 
         //draw wird immer wieder aufgerufen
         let self = this;
