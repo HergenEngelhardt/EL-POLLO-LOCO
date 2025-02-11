@@ -1,0 +1,3 @@
+class ChickenBoss extends MovableObject{
+
+}
