@@ -8,7 +8,7 @@ class World {
     cloud = [
         new Clouds()];
     background = [
-        new Background('assets/img/5_background/layers/1_first_layer/1.png')];
+        new Background('assets/img/5_background/layers/1_first_layer/1.png', 0)];
     canvas;
     ctx;
 
