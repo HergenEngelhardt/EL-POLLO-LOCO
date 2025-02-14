@@ -13,7 +13,7 @@ class Character extends MovableObject {
     ];
 
     constructor() {
-        super().loadImage('/assets/img/2_character_pepe/1_idle/idle/I-1.png');
+        super().loadImage(this.IMAGES_WALKING[0]);
         this.loadImages(this.IMAGES_WALKING);
         this.currentImage = 0;
         this.world = {};
