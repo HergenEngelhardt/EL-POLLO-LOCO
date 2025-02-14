@@ -1,37 +1,8 @@
 class World {
     character = new Character();
-    enemies = [
-        new Chicken(),
-        new Chicken(),
-        new Chicken()
-    ]
-    cloud = [
-        new Clouds()];
-    background = [
-        new Background('assets/img/5_background/layers/air.png', -719),
-        new Background('assets/img/5_background/layers/3_third_layer/2.png', -719),
-        new Background('assets/img/5_background/layers/2_second_layer/2.png', -719),
-        new Background('assets/img/5_background/layers/1_first_layer/2.png', -719),
-
-        new Background('assets/img/5_background/layers/air.png', 0),
-        new Background('assets/img/5_background/layers/3_third_layer/1.png', 0),
-        new Background('assets/img/5_background/layers/2_second_layer/1.png', 0),
-        new Background('assets/img/5_background/layers/1_first_layer/1.png', 0),
-
-        new Background('assets/img/5_background/layers/air.png', 719),
-        new Background('assets/img/5_background/layers/3_third_layer/2.png', 719),
-        new Background('assets/img/5_background/layers/2_second_layer/2.png', 719),
-        new Background('assets/img/5_background/layers/1_first_layer/2.png', 719),
-
-        new Background('assets/img/5_background/layers/air.png', 719*2),
-        new Background('assets/img/5_background/layers/3_third_layer/1.png', 719*2),
-        new Background('assets/img/5_background/layers/2_second_layer/1.png', 719*2),
-        new Background('assets/img/5_background/layers/1_first_layer/1.png', 719*2),
-
-        new Background('assets/img/5_background/layers/air.png', 719*3),
-        new Background('assets/img/5_background/layers/3_third_layer/2.png', 719*3),
-        new Background('assets/img/5_background/layers/2_second_layer/2.png', 719*3),
-        new Background('assets/img/5_background/layers/1_first_layer/2.png', 719*3)];
+    enemies = level1.enemies;
+    cloud = level1.cloud;
+    background = level1.background;
     canvas;
     ctx;
     keyboard;
