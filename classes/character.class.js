@@ -12,9 +12,23 @@ class Character extends MovableObject {
         '/assets/img/2_character_pepe/2_walk/W-26.png'
     ];
 
+    IMAGES_JUMPING = [
+        '/assets/img/2_character_pepe/3_jump/J-31.png',
+        '/assets/img/2_character_pepe/3_jump/J-32.png',
+        '/assets/img/2_character_pepe/3_jump/J-33.png',
+        '/assets/img/2_character_pepe/3_jump/J-34.png',
+        '/assets/img/2_character_pepe/3_jump/J-35.png',
+        '/assets/img/2_character_pepe/3_jump/J-36.png',
+        '/assets/img/2_character_pepe/3_jump/J-37.png',
+        '/assets/img/2_character_pepe/3_jump/J-38.png',
+        '/assets/img/2_character_pepe/3_jump/J-39.png'
+    ];
+
     constructor() {
         super().loadImage(this.IMAGES_WALKING[0]);
         this.loadImages(this.IMAGES_WALKING);
+        this.loadImages(this.IMAGES_JUMPING);
+        this.applyGravity()
         this.currentImage = 0;
         this.world = {};
 
@@ -22,6 +36,11 @@ class Character extends MovableObject {
     }
 
     animate() {
+
+        if(this.isAboveGround()){
+            this.animateImgaes(this.IMAGES_JUMPING);
+        } else{
+
         setInterval(() => {
             if(this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x){
                 this.x += this.speed;
@@ -41,7 +60,7 @@ class Character extends MovableObject {
                 this.animateImgaes(this.IMAGES_WALKING);
             }
         }, 150);
-    }
+    }}
 
     jump() {
 
