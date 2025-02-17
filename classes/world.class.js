@@ -5,6 +5,8 @@ class World {
     ctx;
     keyboard;
     camera_x = - 0;
+    healthStatusbar = new Statusbar("health", 40, 0);
+    coinStatusbar = new Statusbar("coin", 40, 40);
 
     constructor(canvas, keyboard) {
         this.keyboard = keyboard;
