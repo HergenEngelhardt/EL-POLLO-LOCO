@@ -5,8 +5,6 @@ class World {
     ctx;
     keyboard;
     camera_x = - 0;
-    healthStatusbar = new Statusbar("health", 40, 0);
-    coinStatusbar = new Statusbar("coin", 40, 40);
 
     constructor(canvas, keyboard) {
         this.keyboard = keyboard;
@@ -25,8 +23,8 @@ class World {
         setInterval(() => {
             this.level.enemies.forEach(enemy => {
                 if(this.character.isColliding(enemy)){
-                    this.character.erngy -= 10;
-                    console.log(this.character.erngy);
+                    this.character.hit()
+                    console.log(this.character.energy);
                 }
             });
         }, 1000);
