@@ -10,6 +10,13 @@ class MovableObject {
     otherDirection = false;
     speedY = 0;
     acceleration = 1;
+    erngy = 100;
+    offset = {
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+      };
 
     applyGravity() {
         setInterval(() => {
@@ -71,5 +78,16 @@ class MovableObject {
     moveLeft() {
 
         this.x -= this.speed;
+    }
+
+    isColliding (mo) {
+        // return  (this.x + this.width) >= mo.x && this.x <= (mo.x + mo.width) && 
+        //         (this.y + this.offsetY + this.height) >= mo.y &&
+        //         (this.y + this.offsetY) <= (mo.y + mo.height);
+
+        return this.x + this.width > mo.x &&
+               this.y + this.height > mo.y &&
+               this.x < mo.x &&
+               this.y < mo.y + mo.height;
     }
 }
