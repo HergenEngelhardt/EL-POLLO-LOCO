@@ -1,5 +1,5 @@
 class Character extends MovableObject {
-    y = 200;
+    y = 80;
     width = 150;
     height = 250;
     speed = 4;
@@ -37,33 +37,34 @@ class Character extends MovableObject {
 
     animate() {
 
-        if(this.isAboveGround()){
-            this.animateImgaes(this.IMAGES_JUMPING);
-        } else{
-
         setInterval(() => {
             if(this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x){
-                this.x += this.speed;
-                this.otherDirection = false;
+               this.moveRight();
+               this.otherDirection = false;
             }
             
             if(this.world.keyboard.LEFT && this.x > 0){
-                this.x -= this.speed;
+                this.moveLeft();
                 this.otherDirection = true;
             }
+
+            if(this.world.keyboard.JUMP && !this.isAboveGround()){
+                this.jump();
+            }
+
             this.world.camera_x = -this.x;
         }, 1000/175);
 
 
         setInterval(() => {
-            if(this.world.keyboard.RIGHT || this.world.keyboard.LEFT){
-                this.animateImgaes(this.IMAGES_WALKING);
+            if(this.isAboveGround()){
+                this.animateImgaes(this.IMAGES_JUMPING);
+            } else {
+                if(this.world.keyboard.RIGHT || this.world.keyboard.LEFT){
+                    this.animateImgaes(this.IMAGES_WALKING);
+                }
             }
         }, 150);
-    }}
-
-    jump() {
-
     }
 
     throwBottle() {

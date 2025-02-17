@@ -18,8 +18,9 @@ class ChickenBoss extends MovableObject{
     }
 
     animate() {
-        this.moveLeft();
+       
         setInterval(() => {
+            this.moveLeft();
             this.animateImgaes(this.IMAGES_WALKING);
         }, 200);
 
