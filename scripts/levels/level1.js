@@ -47,7 +47,3 @@ const level1 = new Level(
     ],
     
 );    
-
-
-console.log("Salsa Bottles:", level1.salsaBottles);
-console.log("Coins:", level1.coins);
