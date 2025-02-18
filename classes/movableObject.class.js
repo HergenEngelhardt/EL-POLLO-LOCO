@@ -98,8 +98,8 @@ class MovableObject {
 
     isHurt() {
         let timePassed = new Date().getTime() - this.lastHit;
-        //timePasse = timePassed / 1000; für Sekunden
-        return timePassed < 5;
+        timePassed = timePassed / 1000; //für Sekunden
+        return timePassed < 1;
     }
 
     isDead() {
