@@ -51,7 +51,7 @@ class World {
                     this.updateBottleStatusBar();
                 }
             });
-        }, 1000);
+        }, 500);
     }
 
     updateHealthStatusBar() {

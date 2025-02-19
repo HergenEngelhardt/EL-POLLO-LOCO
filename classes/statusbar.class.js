@@ -42,8 +42,8 @@ class Statusbar extends DrawableObject {
             this.loadImages(this.STATUSBAR_BOTTLE);
             this.setBottlePercentage(0);
         }
-        this.x = 40;
-        this.y = type === 'health' ? 0 : (type === 'coin' ? 50 : 100); // Position health bar at y=0, coin bar at y=50, and bottle bar at y=100
+        this.x = 0; 
+        this.y = type === 'health' ? -15 : (type === 'coin' ? 30 : 80); 
         this.width = 200;
         this.height = 80;
     }
