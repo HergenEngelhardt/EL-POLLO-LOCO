@@ -7,9 +7,11 @@ class World {
     camera_x = - 0;
     statusbarHealth = new Statusbar('health');
     statusbarCoin = new Statusbar('coin');
+    statusbarBottle = new Statusbar('bottle');
     coinsCollected = 0;
     totalCoins = level1.coins.length;
-
+    bottlesCollected = 0;
+    totalBottles = level1.salsaBottles.length;
 
     constructor(canvas, keyboard) {
         this.keyboard = keyboard;
@@ -41,6 +43,14 @@ class World {
                     this.updateCoinStatusBar();
                 }
             });
+
+            this.level.salsaBottles.forEach((bottle, index) => {
+                if(this.character.isColliding(bottle)){
+                    this.level.salsaBottles.splice(index, 1); 
+                    this.bottlesCollected++;
+                    this.updateBottleStatusBar();
+                }
+            });
         }, 1000);
     }
 
@@ -51,6 +61,11 @@ class World {
     updateCoinStatusBar() {
         let coinPercentage = (this.coinsCollected / this.totalCoins) * 100;
         this.statusbarCoin.setCoinPercentage(coinPercentage);
+    }
+
+    updateBottleStatusBar() {
+        let bottlePercentage = (this.bottlesCollected / this.totalBottles) * 100;
+        this.statusbarBottle.setBottlePercentage(bottlePercentage);
     }
 
     draw() {
@@ -68,6 +83,7 @@ class World {
         this.ctx.translate(-this.camera_x, 0);
         this.addToMap(this.statusbarHealth);
         this.addToMap(this.statusbarCoin);
+        this.addToMap(this.statusbarBottle);
 
         let self = this;
         requestAnimationFrame(function() {
