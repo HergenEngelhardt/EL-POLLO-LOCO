@@ -1,11 +1,4 @@
-class MovableObject {
-    x = 40;
-    y = 250;
-    img;
-    height = 150;
-    width = 100;
-    imageCache = {};
-    currentImage = 0;
+class MovableObject extends DrawableObject {
     speed = 0.15;
     otherDirection = false;
     speedY = 0;
@@ -25,33 +18,6 @@ class MovableObject {
 
     isAboveGround() {
         return this.y < 180;
-    }
-
-    loadImage(path) {
-        this.img = new Image();
-        this.img.src =  path;
-    }
-
-    draw(ctx) {
-        ctx.drawImage(this.img, this.x, this.y, this.width, this.height)
-    }
-
-    drawFrame(ctx) {
-
-        if(this instanceof Character || this instanceof Chicken || this instanceof ChickenBoss || this instanceof SalsaBottle || this instanceof Coin){
-        ctx.beginPath();
-        ctx.lineWidth = "3";
-        ctx.strokeStyle = "red";
-        ctx.rect(this.x, this.y, this.width, this.height);
-        ctx.stroke();
-    }}
-
-    loadImages(arr) {
-        arr.forEach((path) => {
-            let img = new Image();
-            img.src = path;
-            this.imageCache[path] = img;
-        });
     }
 
     animateImages(images) {
@@ -88,7 +54,7 @@ class MovableObject {
     }
 
     hit() {
-        this.energy -= 10;
+        this.energy -= 20;
         if(this.energy < 0){
             this.energy = 0;
         } else {
@@ -98,7 +64,6 @@ class MovableObject {
 
     isHurt() {
         let timePassed = new Date().getTime() - this.lastHit;
-        timePassed = timePassed / 1000; //für Sekunden
         return timePassed < 1;
     }
 
