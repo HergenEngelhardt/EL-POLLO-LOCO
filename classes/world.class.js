@@ -1,6 +1,6 @@
 class World {
     character = new Character();
-    level = level1;
+    level;
     canvas;
     ctx;
     keyboard;
@@ -9,9 +9,7 @@ class World {
     statusbarCoin = new Statusbar('coin');
     statusbarBottle = new Statusbar('bottle');
     coinsCollected = 0;
-    totalCoins = level1.coins.length;
     bottlesCollected = 0;
-    totalBottles = level1.salsaBottles.length;
     throwableBottles = [];
     startScreen = new StartScreen();
     gameOverScreen = new GameOverScreen();
@@ -96,12 +94,12 @@ class World {
     }
 
     updateCoinStatusBar() {
-        let coinPercentage = (this.coinsCollected / this.totalCoins) * 100;
+        let coinPercentage = (this.coinsCollected / this.level.coins.length) * 100;
         this.statusbarCoin.setCoinPercentage(coinPercentage);
     }
 
     updateBottleStatusBar() {
-        let bottlePercentage = (this.bottlesCollected / this.totalBottles) * 100;
+        let bottlePercentage = (this.bottlesCollected / this.level.salsaBottles.length) * 100;
         if (this.bottlesCollected === 0) {
             bottlePercentage = 0;
         }
@@ -128,6 +126,10 @@ class World {
     startGame() {
         this.gameStarted = true;
         this.gameOver = false;
+        initLevel1(); // Initialisiere Level 1
+        this.level = level1; // Setze das initialisierte Level
+        this.totalCoins = this.level.coins.length;
+        this.totalBottles = this.level.salsaBottles.length;
     }
 
     drawGameOverScreen() {
