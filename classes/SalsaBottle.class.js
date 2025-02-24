@@ -59,7 +59,7 @@ class SalsaBottle extends MovableObject {
         this.currentImage = 0;
         this.animateSplash();
     }
-
+    
     animateSplash() {
         let splashInterval = setInterval(() => {
             this.currentImage++;
@@ -71,12 +71,14 @@ class SalsaBottle extends MovableObject {
             }
         }, 100);
     }
-
+    
     removeBottle() {
         const index = this.world.throwableBottles.indexOf(this);
         if (index > -1) {
             this.world.throwableBottles.splice(index, 1);
         }
         this.img = null; 
+        this.x = -1000; 
+        this.y = -1000; 
     }
 }

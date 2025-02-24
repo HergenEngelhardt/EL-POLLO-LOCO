@@ -37,7 +37,7 @@ class World {
                     console.log(this.character.energy);
                 }
             });
-
+    
             this.level.coins.forEach((coin, index) => {
                 if(this.character.isColliding(coin)){
                     this.level.coins.splice(index, 1); 
@@ -45,7 +45,7 @@ class World {
                     this.updateCoinStatusBar();
                 }
             });
-
+    
             this.level.salsaBottles.forEach((bottle, index) => {
                 if(this.character.isColliding(bottle)){
                     this.level.salsaBottles.splice(index, 1); 
@@ -56,7 +56,7 @@ class World {
                     this.updateBottleStatusBar();
                 }
             });
-
+    
             this.throwableBottles.forEach((bottle, index) => {
                 this.level.enemies.forEach((enemy, enemyIndex) => {
                     if (bottle.isColliding(enemy)) {
@@ -68,7 +68,7 @@ class World {
                     bottle.splash();
                 }
             });
-        }, 500);
+        }, 200);
     }
 
     throwBottle() {
@@ -135,14 +135,16 @@ class World {
     }
 
     addToMap(mo) {
-        if(mo.otherDirection){
-            this.flipImage(mo);
-        }
-        mo.draw(this.ctx);
-        mo.drawFrame(this.ctx);
-
-        if(mo.otherDirection){
-            this.flipImageBack(mo);
+        if (mo.img) { 
+            if(mo.otherDirection){
+                this.flipImage(mo);
+            }
+            mo.draw(this.ctx);
+            mo.drawFrame(this.ctx);
+    
+            if(mo.otherDirection){
+                this.flipImageBack(mo);
+            }
         }
     }
 
