@@ -12,6 +12,7 @@ class World {
     totalCoins = level1.coins.length;
     bottlesCollected = 0;
     totalBottles = level1.salsaBottles.length;
+    throwableBottles = [];
 
     constructor(canvas, keyboard) {
         this.keyboard = keyboard;
@@ -20,6 +21,7 @@ class World {
         this.draw();
         this.setWorld();
         this.checkCollisions();
+        this.addKeyboardEvents();
     }
 
     setWorld() {
@@ -48,10 +50,31 @@ class World {
                 if(this.character.isColliding(bottle)){
                     this.level.salsaBottles.splice(index, 1); 
                     this.bottlesCollected++;
+                    this.throwableBottles.push(new SalsaBottle());
                     this.updateBottleStatusBar();
                 }
             });
+
+            this.throwableBottles.forEach((bottle, index) => {
+                this.level.enemies.forEach((enemy, enemyIndex) => {
+                    if (bottle.isColliding(enemy)) {
+                        bottle.splash();
+                        this.level.enemies.splice(enemyIndex, 1); 
+                        this.throwableBottles.splice(index, 1); 
+                    }
+                });
+            });
         }, 500);
+    }
+
+    throwBottle() {
+        if (this.throwableBottles.length > 0) {
+            let bottle = this.throwableBottles.pop();
+            bottle.throw(this.character.x, this.character.y);
+            this.level.salsaBottles.push(bottle);
+            this.bottlesCollected--;
+            this.updateBottleStatusBar();
+        }
     }
 
     updateHealthStatusBar() {
@@ -65,7 +88,16 @@ class World {
 
     updateBottleStatusBar() {
         let bottlePercentage = (this.bottlesCollected / this.totalBottles) * 100;
+        if (this.bottlesCollected === 0) {
+            bottlePercentage = 0;
+        }
         this.statusbarBottle.setBottlePercentage(bottlePercentage);
+    }
+
+    setBottlePercentage(percentage) {
+        this.percentage = percentage;
+        let path = this.STATUSBAR_BOTTLE[this.resolveImageIndex()];
+        this.img = this.imageCache[path];    
     }
 
     draw() {
@@ -119,5 +151,13 @@ class World {
     flipImageBack(mo) {
         mo.x = mo.x * -1; 
         this.ctx.restore();
+    }
+
+    addKeyboardEvents() {
+        window.addEventListener('keydown', (event) => {
+            if (event.code === 'ControlLeft') {
+                this.character.throwBottle();
+            }
+        });
     }
 }
