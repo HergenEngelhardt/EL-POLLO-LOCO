@@ -21,4 +21,7 @@ class StartScreen extends DrawableObject {
         return x >= this.playButton.x && x <= this.playButton.x + this.playButton.width &&
                y >= this.playButton.y && y <= this.playButton.y + this.playButton.height;
     }
+
+
+    
 }
