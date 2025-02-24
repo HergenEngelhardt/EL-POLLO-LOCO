@@ -13,6 +13,8 @@ class World {
     bottlesCollected = 0;
     totalBottles = level1.salsaBottles.length;
     throwableBottles = [];
+    startScreen = new StartScreen();
+    gameStarted = false;
 
     constructor(canvas, keyboard) {
         this.keyboard = keyboard;
@@ -22,6 +24,7 @@ class World {
         this.setWorld();
         this.checkCollisions();
         this.addKeyboardEvents();
+        this.addMouseEvents();
     }
 
     setWorld() {
@@ -105,22 +108,40 @@ class World {
         this.img = this.imageCache[path];    
     }
 
+    addMouseEvents() {
+        this.canvas.addEventListener('click', (event) => {
+            const rect = this.canvas.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            if (this.startScreen.isPlayButtonClicked(x, y)) {
+                this.startGame();
+            }
+        });
+    }
+
+    startGame() {
+        this.gameStarted = true;
+    }
+
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         
-        this.ctx.translate(this.camera_x, 0);
-        
-        this.addObjectsToMap(this.level.background || []);
-        this.addObjectsToMap(this.level.clouds || []);
-        this.addObjectsToMap(this.level.enemies || []);
-        this.addObjectsToMap(this.level.coins || []);
-        this.addObjectsToMap(this.level.salsaBottles || []);
-        this.addToMap(this.character);
+        if (!this.gameStarted) {
+            this.startScreen.draw(this.ctx);
+        } else {
+            this.ctx.translate(this.camera_x, 0);
+            this.addObjectsToMap(this.level.background || []);
+            this.addObjectsToMap(this.level.clouds || []);
+            this.addObjectsToMap(this.level.enemies || []);
+            this.addObjectsToMap(this.level.coins || []);
+            this.addObjectsToMap(this.level.salsaBottles || []);
+            this.addToMap(this.character);
 
-        this.ctx.translate(-this.camera_x, 0);
-        this.addToMap(this.statusbarHealth);
-        this.addToMap(this.statusbarCoin);
-        this.addToMap(this.statusbarBottle);
+            this.ctx.translate(-this.camera_x, 0);
+            this.addToMap(this.statusbarHealth);
+            this.addToMap(this.statusbarCoin);
+            this.addToMap(this.statusbarBottle);
+        }
 
         let self = this;
         requestAnimationFrame(function() {
