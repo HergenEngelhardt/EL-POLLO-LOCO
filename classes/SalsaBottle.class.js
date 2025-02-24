@@ -29,20 +29,54 @@ class SalsaBottle extends MovableObject {
         this.y = y;
         this.height = 100;
         this.width = 80;
-        this.speedY = 10; 
-        this.speedX = 50; 
+        this.speedY = 15; 
+        this.speedX = 15; 
         this.applyGravity();
         this.animate();
+        this.move();
+    }
+
+    move() {
+        this.moveInterval = setInterval(() => {
+            this.x += this.speedX;
+            this.y -= this.speedY;
+            this.speedY -= 1; 
+            if (this.y > 350) { 
+                this.splash();
+                clearInterval(this.moveInterval); 
+            }
+        }, 1000 / 60);
     }
 
     animate() {
-        setInterval(() => {
+        this.animationInterval = setInterval(() => {
             this.animateImages(this.IMAGES_ROTATE);
         }, 100);
     }
 
     splash() {
         this.loadImages(this.IMAGES_SPLASH);
-        this.animateImages(this.IMAGES_SPLASH);
+        this.currentImage = 0;
+        this.animateSplash();
+    }
+
+    animateSplash() {
+        let splashInterval = setInterval(() => {
+            this.currentImage++;
+            if (this.currentImage >= this.IMAGES_SPLASH.length) {
+                clearInterval(splashInterval);
+                this.removeBottle();
+            } else {
+                this.img = this.imageCache[this.IMAGES_SPLASH[this.currentImage]];
+            }
+        }, 100);
+    }
+
+    removeBottle() {
+        const index = this.world.throwableBottles.indexOf(this);
+        if (index > -1) {
+            this.world.throwableBottles.splice(index, 1);
+        }
+        this.img = null; 
     }
 }

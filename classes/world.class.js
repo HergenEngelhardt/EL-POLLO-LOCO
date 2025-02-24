@@ -50,7 +50,9 @@ class World {
                 if(this.character.isColliding(bottle)){
                     this.level.salsaBottles.splice(index, 1); 
                     this.bottlesCollected++;
-                    this.throwableBottles.push(new SalsaBottle());
+                    let newBottle = new SalsaBottle();
+                    newBottle.world = this;
+                    this.throwableBottles.push(newBottle);
                     this.updateBottleStatusBar();
                 }
             });
@@ -60,9 +62,11 @@ class World {
                     if (bottle.isColliding(enemy)) {
                         bottle.splash();
                         this.level.enemies.splice(enemyIndex, 1); 
-                        this.throwableBottles.splice(index, 1); 
                     }
                 });
+                if (bottle.y > 350) { 
+                    bottle.splash();
+                }
             });
         }, 500);
     }
@@ -71,6 +75,7 @@ class World {
         if (this.throwableBottles.length > 0) {
             let bottle = this.throwableBottles.pop();
             bottle.throw(this.character.x, this.character.y);
+            bottle.world = this; 
             this.level.salsaBottles.push(bottle);
             this.bottlesCollected--;
             this.updateBottleStatusBar();
