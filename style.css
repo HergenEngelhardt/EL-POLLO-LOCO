@@ -20,6 +20,7 @@ h1 {
 canvas {
     margin-top: 12%;
     background-color: black;
+    display: block;
 }
 
 @font-face {
@@ -30,3 +31,21 @@ canvas {
     src: url('webfont.eot?#iefix') format('embedded-opentype'), 
          url('webfont.svg#svgFontName') format('svg'); 
 } 
+
+@media only screen and (max-width: 720px) {
+    canvas {
+        margin-top: 5%;
+        width: 100%;
+    }
+}
+
+@media only screen and (max-height: 480px) {
+    canvas {
+        margin-top: 0;
+        height: 100vh;
+    }
+
+    h1 {
+        display: none;
+    }
+}
