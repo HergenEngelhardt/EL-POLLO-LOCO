@@ -2,8 +2,31 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-image: url('assets/img/desert-5058612.jpg');
+    background-position: center;
+}
+
+h1 {
+    color: black;
+    font-size: 5rem;
+    margin-top: 4%;
+    font-family: "Rubik Dirt", serif;
+    font-weight: 400;
+    font-style: normal;
 }
 
 canvas {
+    margin-top: 12%;
     background-color: black;
 }
+
+@font-face {
+    font-family: "Rubik Dirt", serif;
+    src: url('myfont.woff') format('woff'), 
+         url('myfont.ttf') format('truetype'); 
+    src: url('webfont.eot'); 
+    src: url('webfont.eot?#iefix') format('embedded-opentype'), 
+         url('webfont.svg#svgFontName') format('svg'); 
+} 
