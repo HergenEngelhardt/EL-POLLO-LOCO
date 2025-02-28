@@ -16,7 +16,7 @@ class Chicken extends MovableObject{
 
     constructor() {
         super().loadImage(this.IMAGES_WALKING[0]);
-        this.x = 250 + Math.random() * 500;
+        this.x = 250 + Math.random() * 800;
         this.speed = 0.15 + Math.random() * 0.5;
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_DEAD);
@@ -41,8 +41,9 @@ class Chicken extends MovableObject{
 
     die() {
         this.isDead = true;
-        // Optional: Add a sound effect
-        // this.playDeadSound();
+        setTimeout(() => {
+            this.toDelete = true;
+        }, 1500);
     }
 
-    }
+}

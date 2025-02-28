@@ -40,8 +40,10 @@ class ChickenSmall extends MovableObject{
 
     die() {
         this.isDead = true;
-        // Optional: Add a sound effect
-        // this.playDeadSound();
+        setTimeout(() => {
+            this.toDelete = true;
+        }, 1500);
+    
     }
 
-    }
+}

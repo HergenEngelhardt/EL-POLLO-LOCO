@@ -38,13 +38,12 @@ class World {
                 this.gameOver = true;
                 return;
             }
+            this.level.enemies = this.level.enemies.filter(enemy => !enemy.toDelete);
             this.level.enemies.forEach((enemy, index) => {
                 if (this.character.isCollidingFromTop(enemy) && !enemy.isDead) {
-                    // Character jumped on enemy from above
                     enemy.die();
-                    this.character.speedY = 15; // Make character bounce after killing enemy
+                    this.character.speedY = 15; 
                 } else if (this.character.isColliding(enemy) && !enemy.isDead) {
-                    // Regular collision with enemy (from side)
                     this.character.hit();
                     this.updateHealthStatusBar();
                     console.log(this.character.energy);
