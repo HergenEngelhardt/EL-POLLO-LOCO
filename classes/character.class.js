@@ -3,6 +3,7 @@ class Character extends MovableObject {
     width = 150;
     height = 250;
     speed = 4;
+    deadAnimationPlayed = false;
     IMAGES_WALKING = [ 
         '/assets/img/2_character_pepe/2_walk/W-21.png',
         '/assets/img/2_character_pepe/2_walk/W-22.png',
@@ -55,9 +56,8 @@ class Character extends MovableObject {
     }
 
     animate() {
-
-        setInterval(() => {
-            if (!this.isDead()) {
+        this.animationInterval = setInterval(() => {
+            if (!this.isDead() || !this.deadAnimationPlayed) {
                 if(this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x){
                     this.moveRight();
                     this.otherDirection = false;
@@ -73,12 +73,13 @@ class Character extends MovableObject {
                 }
 
                 this.world.camera_x = -this.x;
+            } else {
+                clearInterval(this.animationInterval);
+                this.world.gameOver = true;
             }
         }, 1000/175);
 
-
-        setInterval(() => {
-
+        this.imageAnimationInterval = setInterval(() => {
             if(this.isDead()) {
                 this.animateImages(this.IMAGES_DEAD);
             } else if(this.isHurt()){
@@ -90,9 +91,18 @@ class Character extends MovableObject {
                     this.animateImages(this.IMAGES_WALKING);
                 }
             }
-        }, 50);
+        }, 100);
+    }
 
+    animateImages(images) {
+        let i = this.currentImage % images.length;
+        let path = images[i];
+        this.img = this.imageCache[path];
+        this.currentImage++;
 
+        if (images === this.IMAGES_DEAD && i === images.length - 1) {
+            this.deadAnimationPlayed = true;
+        }
     }
 
     throwBottle() {

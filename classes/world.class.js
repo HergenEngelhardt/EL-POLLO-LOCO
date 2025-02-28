@@ -163,12 +163,12 @@ class World {
 
         if (this.gameOver) {
             this.drawGameOverScreen();
+        } else {
+            let self = this;
+            requestAnimationFrame(function () {
+                self.draw();
+            });
         }
-
-        let self = this;
-        requestAnimationFrame(function () {
-            self.draw();
-        });
     }
 
     addObjectsToMap(objects) {
