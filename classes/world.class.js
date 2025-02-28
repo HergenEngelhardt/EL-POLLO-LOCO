@@ -22,9 +22,9 @@ class World {
         this.canvas = canvas;
         this.draw();
         this.setWorld();
-        this.checkCollisions();
         this.addKeyboardEvents();
         this.addMouseEvents();
+        this.checkCollisions();
     }
 
     setWorld() {
@@ -33,6 +33,7 @@ class World {
 
     checkCollisions() {
         setInterval(() => {
+            if (!this.level) return;
             if (this.character.energy <= 0) {
                 this.gameOver = true;
                 return;
