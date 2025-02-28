@@ -25,6 +25,7 @@ class World {
         this.addKeyboardEvents();
         this.addMouseEvents();
         this.checkCollisions();
+        this.totalInitialBottles = 5;
     }
 
     setWorld() {
@@ -104,10 +105,7 @@ class World {
     }
 
     updateBottleStatusBar() {
-        let bottlePercentage = (this.bottlesCollected / this.level.salsaBottles.length) * 100;
-        if (this.bottlesCollected === 0) {
-            bottlePercentage = 0;
-        }
+        let bottlePercentage = (this.bottlesCollected / this.totalInitialBottles) * 100;
         this.statusbarBottle.setBottlePercentage(bottlePercentage);
     }
 
