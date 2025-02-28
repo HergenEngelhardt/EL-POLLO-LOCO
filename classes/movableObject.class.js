@@ -54,12 +54,19 @@ class MovableObject extends DrawableObject {
         // return  (this.x + this.width) >= mo.x && this.x <= (mo.x + mo.width) && 
         //         (this.y + this.offsetY + this.height) >= mo.y &&
         //         (this.y + this.offsetY) <= (mo.y + mo.height);
-
-        return this.x + this.width > mo.x &&
-               this.y + this.height > mo.y &&
-               this.x < mo.x &&
-               this.y < mo.y + mo.height;
-    }
+            return this.x + this.width > mo.x &&
+                   this.y + this.height > mo.y &&
+                   this.x < mo.x &&
+                   this.y < mo.y + mo.height;
+        }
+    
+        isCollidingFromTop(mo) {
+            return this.x + this.width > mo.x &&
+                   this.x < mo.x + mo.width &&
+                   this.y + this.height < mo.y + mo.height / 2 &&
+                   this.y + this.height > mo.y &&
+                   this.speedY < 0;
+        }
 
     hit() {
         this.energy -= 20;

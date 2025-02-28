@@ -38,14 +38,19 @@ class World {
                 this.gameOver = true;
                 return;
             }
-            this.level.enemies.forEach(enemy => {
-                if (this.character.isColliding(enemy)) {
+            this.level.enemies.forEach((enemy, index) => {
+                if (this.character.isCollidingFromTop(enemy) && !enemy.isDead) {
+                    // Character jumped on enemy from above
+                    enemy.die();
+                    this.character.speedY = 15; // Make character bounce after killing enemy
+                } else if (this.character.isColliding(enemy) && !enemy.isDead) {
+                    // Regular collision with enemy (from side)
                     this.character.hit();
                     this.updateHealthStatusBar();
                     console.log(this.character.energy);
                 }
             });
-
+    
             this.level.coins.forEach((coin, index) => {
                 if (this.character.isColliding(coin)) {
                     this.level.coins.splice(index, 1);
@@ -53,7 +58,7 @@ class World {
                     this.updateCoinStatusBar();
                 }
             });
-
+    
             this.level.salsaBottles.forEach((bottle, index) => {
                 if (this.character.isColliding(bottle)) {
                     this.level.salsaBottles.splice(index, 1);
@@ -64,7 +69,7 @@ class World {
                     this.updateBottleStatusBar();
                 }
             });
-
+    
             this.throwableBottles.forEach((bottle, index) => {
                 this.level.enemies.forEach((enemy, enemyIndex) => {
                     if (bottle.isColliding(enemy)) {
