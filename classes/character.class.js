@@ -164,7 +164,7 @@ class Character extends MovableObject {
     stopRunningSound() {
         if (!this.runningSound.paused) {
             this.runningSound.pause();
-            this.runningSound.currentTime = 0; // Reset the sound to the beginning
+            this.runningSound.currentTime = 0; 
         }
     }
 
