@@ -133,6 +133,7 @@ class World {
         this.level = level1; 
         this.totalCoins = this.level.coins.length;
         this.totalBottles = this.level.salsaBottles.length;
+        this.character.startAnimations();   
     }
 
     drawGameOverScreen() {

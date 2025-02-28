@@ -82,7 +82,10 @@ class Character extends MovableObject {
         this.applyGravity();
         this.currentImage = 0;
         this.world = {};
+    }
 
+    startAnimations() {
+        this.lastMoveTime = Date.now(); 
         this.animate();
     }
 
