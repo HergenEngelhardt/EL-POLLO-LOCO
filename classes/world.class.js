@@ -126,8 +126,8 @@ class World {
     startGame() {
         this.gameStarted = true;
         this.gameOver = false;
-        initLevel1(); // Initialisiere Level 1
-        this.level = level1; // Setze das initialisierte Level
+        initLevel1(); 
+        this.level = level1; 
         this.totalCoins = this.level.coins.length;
         this.totalBottles = this.level.salsaBottles.length;
     }
