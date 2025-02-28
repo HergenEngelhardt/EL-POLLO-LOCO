@@ -145,12 +145,20 @@ class Character extends MovableObject {
 
     moveRight() {
         super.moveRight();
-        this.playRunningSound();
+        if (!this.isAboveGround()) {
+            this.playRunningSound();
+        } else {
+            this.stopRunningSound();
+        }
     }
-
+    
     moveLeft() {
         super.moveLeft();
-        this.playRunningSound();
+        if (!this.isAboveGround()) {
+            this.playRunningSound();
+        } else {
+            this.stopRunningSound();
+        }
     }
 
     playRunningSound() {
