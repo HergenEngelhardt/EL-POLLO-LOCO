@@ -29,7 +29,15 @@ class MovableObject extends DrawableObject {
     }
 
     jump() {
-            this.speedY = 15;
+        this.speedY = 15;
+        this.playJumpSound();
+    }
+
+    playJumpSound() {
+        let audio = new Audio('./audio/jump.wav');
+        audio.play().catch(error => {
+            console.error('Error playing audio:', error);
+        });
     }
 
     moveRight() {
@@ -55,11 +63,19 @@ class MovableObject extends DrawableObject {
 
     hit() {
         this.energy -= 20;
-        if(this.energy < 0){
+        this.playHitSound();
+        if (this.energy < 0) {
             this.energy = 0;
         } else {
             this.lastHit = new Date().getTime();
         }
+    }
+
+    playHitSound() {
+        let audio = new Audio('./audio/hit.wav');
+        audio.play().catch(error => {
+            console.error('Error playing audio:', error);
+        });
     }
 
     isHurt() {

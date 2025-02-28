@@ -8,20 +8,25 @@ class StartScreen extends DrawableObject {
         this.playButton.y = 10;
         this.playButton.width = 50;
         this.playButton.height = 50;
-        this.width = 720; 
-        this.height = 480; 
+        this.width = 720;
+        this.height = 480;
+        this.backgroundMusic = new Audio('./audio/backgroundMusic.mp3');
+        this.backgroundMusic.loop = true;
     }
 
     draw(ctx) {
-        ctx.drawImage(this.img, 0, 0, this.width, this.height); 
+        ctx.drawImage(this.img, 0, 0, this.width, this.height);
         this.playButton.draw(ctx);
     }
 
     isPlayButtonClicked(x, y) {
-        return x >= this.playButton.x && x <= this.playButton.x + this.playButton.width &&
-               y >= this.playButton.y && y <= this.playButton.y + this.playButton.height;
+        const isClicked = x >= this.playButton.x && x <= this.playButton.x + this.playButton.width &&
+                          y >= this.playButton.y && y <= this.playButton.y + this.playButton.height;
+        if (isClicked) {
+            this.backgroundMusic.play().catch(error => {
+                console.error('Error playing background music:', error);
+            });
+        }
+        return isClicked;
     }
-
-
-    
 }
