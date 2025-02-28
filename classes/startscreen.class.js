@@ -27,7 +27,10 @@ class StartScreen extends DrawableObject {
             let x = event.clientX - rect.left;
             let y = event.clientY - rect.top;
         
-            if (this.isGuitarButtonClicked(x, y)) {
+            if (this.isPlayButtonClicked(x, y)) {
+                this.stopMusic();
+            } else if (this.isGuitarButtonClicked(x, y)) {
+                this.toggleMusic();
             }
         });
     }
@@ -38,18 +41,14 @@ class StartScreen extends DrawableObject {
         this.guitarButton.draw(ctx);
     }
 
-        isPlayButtonClicked(x, y) {
-            return x >= this.playButton.x && x <= this.playButton.x + this.playButton.width &&
-                   y >= this.playButton.y && y <= this.playButton.y + this.playButton.height;
-        }
-    
-        isGuitarButtonClicked(x, y) {
-            const isClicked = x >= this.guitarButton.x && x <= this.guitarButton.x + this.guitarButton.width &&
-                              y >= this.guitarButton.y && y <= this.guitarButton.y + this.guitarButton.height;
-            if (isClicked) {
-                this.toggleMusic();
-            }
-            return isClicked;
+    isPlayButtonClicked(x, y) {
+        return x >= this.playButton.x && x <= this.playButton.x + this.playButton.width &&
+               y >= this.playButton.y && y <= this.playButton.y + this.playButton.height;
+    }
+
+    isGuitarButtonClicked(x, y) {
+        return x >= this.guitarButton.x && x <= this.guitarButton.x + this.guitarButton.width &&
+               y >= this.guitarButton.y && y <= this.guitarButton.y + this.guitarButton.height;
     }
 
     toggleMusic() {
@@ -58,5 +57,10 @@ class StartScreen extends DrawableObject {
         } else {
             this.backgroundMusic.pause();
         }
+    }
+
+    stopMusic() {
+        this.backgroundMusic.pause();
+        this.backgroundMusic.currentTime = 0; 
     }
 }
