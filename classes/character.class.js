@@ -5,6 +5,7 @@ class Character extends MovableObject {
     speed = 4;
     deadAnimationPlayed = false;
     lastMoveTime = Date.now();
+    runningSound = new Audio('audio/running-1-6846.mp3');
 
     IMAGES_IDLE = [ 
         'assets/img/2_character_pepe/1_idle/idle/I-1.png',
@@ -78,7 +79,7 @@ class Character extends MovableObject {
         this.loadImages(this.IMAGES_JUMPING);
         this.loadImages(this.IMAGES_DEAD);
         this.loadImages(this.IMAGES_HURT);
-        this.applyGravity()
+        this.applyGravity();
         this.currentImage = 0;
         this.world = {};
 
@@ -92,12 +93,12 @@ class Character extends MovableObject {
                     this.moveRight();
                     this.otherDirection = false;
                     this.lastMoveTime = Date.now();
-                }
-                
-                if(this.world.keyboard.LEFT && this.x > 0){
+                } else if(this.world.keyboard.LEFT && this.x > 0){
                     this.moveLeft();
                     this.otherDirection = true;
                     this.lastMoveTime = Date.now();
+                } else {
+                    this.stopRunningSound();
                 }
 
                 if(this.world.keyboard.JUMP && !this.isAboveGround()){
@@ -122,7 +123,7 @@ class Character extends MovableObject {
             } else {
                 if(this.world.keyboard.RIGHT || this.world.keyboard.LEFT){
                     this.animateImages(this.IMAGES_WALKING);
-                } else if (Date.now() - this.lastMoveTime > 5000) {
+                } else if (Date.now() - this.lastMoveTime > 6000) {
                     this.animateImages(this.IMAGES_IDLE_LONG);
                 } else {
                     this.animateImages(this.IMAGES_IDLE);
@@ -139,6 +140,31 @@ class Character extends MovableObject {
 
         if (images === this.IMAGES_DEAD && i === images.length - 1) {
             this.deadAnimationPlayed = true;
+        }
+    }
+
+    moveRight() {
+        super.moveRight();
+        this.playRunningSound();
+    }
+
+    moveLeft() {
+        super.moveLeft();
+        this.playRunningSound();
+    }
+
+    playRunningSound() {
+        if (this.runningSound.paused) {
+            this.runningSound.play().catch(error => {
+                console.error('Error playing running sound:', error);
+            });
+        }
+    }
+
+    stopRunningSound() {
+        if (!this.runningSound.paused) {
+            this.runningSound.pause();
+            this.runningSound.currentTime = 0; // Reset the sound to the beginning
         }
     }
 
