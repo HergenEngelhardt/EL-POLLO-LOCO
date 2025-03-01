@@ -37,6 +37,7 @@ class World {
             if (!this.level) return;
             if (this.character.energy <= 0) {
                 this.gameOver = true;
+                this.gameOverScreen.showWinLoseScreen('lose');
                 return;
             }
             this.level.enemies = this.level.enemies.filter(enemy => !enemy.toDelete);
@@ -81,6 +82,7 @@ class World {
                     bottle.splash();
                 }
             });
+            this.checkWinCondition();
         }, 200);
     }
 
@@ -212,5 +214,12 @@ class World {
                 this.character.throwBottle();
             }
         });
+    }
+
+    checkWinCondition() {
+        if (this.level && this.level.enemies.length === 0) {
+            this.gameOver = true;
+            this.gameOverScreen.showWinLoseScreen('win');
+        }
     }
 }

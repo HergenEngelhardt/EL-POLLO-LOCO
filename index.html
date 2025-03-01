@@ -34,5 +34,33 @@
     <canvas width="720" height="480" id="gameCanvas">
 
     </canvas>
+    <div class="button-container">
+        <button id="instructions-btn" class="btn">Instructions</button>
+        <button id="imprint-btn" class="btn">Imprint</button>
+    </div>
+    <div id="instructions" class="instructions-container d-none">
+        <h1>Instructions</h1>
+        <p>Use the following keys to control the character:</p>
+        <ul>
+            <li>Left Arrow: Move Left</li>
+            <li>Right Arrow: Move Right</li>
+            <li>Space: Jump</li>
+            <li>left ctrl: Throw Bottle</li>
+        </ul>
+        <button class="btn" onclick="showMenu()">Back to Menu</button>
+    </div>
+    
+    <div id="imprint" class="imprint-container d-none">
+        <h1>Impressum</h1>
+        <p>Here you can add your personal information or legal notice.</p>
+        <button class="btn" onclick="showMenu()">Back to Menu</button>
+    </div>
+    
+    <div id="win-loose" class="win-loose-container d-none">
+        <div class="win-loose-buttons">
+            <button class="btn" onclick="playAgain()">Play Again</button>
+            <button class="btn" onclick="showMenu()">Back to Menu</button>
+        </div>
+    </div>
 </body>
 </html>
