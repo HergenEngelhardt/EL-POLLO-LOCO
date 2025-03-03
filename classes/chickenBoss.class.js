@@ -46,6 +46,14 @@ class ChickenBoss extends MovableObject {
     ];
 
     hadfirstContact = false;
+    alertPhase = true;
+    alertFrameCount = 0;
+    movingDirection = -1;
+    lastDirectionChange = 0;
+    attackCooldown = 0;
+    energy = 100;
+    lastHit = 0;
+    
     constructor() {
         super().loadImage(this.IMAGES_WALKING[0]);
         this.speed = 0.15 + Math.random() * 0.5;
@@ -59,40 +67,83 @@ class ChickenBoss extends MovableObject {
     }
 
     animate() {
-        let i = 0;
-        
-        // Movement and animation interval
         setInterval(() => {
-            // Debug output to see if world and character are properly set
-            console.log('ChickenBoss position:', this.x);
-            if (this.world && this.world.character) {
-                console.log('Character position:', this.world.character.x);
-                console.log('Distance:', this.x - this.world.character.x);
+            if (this.isDead()) {
+                this.animateImages(this.IMAGES_DEAD);
+                return;
             }
             
-            // Increased detection range to 400px
-            if (this.world && this.world.character && this.world.character.x > this.x - 400) {
-                // First contact detected
-                if (!this.hadfirstContact) {
-                    console.log('First contact detected!');
+            if (this.isHurt()) {
+                this.animateImages(this.IMAGES_HURT);
+                return;
+            }
+
+            if (this.world && this.world.character) {
+                const distanceToCharacter = Math.abs(this.x - this.world.character.x);
+                
+                if (!this.hadfirstContact && this.world.character.x > this.x - 400) {
                     this.hadfirstContact = true;
-                    i = 0;
+                    this.alertPhase = true;
+                    this.alertFrameCount = 0;
                 }
                 
-                // Play alert animation for 12 frames before moving
-                if (i < 12) {
-                    console.log('Playing alert animation, frame:', i);
-                    this.animateImages(this.IMAGES_ALERT);
+                if (this.hadfirstContact) {
+                    if (this.alertPhase) {
+                        this.animateImages(this.IMAGES_ALERT);
+                        this.alertFrameCount++;
+                        
+                        if (this.alertFrameCount >= 12) {
+                            this.alertPhase = false;
+                        }
+                    } else if (distanceToCharacter < 150) {
+                        if (this.attackCooldown <= 0) {
+                            this.animateImages(this.IMAGES_ATTACK);
+                            this.attackCooldown = 10;
+                            
+                            if (distanceToCharacter < 80 && !this.world.character.isHurt()) {
+                                this.world.character.hit();
+                                this.world.updateHealthStatusBar();
+                            }
+                        } else {
+                            this.attackCooldown--;
+                        }
+                    } else {
+                        this.animateImages(this.IMAGES_WALKING);
+                        
+                        if (Date.now() - this.lastDirectionChange > 4000) {
+                            this.movingDirection *= -1;
+                            this.lastDirectionChange = Date.now();
+                            this.otherDirection = !this.otherDirection;
+                        }
+                        
+                        if (this.movingDirection > 0) {
+                            this.x += this.speed;
+                        } else {
+                            this.x -= this.speed;
+                        }
+                    }
                 } else {
-                    console.log('Alert finished, now walking');
                     this.animateImages(this.IMAGES_WALKING);
-                    this.moveLeft();
                 }
-                i++;
-            } else {
-                // Default walking animation when character is not nearby
-                this.animateImages(this.IMAGES_WALKING);
             }
         }, 150);
     }
-}    
+    
+    hit() {
+        this.energy -= 20;
+        if (this.energy < 0) {
+            this.energy = 0;
+        } else {
+            this.lastHit = new Date().getTime();
+        }
+    }
+    
+    isHurt() {
+        let timePassed = new Date().getTime() - this.lastHit;
+        return timePassed < 500;
+    }
+    
+    isDead() {
+        return this.energy <= 0;
+    }
+}
