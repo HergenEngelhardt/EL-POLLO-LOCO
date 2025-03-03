@@ -76,11 +76,15 @@ class World {
                 }
             });
     
-            this.throwableBottles.forEach((bottle, index) => {
-                this.level.enemies.forEach((enemy, enemyIndex) => {
+            this.throwableBottles.forEach((bottle) => {
+                this.level.enemies.forEach((enemy) => {
                     if (bottle.isColliding(enemy)) {
                         bottle.splash();
-                        this.level.enemies.splice(enemyIndex, 1);
+                        if (enemy instanceof ChickenBoss) {
+                            enemy.hit(); 
+                        } else {
+                            enemy.toDelete = true;
+                        }
                     }
                 });
                 if (bottle.y > 350) {

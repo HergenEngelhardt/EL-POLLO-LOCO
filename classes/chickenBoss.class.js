@@ -53,10 +53,12 @@ class ChickenBoss extends MovableObject {
     attackCooldown = 0;
     energy = 100;
     lastHit = 0;
+    deathAnimationPlayed = false;
+    deathAnimationIndex = 0;
     
     constructor() {
         super().loadImage(this.IMAGES_WALKING[0]);
-        this.speed = 5.5;
+        this.speed = 7.5;
         this.loadImages(this.IMAGES_ALERT);
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_ATTACK);
@@ -64,12 +66,15 @@ class ChickenBoss extends MovableObject {
         this.loadImages(this.IMAGES_DEAD);
         this.world = {};
         this.animate();
+        this.toDelete = false;
     }
 
     animate() {
         setInterval(() => {
             if (this.isDead()) {
-                this.animateImages(this.IMAGES_DEAD);
+                if (!this.deathAnimationPlayed) {
+                    this.playDeathAnimation();
+                }
                 return;
             }
             
@@ -145,6 +150,21 @@ class ChickenBoss extends MovableObject {
             }
         }, 150);
     }   
+    
+    playDeathAnimation() {
+        let deathInterval = setInterval(() => {
+            if (this.deathAnimationIndex >= this.IMAGES_DEAD.length) {
+                clearInterval(deathInterval);
+                this.deathAnimationPlayed = true;
+                this.toDelete = true;
+                return;
+            }
+            
+            let path = this.IMAGES_DEAD[this.deathAnimationIndex];
+            this.img = this.imageCache[path];
+            this.deathAnimationIndex++;
+        }, 200);
+    }
     
     hit() {
         this.energy -= 20;
