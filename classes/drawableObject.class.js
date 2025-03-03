@@ -37,19 +37,17 @@ class DrawableObject {
     }
 
     drawOffsetFrame(ctx) {
-        if (this instanceof Character || this instanceof Chicken || this instanceof ChickenSmall || this instanceof ChickenBoss || this instanceof SalsaBottle || this instanceof Coin) {
-            if (this.offsetX !== undefined || this.offsetY !== undefined || this.offsetWidth !== undefined || this.offsetHeight !== undefined) {
-                ctx.beginPath();
-                ctx.lineWidth = "3";
-                ctx.strokeStyle = "blue";
-                ctx.rect(
-                    this.x + (this.offsetX || 0), 
-                    this.y + (this.offsetY || 0), 
-                    this.width - (this.offsetWidth || 0), 
-                    this.height - (this.offsetHeight || 0)
-                );
-                ctx.stroke();
-            }
+        if (this.offset) {
+            ctx.beginPath();
+            ctx.lineWidth = "2";
+            ctx.strokeStyle = "blue"; 
+            ctx.rect(
+                this.x + this.offset.left, 
+                this.y + this.offset.top, 
+                this.width - this.offset.left - this.offset.right,
+                this.height - this.offset.top - this.offset.bottom
+            );
+            ctx.stroke();
         }
     }
 }

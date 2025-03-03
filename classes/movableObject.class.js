@@ -5,10 +5,12 @@ class MovableObject extends DrawableObject {
     acceleration = 1;
     energy = 100;
     lastHit = 0;
-    offsetY = 0; 
-    offsetX = 0; 
-    offsetWidth = 0;
-    offsetHeight = 0;
+    offset = {
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0
+    };
 
 
     applyGravity() {
@@ -54,18 +56,18 @@ class MovableObject extends DrawableObject {
         this.x -= this.speed;
     }
 
-    isColliding (mo) {
-        return (this.x + this.offsetX + this.width - this.offsetWidth) >= mo.x + mo.offsetX && 
-        (this.x + this.offsetX) <= (mo.x + mo.offsetX + mo.width - mo.offsetWidth) && 
-        (this.y + this.offsetY + this.height - this.offsetHeight) >= mo.y + mo.offsetY &&
-        (this.y + this.offsetY) <= (mo.y + mo.offsetY + mo.height - mo.offsetHeight);
+    isColliding(mo) {
+        return (this.x + this.offset.left + this.width - this.offset.right) >= (mo.x + mo.offset.left) && 
+               (this.x + this.offset.left) <= (mo.x + mo.offset.left + mo.width - mo.offset.right) && 
+               (this.y + this.offset.top + this.height - this.offset.bottom) >= (mo.y + mo.offset.top) &&
+               (this.y + this.offset.top) <= (mo.y + mo.offset.top + mo.height - mo.offset.bottom);
     }
     
     isCollidingFromTop(mo) {
-        return (this.x + this.offsetX + this.width - this.offsetWidth) > (mo.x + mo.offsetX) &&
-               (this.x + this.offsetX) < (mo.x + mo.offsetX + mo.width - mo.offsetWidth) &&
-               (this.y + this.offsetY + this.height - this.offsetHeight) < (mo.y + mo.offsetY + (mo.height - mo.offsetHeight) / 2) &&
-               (this.y + this.offsetY + this.height - this.offsetHeight) > (mo.y + mo.offsetY) &&
+        return (this.x + this.offset.left + this.width - this.offset.right) > (mo.x + mo.offset.left) &&
+               (this.x + this.offset.left) < (mo.x + mo.offset.left + mo.width - mo.offset.right) &&
+               (this.y + this.offset.top + this.height - this.offset.bottom) < (mo.y + mo.offset.top + (mo.height - mo.offset.bottom) / 2) &&
+               (this.y + this.offset.top + this.height - this.offset.bottom) > (mo.y + mo.offset.top) &&
                this.speedY < 0;
     }
 

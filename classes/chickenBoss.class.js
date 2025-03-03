@@ -71,10 +71,12 @@ class ChickenBoss extends MovableObject {
         this.toDelete = false;
         this.healthBar.width = 180;
         this.healthBar.height = 60;
-        this.offsetY = 50; 
-        this.offsetX = 40; 
-        this.offsetWidth = 80; 
-        this.offsetHeight = 100;
+        this.offset = {
+            top: 50,
+            bottom: 100,
+            left: 40,
+            right: 40   
+        };
     }
 
     animate() {
