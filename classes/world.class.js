@@ -81,7 +81,9 @@ class World {
                     if (bottle.isColliding(enemy)) {
                         bottle.splash();
                         if (enemy instanceof ChickenBoss) {
-                            enemy.hit(); 
+                            enemy.hit();
+                            console.log('Bottle hit boss!');
+                            // Spielfeedback hier - z.B. Sound abspielen
                         } else {
                             enemy.toDelete = true;
                         }

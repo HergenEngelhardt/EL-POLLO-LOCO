@@ -5,7 +5,7 @@ class ChickenBoss extends MovableObject {
     x = 1700;
     healthBar = new Statusbar('health');
     showHealthBar = false;
-    
+
     IMAGES_ALERT = [
         'assets/img/4_enemie_boss_chicken/2_alert/G5.png',
         'assets/img/4_enemie_boss_chicken/2_alert/G6.png',
@@ -181,15 +181,23 @@ class ChickenBoss extends MovableObject {
     }
     
     hit() {
-        this.energy -= 20;
-        if (this.energy < 0) {
-            this.energy = 0;
-        } else {
-            this.lastHit = new Date().getTime();
-            this.healthBar.setPercentage(this.energy);
-        }
+    this.energy -= 20;
+    this.lastHit = new Date().getTime();
+    this.playHitSound();
+    if (this.energy < 0) {
+        this.energy = 0;
+    }
+    this.healthBar.setPercentage(this.energy);
+    
+    console.log('Boss hit! Energy left:', this.energy);
     }
     
+    playHitSound() {
+        let audio = new Audio('./audio/punch-140236.mp3');
+        audio.play().catch(error => {
+            console.error('Error playing boss hit sound:', error);
+        });
+    }
     isHurt() {
         let timePassed = new Date().getTime() - this.lastHit;
         return timePassed < 500;
