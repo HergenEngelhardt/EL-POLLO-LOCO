@@ -35,4 +35,21 @@ class DrawableObject {
             ctx.stroke();
         }
     }
+
+    drawOffsetFrame(ctx) {
+        if (this instanceof Character || this instanceof Chicken || this instanceof ChickenSmall || this instanceof ChickenBoss || this instanceof SalsaBottle || this instanceof Coin) {
+            if (this.offsetX !== undefined || this.offsetY !== undefined || this.offsetWidth !== undefined || this.offsetHeight !== undefined) {
+                ctx.beginPath();
+                ctx.lineWidth = "3";
+                ctx.strokeStyle = "blue";
+                ctx.rect(
+                    this.x + (this.offsetX || 0), 
+                    this.y + (this.offsetY || 0), 
+                    this.width - (this.offsetWidth || 0), 
+                    this.height - (this.offsetHeight || 0)
+                );
+                ctx.stroke();
+            }
+        }
+    }
 }

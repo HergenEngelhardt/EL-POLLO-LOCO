@@ -83,7 +83,6 @@ class World {
                         if (enemy instanceof ChickenBoss) {
                             enemy.hit();
                             console.log('Bottle hit boss!');
-                            // Spielfeedback hier - z.B. Sound abspielen
                         } else {
                             enemy.toDelete = true;
                         }
@@ -204,6 +203,7 @@ class World {
             }
             mo.draw(this.ctx);
             mo.drawFrame(this.ctx);
+            mo.drawOffsetFrame(this.ctx);
 
             if (mo.otherDirection) {
                 this.flipImageBack(mo);

@@ -21,6 +21,10 @@ class SalsaBottle extends MovableObject {
         this.y = 350;
         this.height = 100;
         this.width = 80;
+        this.offsetX = 25; 
+        this.offsetY = 25; 
+        this.offsetWidth = 50;         
+        this.offsetHeight = 50;
     }
 
     throw(x, y) {

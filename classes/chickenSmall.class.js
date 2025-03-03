@@ -20,6 +20,7 @@ class ChickenSmall extends MovableObject{
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_DEAD);
         this.animate();
+        this.offsetY = 5;
     }
 
     animate() {

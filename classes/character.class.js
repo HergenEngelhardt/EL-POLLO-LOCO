@@ -1,6 +1,6 @@
 class Character extends MovableObject {
     y = 80;
-    width = 150;
+    width = 130;
     height = 250;
     speed = 4;
     deadAnimationPlayed = false;
@@ -82,6 +82,8 @@ class Character extends MovableObject {
         this.applyGravity();
         this.currentImage = 0;
         this.world = {};
+        this.offsetY = -5; 
+        this.offsetHeight = 10;
     }
 
     startAnimations() {
