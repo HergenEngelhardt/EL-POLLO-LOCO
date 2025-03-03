@@ -3,7 +3,9 @@ class ChickenBoss extends MovableObject {
     height = 400;
     width = 220;
     x = 1700;
-
+    healthBar = new Statusbar('health');
+    showHealthBar = false;
+    
     IMAGES_ALERT = [
         'assets/img/4_enemie_boss_chicken/2_alert/G5.png',
         'assets/img/4_enemie_boss_chicken/2_alert/G6.png',
@@ -67,6 +69,8 @@ class ChickenBoss extends MovableObject {
         this.world = {};
         this.animate();
         this.toDelete = false;
+        this.healthBar.width = 180;
+        this.healthBar.height = 60;
     }
 
     animate() {
@@ -107,41 +111,46 @@ class ChickenBoss extends MovableObject {
                         
                         if (this.alertFrameCount >= 12) {
                             this.alertPhase = false;
-                        }
-                    } else if (distanceToCharacter < 300) {
-                        this.animateImages(this.IMAGES_ATTACK);
-                        
-                        if (Date.now() - this.lastDirectionChange > 4000) {
-                            this.movingDirection *= -1;
-                            this.lastDirectionChange = Date.now();
-                        }
-                        
-                        if (this.movingDirection > 0) {
-                            this.x += this.speed;
-                            this.otherDirection = true;
-                        } else {
-                            this.x -= this.speed;
-                            this.otherDirection = false;
-                        }
-                        
-                        if (distanceToCharacter < 80 && !this.world.character.isHurt()) {
-                            this.world.character.hit();
-                            this.world.updateHealthStatusBar();
+                            this.showHealthBar = true;  
                         }
                     } else {
-                        this.animateImages(this.IMAGES_WALKING);
+                        this.updateHealthBarPosition();
                         
-                        if (Date.now() - this.lastDirectionChange > 4000) {
-                            this.movingDirection *= -1;
-                            this.lastDirectionChange = Date.now();
-                        }
-                        
-                        if (this.movingDirection > 0) {
-                            this.x += this.speed;
-                            this.otherDirection = true;
+                        if (distanceToCharacter < 300) {
+                            this.animateImages(this.IMAGES_ATTACK);
+                            
+                            if (Date.now() - this.lastDirectionChange > 4000) {
+                                this.movingDirection *= -1;
+                                this.lastDirectionChange = Date.now();
+                            }
+                            
+                            if (this.movingDirection > 0) {
+                                this.x += this.speed;
+                                this.otherDirection = true;
+                            } else {
+                                this.x -= this.speed;
+                                this.otherDirection = false;
+                            }
+                            
+                            if (distanceToCharacter < 80 && !this.world.character.isHurt()) {
+                                this.world.character.hit();
+                                this.world.updateHealthStatusBar();
+                            }
                         } else {
-                            this.x -= this.speed;
-                            this.otherDirection = false;
+                            this.animateImages(this.IMAGES_WALKING);
+                            
+                            if (Date.now() - this.lastDirectionChange > 4000) {
+                                this.movingDirection *= -1;
+                                this.lastDirectionChange = Date.now();
+                            }
+                            
+                            if (this.movingDirection > 0) {
+                                this.x += this.speed;
+                                this.otherDirection = true;
+                            } else {
+                                this.x -= this.speed;
+                                this.otherDirection = false;
+                            }
                         }
                     }
                 } else {
@@ -149,7 +158,7 @@ class ChickenBoss extends MovableObject {
                 }
             }
         }, 150);
-    }   
+    }
     
     playDeathAnimation() {
         let deathInterval = setInterval(() => {
@@ -166,12 +175,18 @@ class ChickenBoss extends MovableObject {
         }, 200);
     }
     
+    updateHealthBarPosition() {
+        this.healthBar.x = this.x + 20;
+        this.healthBar.y = this.y - 30;
+    }
+    
     hit() {
         this.energy -= 20;
         if (this.energy < 0) {
             this.energy = 0;
         } else {
             this.lastHit = new Date().getTime();
+            this.healthBar.setPercentage(this.energy);
         }
     }
     
@@ -183,4 +198,6 @@ class ChickenBoss extends MovableObject {
     isDead() {
         return this.energy <= 0;
     }
+
+
 }

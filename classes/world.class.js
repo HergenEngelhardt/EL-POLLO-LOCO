@@ -194,6 +194,9 @@ class World {
 
     addToMap(mo) {
         if (mo.img) {
+            if (mo instanceof ChickenBoss && mo.showHealthBar) {
+                this.addToMap(mo.healthBar);
+            }
             if (mo.otherDirection) {
                 this.flipImage(mo);
             }
