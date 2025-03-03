@@ -124,9 +124,9 @@ class World {
 
     addMouseEvents() {
         this.canvas.addEventListener('click', (event) => {
-            const rect = this.canvas.getBoundingClientRect();
-            const x = event.clientX - rect.left;
-            const y = event.clientY - rect.top;
+            let rect = this.canvas.getBoundingClientRect();
+            let x = event.clientX - rect.left;
+            let y = event.clientY - rect.top;
             if (this.startScreen.isPlayButtonClicked(x, y)) {
                 this.startGame();
             }

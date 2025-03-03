@@ -24,8 +24,8 @@ class GameOverScreen extends DrawableObject {
     }
     
     showWinLoseScreen(result) {
-        const winLoseContainer = document.getElementById('win-loose');
-        const winLoseImage = document.getElementById('win-loose-image');
+        let winLoseContainer = document.getElementById('win-loose');
+        let winLoseImage = document.getElementById('win-loose-image');
         
         if (result === 'win') {
             winLoseImage.src = 'assets/img/9_intro_outro_screens/win/win_2.png';

@@ -56,7 +56,7 @@ class ChickenBoss extends MovableObject {
     
     constructor() {
         super().loadImage(this.IMAGES_WALKING[0]);
-        this.speed = 0.15 + Math.random() * 0.5;
+        this.speed = 5.5;
         this.loadImages(this.IMAGES_ALERT);
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_ATTACK);
@@ -77,35 +77,51 @@ class ChickenBoss extends MovableObject {
                 this.animateImages(this.IMAGES_HURT);
                 return;
             }
-
+    
             if (this.world && this.world.character) {
-                const distanceToCharacter = Math.abs(this.x - this.world.character.x);
+                let distanceToCharacter = Math.abs(this.x - this.world.character.x);
+                let characterIsLeft = this.world.character.x < this.x;
                 
-                if (!this.hadfirstContact && this.world.character.x > this.x - 400) {
+                if (this.isColliding(this.world.character) && !this.world.character.isHurt()) {
+                    this.world.character.hit();
+                    this.world.updateHealthStatusBar();
+                }
+    
+                if (!this.hadfirstContact && distanceToCharacter < 500) {
                     this.hadfirstContact = true;
                     this.alertPhase = true;
                     this.alertFrameCount = 0;
+                    this.otherDirection = !characterIsLeft;
                 }
                 
                 if (this.hadfirstContact) {
                     if (this.alertPhase) {
+                        this.otherDirection = !characterIsLeft;
                         this.animateImages(this.IMAGES_ALERT);
                         this.alertFrameCount++;
                         
                         if (this.alertFrameCount >= 12) {
                             this.alertPhase = false;
                         }
-                    } else if (distanceToCharacter < 150) {
-                        if (this.attackCooldown <= 0) {
-                            this.animateImages(this.IMAGES_ATTACK);
-                            this.attackCooldown = 10;
-                            
-                            if (distanceToCharacter < 80 && !this.world.character.isHurt()) {
-                                this.world.character.hit();
-                                this.world.updateHealthStatusBar();
-                            }
+                    } else if (distanceToCharacter < 300) {
+                        this.animateImages(this.IMAGES_ATTACK);
+                        
+                        if (Date.now() - this.lastDirectionChange > 4000) {
+                            this.movingDirection *= -1;
+                            this.lastDirectionChange = Date.now();
+                        }
+                        
+                        if (this.movingDirection > 0) {
+                            this.x += this.speed;
+                            this.otherDirection = true;
                         } else {
-                            this.attackCooldown--;
+                            this.x -= this.speed;
+                            this.otherDirection = false;
+                        }
+                        
+                        if (distanceToCharacter < 80 && !this.world.character.isHurt()) {
+                            this.world.character.hit();
+                            this.world.updateHealthStatusBar();
                         }
                     } else {
                         this.animateImages(this.IMAGES_WALKING);
@@ -113,21 +129,22 @@ class ChickenBoss extends MovableObject {
                         if (Date.now() - this.lastDirectionChange > 4000) {
                             this.movingDirection *= -1;
                             this.lastDirectionChange = Date.now();
-                            this.otherDirection = !this.otherDirection;
                         }
                         
                         if (this.movingDirection > 0) {
                             this.x += this.speed;
+                            this.otherDirection = true;
                         } else {
                             this.x -= this.speed;
+                            this.otherDirection = false;
                         }
                     }
                 } else {
-                    this.animateImages(this.IMAGES_WALKING);
+                    this.img = this.imageCache[this.IMAGES_WALKING[0]];
                 }
             }
         }, 150);
-    }
+    }   
     
     hit() {
         this.energy -= 20;

@@ -7,7 +7,7 @@ function init() {
     canvas = document.getElementById('gameCanvas');
     world = new World(canvas, keyboard);
     document.getElementById('instructions-btn').addEventListener('click', function() {
-        const instructionsElement = document.getElementById('instructions');
+        let instructionsElement = document.getElementById('instructions');
         if (!instructionsElement.classList.contains('d-none')) {
             instructionsElement.classList.add('d-none');
         } else {
@@ -17,7 +17,7 @@ function init() {
         }
     });
     document.getElementById('imprint-btn').addEventListener('click', function() {
-        const imprintElement = document.getElementById('imprint');
+        let imprintElement = document.getElementById('imprint');
         if (!imprintElement.classList.contains('d-none')) {
             imprintElement.classList.add('d-none');
         } else {
