@@ -72,10 +72,10 @@ class ChickenBoss extends MovableObject {
         this.healthBar.width = 180;
         this.healthBar.height = 60;
         this.offset = {
-            top: 50,
-            bottom: 100,
-            left: 40,
-            right: 40   
+            top: 25,
+            bottom: 50,
+            left: 20,
+            right: 20   
         };
     }
 

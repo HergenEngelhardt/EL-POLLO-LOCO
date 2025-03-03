@@ -93,7 +93,7 @@ class World {
                 }
             });
             this.checkWinCondition();
-        }, 200);
+        }, 500);
     }
 
     throwBottle() {
