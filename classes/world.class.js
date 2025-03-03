@@ -93,7 +93,9 @@ class World {
     }
     
     handleThrowableBottleCollisions() {
-        this.throwableBottles.forEach((bottle) => {
+        this.throwableBottles.forEach((bottle, index) => {
+            if (!bottle.hasBeenThrown) return;
+            
             this.level.enemies.forEach((enemy) => {
                 if (bottle.isColliding(enemy)) {
                     bottle.splash();
@@ -105,6 +107,7 @@ class World {
                     }
                 }
             });
+            
             if (bottle.y > 350) {
                 bottle.splash();
             }
@@ -116,7 +119,6 @@ class World {
             let bottle = this.throwableBottles.pop();
             bottle.throw(this.character.x, this.character.y);
             bottle.world = this;
-            this.level.salsaBottles.push(bottle);
             this.bottlesCollected--;
             this.updateBottleStatusBar();
         }

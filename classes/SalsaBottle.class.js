@@ -21,6 +21,7 @@ class SalsaBottle extends MovableObject {
         this.y = 350;
         this.height = 100;
         this.width = 80;
+        this.hasBeenThrown = false;
         this.offset = { 
             left: 20,
             right: 10,
@@ -34,6 +35,7 @@ class SalsaBottle extends MovableObject {
         this.y = y;
         this.height = 100;
         this.width = 80;
+        this.hasBeenThrown = true;
         this.speedY = 15; 
         this.speedX = 15; 
         this.applyGravity();
