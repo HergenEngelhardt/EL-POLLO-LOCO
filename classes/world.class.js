@@ -45,55 +45,70 @@ class World {
                 this.gameOverScreen.showWinLoseScreen('lose');
                 return;
             }
+            
             this.level.enemies = this.level.enemies.filter(enemy => !enemy.toDelete);
-            this.level.enemies.forEach((enemy, index) => {
-                if (this.character.isCollidingFromTop(enemy) && !enemy.isDead) {
-                    enemy.die();
-                    this.character.speedY = 15; 
-                } else if (this.character.isColliding(enemy) && !enemy.isDead) {
-                    this.character.hit();
-                    this.updateHealthStatusBar();
-                    console.log(this.character.energy);
-                }
-            });
-    
-            this.level.coins.forEach((coin, index) => {
-                if (this.character.isColliding(coin)) {
-                    this.level.coins.splice(index, 1);
-                    this.coinsCollected++;
-                    this.updateCoinStatusBar();
-                }
-            });
-    
-            this.level.salsaBottles.forEach((bottle, index) => {
-                if (this.character.isColliding(bottle)) {
-                    this.level.salsaBottles.splice(index, 1);
-                    this.bottlesCollected++;
-                    let newBottle = new SalsaBottle();
-                    newBottle.world = this;
-                    this.throwableBottles.push(newBottle);
-                    this.updateBottleStatusBar();
-                }
-            });
-    
-            this.throwableBottles.forEach((bottle) => {
-                this.level.enemies.forEach((enemy) => {
-                    if (bottle.isColliding(enemy)) {
-                        bottle.splash();
-                        if (enemy instanceof ChickenBoss) {
-                            enemy.hit();
-                            console.log('Bottle hit boss!');
-                        } else {
-                            enemy.toDelete = true;
-                        }
-                    }
-                });
-                if (bottle.y > 350) {
-                    bottle.splash();
-                }
-            });
+            this.handleEnemyCollisions();
+            this.handleCoinCollisions();
+            this.handleBottleCollisions();
+            this.handleThrowableBottleCollisions();
+            
             this.checkWinCondition();
-        }, 500);
+        }, 100); 
+    }
+    
+    handleEnemyCollisions() {
+        this.level.enemies.forEach((enemy) => {
+            if (this.character.speedY < 0 && this.character.isCollidingFromTop(enemy) && !enemy.isDead) {
+                enemy.die();
+                this.character.speedY = 15; 
+                this.character.lastJumpOnEnemy = new Date().getTime();
+            } else if (this.character.isColliding(enemy) && !enemy.isDead && !this.isJumpInvulnerable()) {
+                this.character.hit();
+                this.updateHealthStatusBar();
+            }
+        });
+    }
+    
+    handleCoinCollisions() {
+        this.level.coins.forEach((coin, index) => {
+            if (this.character.isColliding(coin)) {
+                this.level.coins.splice(index, 1);
+                this.coinsCollected++;
+                this.updateCoinStatusBar();
+            }
+        });
+    }
+    
+    handleBottleCollisions() {
+        this.level.salsaBottles.forEach((bottle, index) => {
+            if (this.character.isColliding(bottle)) {
+                this.level.salsaBottles.splice(index, 1);
+                this.bottlesCollected++;
+                let newBottle = new SalsaBottle();
+                newBottle.world = this;
+                this.throwableBottles.push(newBottle);
+                this.updateBottleStatusBar();
+            }
+        });
+    }
+    
+    handleThrowableBottleCollisions() {
+        this.throwableBottles.forEach((bottle) => {
+            this.level.enemies.forEach((enemy) => {
+                if (bottle.isColliding(enemy)) {
+                    bottle.splash();
+                    if (enemy instanceof ChickenBoss) {
+                        enemy.hit();
+                        console.log('Bottle hit boss!');
+                    } else {
+                        enemy.toDelete = true;
+                    }
+                }
+            });
+            if (bottle.y > 350) {
+                bottle.splash();
+            }
+        });
     }
 
     throwBottle() {
@@ -229,6 +244,11 @@ class World {
                 this.character.throwBottle();
             }
         });
+    }
+
+    isJumpInvulnerable() {
+        let timeSinceJump = new Date().getTime() - (this.character.lastJumpOnEnemy || 0);
+        return timeSinceJump < 1000;
     }
 
     checkWinCondition() {
