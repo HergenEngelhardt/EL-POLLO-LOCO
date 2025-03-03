@@ -182,6 +182,7 @@ class Character extends MovableObject {
     throwBottle() {
         if (this.world) {
             this.world.throwBottle();
+            this.lastMoveTime = Date.now();
         }
     }
 }

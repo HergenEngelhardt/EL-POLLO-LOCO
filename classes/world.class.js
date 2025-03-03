@@ -30,6 +30,11 @@ class World {
 
     setWorld() {
         this.character.world = this;
+        if (this.level && this.level.enemies) {
+            this.level.enemies.forEach(enemy => {
+                enemy.world = this;
+            });
+        }
     }
 
     checkCollisions() {
@@ -133,6 +138,7 @@ class World {
         this.gameOver = false;
         initLevel1(); 
         this.level = level1; 
+        this.setWorld(); 
         this.totalCoins = this.level.coins.length;
         this.totalBottles = this.level.salsaBottles.length;
         this.character.startAnimations();   

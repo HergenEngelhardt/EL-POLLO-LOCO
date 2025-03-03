@@ -54,22 +54,45 @@ class ChickenBoss extends MovableObject {
         this.loadImages(this.IMAGES_ATTACK);
         this.loadImages(this.IMAGES_HURT);
         this.loadImages(this.IMAGES_DEAD);
+        this.world = {};
         this.animate();
     }
 
     animate() {
         let i = 0;
+        
+        // Movement and animation interval
         setInterval(() => {
-            if (i < 12) {
-                this.animateImages(this.IMAGES_ALERT);
-            } else {
-                this.animateImages(this.IMAGES_WALKING);
+            // Debug output to see if world and character are properly set
+            console.log('ChickenBoss position:', this.x);
+            if (this.world && this.world.character) {
+                console.log('Character position:', this.world.character.x);
+                console.log('Distance:', this.x - this.world.character.x);
             }
-            i++;
-            if(World.character.x > 700 && !hadfirstContact) {
-                i = 0;
-                hadfirstContact = true;
+            
+            // Increased detection range to 400px
+            if (this.world && this.world.character && this.world.character.x > this.x - 400) {
+                // First contact detected
+                if (!this.hadfirstContact) {
+                    console.log('First contact detected!');
+                    this.hadfirstContact = true;
+                    i = 0;
+                }
+                
+                // Play alert animation for 12 frames before moving
+                if (i < 12) {
+                    console.log('Playing alert animation, frame:', i);
+                    this.animateImages(this.IMAGES_ALERT);
+                } else {
+                    console.log('Alert finished, now walking');
+                    this.animateImages(this.IMAGES_WALKING);
+                    this.moveLeft();
+                }
+                i++;
+            } else {
+                // Default walking animation when character is not nearby
+                this.animateImages(this.IMAGES_WALKING);
             }
         }, 150);
     }
-}
+}    
