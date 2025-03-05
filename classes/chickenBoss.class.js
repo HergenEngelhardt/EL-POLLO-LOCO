@@ -313,7 +313,7 @@ handleIdleState() {
      * Handles boss taking damage
      */
     hit() {
-    this.energy -= 34;
+    this.energy -= 15;
     this.lastHit = new Date().getTime();
     this.playHitSound();
     if (this.energy < 0) {
