@@ -168,6 +168,7 @@ resetCharacterState(world) {
     world.character.x = 100; 
     world.character.y = 180; 
     world.character.speedY = 0;
+    world.character.otherDirection = false;
 }
 
 /**
