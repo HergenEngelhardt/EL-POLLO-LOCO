@@ -1,3 +1,8 @@
+/**
+ * Class representing a status bar in the game.
+ * Handles different types of status bars: health, coin, and bottle.
+ * @extends DrawableObject
+ */
 class Statusbar extends DrawableObject {
     STATUSBAR_HEALTH = [ 
         'assets/img/7_statusbars/1_statusbar/2_statusbar_health/blue/0.png',
@@ -29,6 +34,10 @@ class Statusbar extends DrawableObject {
     percentage = 100;
     type = 'health';
 
+     /**
+     * Creates a new status bar.
+     * @param {string} [type='health'] - Type of the status bar ('health', 'coin', or 'bottle').
+     */
     constructor(type = 'health') {
         super();
         this.type = type;
@@ -48,24 +57,40 @@ class Statusbar extends DrawableObject {
         this.height = 80;
     }
     
+    /**
+     * Updates the health status bar percentage and corresponding image.
+     * @param {number} percentage - The health percentage value (0-100).
+     */
     setPercentage(percentage) {
         this.percentage = percentage;
         let path = this.STATUSBAR_HEALTH[this.resolveHealthImageIndex()];
         this.img = this.imageCache[path];    
     }
 
+     /**
+     * Updates the coin status bar percentage and corresponding image.
+     * @param {number} percentage - The coin percentage value (0-100).
+     */
     setCoinPercentage(percentage) {
         this.percentage = percentage;
         let path = this.STATUSBAR_COIN[this.resolveImageIndex()];
         this.img = this.imageCache[path];    
     }
 
+    /**
+     * Updates the bottle status bar percentage and corresponding image.
+     * @param {number} percentage - The bottle percentage value (0-100).
+     */
     setBottlePercentage(percentage) {
         this.percentage = percentage;
         let path = this.STATUSBAR_BOTTLE[this.resolveImageIndex()];
         this.img = this.imageCache[path];    
     }
 
+     /**
+     * Determines the image index for the health status bar based on current percentage.
+     * @returns {number} Index of the image to display.
+     */
     resolveHealthImageIndex() {
         if(this.percentage == 100){
             return 5;
@@ -82,6 +107,10 @@ class Statusbar extends DrawableObject {
         }
     }
 
+    /**
+     * Determines the image index for coin and bottle status bars based on current percentage.
+     * @returns {number} Index of the image to display.
+     */
     resolveImageIndex() {
         if(this.percentage == 0){
             return 0;

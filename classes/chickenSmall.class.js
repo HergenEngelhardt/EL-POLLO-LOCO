@@ -1,8 +1,13 @@
+/**
+ * Represents a small chicken enemy in the game
+ * @extends MovableObject
+ */
 class ChickenSmall extends MovableObject{
     y = 355;
     height = 80;
     width = 50;
     isDead = false;
+    
     IMAGES_WALKING = [ 
         'assets/img/3_enemies_chicken/chicken_small/1_walk/1_w.png',
         'assets/img/3_enemies_chicken/chicken_small/1_walk/2_w.png',
@@ -13,6 +18,10 @@ class ChickenSmall extends MovableObject{
         'assets/img/3_enemies_chicken/chicken_small/2_dead/dead.png'
     ]
 
+    /**
+     * Creates a new small chicken enemy
+     * Initializes position, speed, and starts animation
+     */
     constructor() {
         super().loadImage(this.IMAGES_WALKING[0]);
         this.x = 250 + Math.random() * 500;
@@ -28,6 +37,9 @@ class ChickenSmall extends MovableObject{
         };
     }
 
+    /**
+     * Sets up animation intervals for movement and sprite changes
+     */
     animate() {
         setInterval(() => {
             if (!this.isDead) {
@@ -44,12 +56,14 @@ class ChickenSmall extends MovableObject{
         }, 200);
     }
 
+    /**
+     * Handles chicken death
+     * Sets isDead flag and schedules object for deletion after delay
+     */
     die() {
         this.isDead = true;
         setTimeout(() => {
             this.toDelete = true;
         }, 1500);
-    
     }
-
 }

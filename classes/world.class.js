@@ -1,3 +1,7 @@
+/**
+ * Represents the game world containing all game elements and logic
+ * @class
+ */
 class World {
     character = new Character();
     level;
@@ -16,6 +20,11 @@ class World {
     gameStarted = false;
     gameOver = false;
 
+    /**
+     * Creates a new World instance
+     * @param {HTMLCanvasElement} canvas - Canvas element for rendering
+     * @param {Object} keyboard - Keyboard input handler
+     */
     constructor(canvas, keyboard) {
         this.keyboard = keyboard;
         this.ctx = canvas.getContext('2d');
@@ -30,6 +39,9 @@ class World {
         this.totalInitialBottles = 5;
     }
 
+    /**
+     * Sets this world reference for all entities
+     */
     setWorld() {
         this.character.world = this;
         if (this.level && this.level.enemies) {
@@ -39,6 +51,9 @@ class World {
         }
     }
 
+    /**
+     * Sets up collision detection interval
+     */
     checkCollisions() {
         setInterval(() => {
             if (!this.level) return;
@@ -58,6 +73,9 @@ class World {
         }, 100); 
     }
     
+    /**
+     * Handles collisions between character and enemies
+     */
     handleEnemyCollisions() {
         this.level.enemies.forEach((enemy) => {
             if (this.character.speedY < 0 && this.character.isCollidingFromTop(enemy) && !enemy.isDead) {
@@ -70,7 +88,10 @@ class World {
             }
         });
     }
-    
+
+    /**
+     * Handles collisions between character and coins
+     */    
     handleCoinCollisions() {
         this.level.coins.forEach((coin, index) => {
             if (this.character.isColliding(coin)) {
@@ -80,7 +101,10 @@ class World {
             }
         });
     }
-    
+
+    /**
+     * Handles collisions between character and collectible bottles
+     */
     handleBottleCollisions() {
         this.level.salsaBottles.forEach((bottle, index) => {
             if (this.character.isColliding(bottle)) {
@@ -93,7 +117,10 @@ class World {
             }
         });
     }
-    
+   
+    /**
+     * Handles collisions between thrown bottles and enemies
+     */    
     handleThrowableBottleCollisions() {
         this.throwableBottles.forEach((bottle, index) => {
             if (!bottle.hasBeenThrown) return;
@@ -116,6 +143,9 @@ class World {
         });
     }
 
+    /**
+     * Throws a bottle if available
+     */
     throwBottle() {
         if (this.throwableBottles.length > 0) {
             let bottle = this.throwableBottles.pop();
@@ -126,26 +156,42 @@ class World {
         }
     }
 
+    /**
+     * Updates the health status bar based on character energy
+     */
     updateHealthStatusBar() {
         this.statusbarHealth.setPercentage(this.character.energy);
     }
 
+    /**
+     * Updates the coin status bar based on collected coins
+     */
     updateCoinStatusBar() {
         let coinPercentage = (this.coinsCollected / this.level.coins.length) * 100;
         this.statusbarCoin.setCoinPercentage(coinPercentage);
     }
 
+    /**
+     * Updates the bottle status bar based on collected bottles
+     */
     updateBottleStatusBar() {
         let bottlePercentage = (this.bottlesCollected / this.totalInitialBottles) * 100;
         this.statusbarBottle.setBottlePercentage(bottlePercentage);
     }
 
+    /**
+     * Sets the bottle percentage for status bar display
+     * @param {number} percentage - Percentage value to display
+     */
     setBottlePercentage(percentage) {
         this.percentage = percentage;
         let path = this.STATUSBAR_BOTTLE[this.resolveImageIndex()];
         this.img = this.imageCache[path];
     }
 
+    /**
+     * Adds mouse event listeners for game controls
+     */
     addMouseEvents() {
         this.canvas.addEventListener('click', (event) => {
             let rect = this.canvas.getBoundingClientRect();
@@ -157,6 +203,9 @@ class World {
         });
     }
 
+    /**
+     * Starts the game and initializes level
+     */
     startGame() {
         this.gameStarted = true;
         this.gameOver = false;
@@ -168,50 +217,91 @@ class World {
         this.character.startAnimations();   
     }
 
+    /**
+     * Draws the game over screen
+     */
     drawGameOverScreen() {
         this.gameOverScreen.draw(this.ctx);
     }
 
-    draw() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+/**
+ * Main draw function, renders all game elements
+ */
+draw() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-        if (!this.gameStarted) {
-            this.startScreen.draw(this.ctx);
-        } else {
-            this.ctx.translate(this.camera_x, 0);
-            this.addObjectsToMap(this.level.background || []);
-            this.addObjectsToMap(this.level.clouds || []);
-            this.addObjectsToMap(this.level.enemies || []);
-            this.addObjectsToMap(this.level.coins || []);
-            this.addObjectsToMap(this.level.salsaBottles || []);
-            this.addToMap(this.character);
-
-            this.ctx.translate(-this.camera_x, 0);
-            this.addToMap(this.statusbarHealth);
-            this.addToMap(this.statusbarCoin);
-            this.addToMap(this.statusbarBottle);
-
-            if (this.character.energy <= 0) {
-                this.drawGameOverScreen();
-            }
-        }
-
-        if (this.gameOver) {
-            this.drawGameOverScreen();
-        } else {
-            let self = this;
-            requestAnimationFrame(function () {
-                self.draw();
-            });
-        }
+    if (!this.gameStarted) {
+        this.startScreen.draw(this.ctx);
+    } else {
+        this.drawGameElements();
     }
 
+    this.checkGameStateAndContinue();
+}
+
+/**
+ * Draws all game world elements with camera offset
+ */
+drawGameElements() {
+    this.ctx.translate(this.camera_x, 0);
+    this.drawWorldObjects();
+    this.ctx.translate(-this.camera_x, 0);
+    this.drawUIElements();
+    
+    if (this.character.energy <= 0) {
+        this.drawGameOverScreen();
+    }
+}
+
+/**
+ * Draws background elements and game objects
+ */
+drawWorldObjects() {
+    this.addObjectsToMap(this.level.background || []);
+    this.addObjectsToMap(this.level.clouds || []);
+    this.addObjectsToMap(this.level.enemies || []);
+    this.addObjectsToMap(this.level.coins || []);
+    this.addObjectsToMap(this.level.salsaBottles || []);
+    this.addToMap(this.character);
+}
+
+/**
+ * Draws UI elements like status bars
+ */
+drawUIElements() {
+    this.addToMap(this.statusbarHealth);
+    this.addToMap(this.statusbarCoin);
+    this.addToMap(this.statusbarBottle);
+}
+
+/**
+ * Checks game state and continues animation loop if needed
+ */
+checkGameStateAndContinue() {
+    if (this.gameOver) {
+        this.drawGameOverScreen();
+    } else {
+        let self = this;
+        requestAnimationFrame(function () {
+            self.draw();
+        });
+    }
+}
+
+    /**
+     * Adds an array of objects to the map for rendering
+     * @param {Array<GameObject>} objects - Array of drawable objects
+     */
     addObjectsToMap(objects) {
         objects.forEach(obj => {
             this.addToMap(obj)
         })
     }
 
+    /**
+     * Adds a single object to the map for rendering
+     * @param {GameObject} mo - Drawable object to add
+     */
     addToMap(mo) {
         if (mo.img) {
             if (mo instanceof ChickenBoss && mo.showHealthBar) {
@@ -230,6 +320,10 @@ class World {
         }
     }
 
+    /**
+     * Flips an image horizontally for rendering
+     * @param {GameObject} mo - Object to flip
+     */
     flipImage(mo) {
         this.ctx.save();
         this.ctx.translate(mo.width, 0);
@@ -237,11 +331,18 @@ class World {
         mo.x = mo.x * -1;
     }
 
+    /**
+     * Restores original image orientation
+     * @param {GameObject} mo - Object to restore
+     */
     flipImageBack(mo) {
         mo.x = mo.x * -1;
         this.ctx.restore();
     }
 
+    /**
+     * Adds keyboard event listeners
+     */
     addKeyboardEvents() {
         window.addEventListener('keydown', (event) => {
             if (event.code === 'ControlLeft') {
@@ -250,11 +351,18 @@ class World {
         });
     }
 
+    /**
+     * Checks if character is invulnerable after jumping on enemy
+     * @returns {boolean} True if character is currently invulnerable
+     */
     isJumpInvulnerable() {
         let timeSinceJump = new Date().getTime() - (this.character.lastJumpOnEnemy || 0);
         return timeSinceJump < 1000;
     }
 
+    /**
+     * Checks win condition for the level
+     */
     checkWinCondition() {
         if (this.level && this.level.enemies.length === 0) {
             this.gameOver = true;

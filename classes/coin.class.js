@@ -1,4 +1,12 @@
+/**
+ * Class representing a collectible coin in the game.
+ * @extends MovableObject
+ */
 class Coin extends MovableObject {
+    /**
+     * Create a new coin object.
+     * Coins appear at random positions within defined boundaries.
+     */
     constructor() {
         super().loadImage('/assets/img/8_coin/coin_1.png');
         this.x = 150 + Math.random() * 1175;
@@ -9,6 +17,7 @@ class Coin extends MovableObject {
             left: 20,
             right: 20,
             top: 20,
-            bottom: 20 };
+            bottom: 20 
+        };
     }
 }
