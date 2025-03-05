@@ -120,7 +120,7 @@ class SalsaBottle extends MovableObject {
     animateSplash() {
         let splashInterval = setInterval(() => {
             this.animateImages(this.IMAGES_SPLASH);
-            if (this.currentImage >= this.IMAGES_SPLASH.length * 2) { // Ensure we go through the full animation
+            if (this.currentImage >= this.IMAGES_SPLASH.length) { 
                 clearInterval(splashInterval);
                 this.removeBottle();
             }
