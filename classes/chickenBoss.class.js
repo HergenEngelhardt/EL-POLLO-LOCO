@@ -1,3 +1,7 @@
+/**
+ * Represents the final boss enemy in the game - a giant chicken boss
+ * @extends MovableObject
+ */
 class ChickenBoss extends MovableObject {
     y = 80;
     height = 400;
@@ -58,6 +62,9 @@ class ChickenBoss extends MovableObject {
     deathAnimationPlayed = false;
     deathAnimationIndex = 0;
     
+    /**
+     * Creates a new ChickenBoss instance and initializes animations
+     */
     constructor() {
         super().loadImage(this.IMAGES_WALKING[0]);
         this.speed = 7.5;
@@ -79,93 +86,206 @@ class ChickenBoss extends MovableObject {
         };
     }
 
-    animate() {
-        setInterval(() => {
-            if (this.isDead()) {
-                if (!this.deathAnimationPlayed) {
-                    this.playDeathAnimation();
-                }
-                return;
-            }
-            
-            if (this.isHurt()) {
-                this.animateImages(this.IMAGES_HURT);
-                return;
-            }
-    
-            if (this.world && this.world.character) {
-                let distanceToCharacter = Math.abs(this.x - this.world.character.x);
-                let characterIsLeft = this.world.character.x < this.x;
-                
-                if (this.isColliding(this.world.character) && !this.world.character.isHurt()) {
-                    this.world.character.hit();
-                    this.world.updateHealthStatusBar();
-                }
-    
-                if (!this.hadfirstContact && distanceToCharacter < 500) {
-                    this.hadfirstContact = true;
-                    this.alertPhase = true;
-                    this.alertFrameCount = 0;
-                    this.otherDirection = !characterIsLeft;
-                }
-                
-                if (this.hadfirstContact) {
-                    if (this.alertPhase) {
-                        this.otherDirection = !characterIsLeft;
-                        this.animateImages(this.IMAGES_ALERT);
-                        this.alertFrameCount++;
-                        
-                        if (this.alertFrameCount >= 12) {
-                            this.alertPhase = false;
-                            this.showHealthBar = true;  
-                        }
-                    } else {
-                        this.updateHealthBarPosition();
-                        
-                        if (distanceToCharacter < 300) {
-                            this.animateImages(this.IMAGES_ATTACK);
-                            
-                            if (Date.now() - this.lastDirectionChange > 4000) {
-                                this.movingDirection *= -1;
-                                this.lastDirectionChange = Date.now();
-                            }
-                            
-                            if (this.movingDirection > 0) {
-                                this.x += this.speed;
-                                this.otherDirection = true;
-                            } else {
-                                this.x -= this.speed;
-                                this.otherDirection = false;
-                            }
-                            
-                            if (distanceToCharacter < 80 && !this.world.character.isHurt()) {
-                                this.world.character.hit();
-                                this.world.updateHealthStatusBar();
-                            }
-                        } else {
-                            this.animateImages(this.IMAGES_WALKING);
-                            
-                            if (Date.now() - this.lastDirectionChange > 4000) {
-                                this.movingDirection *= -1;
-                                this.lastDirectionChange = Date.now();
-                            }
-                            
-                            if (this.movingDirection > 0) {
-                                this.x += this.speed;
-                                this.otherDirection = true;
-                            } else {
-                                this.x -= this.speed;
-                                this.otherDirection = false;
-                            }
-                        }
-                    }
-                } else {
-                    this.img = this.imageCache[this.IMAGES_WALKING[0]];
-                }
-            }
-        }, 150);
+/**
+ * Controls animation and movement based on game state
+ */
+animate() {
+    this.setupAnimationLoop();
+}
+
+/**
+ * Sets up the main animation interval
+ */
+setupAnimationLoop() {
+    setInterval(() => {
+        if (!this.processCurrentState()) {
+            this.handleCharacterInteraction();
+        }
+    }, 150);
+}
+
+/**
+ * Processes current state (dead or hurt)
+ * @returns {boolean} True if a state was processed and further processing should be stopped
+ */
+processCurrentState() {
+    if (this.isDead()) {
+        this.handleDeathState();
+        return true;
     }
     
+    if (this.isHurt()) {
+        this.handleHurtState();
+        return true;
+    }
+
+    return false;
+}
+
+/**
+ * Handles all character interaction logic
+ */
+handleCharacterInteraction() {
+    if (!this.world || !this.world.character) {
+        return;
+    }
+
+    const metrics = this.calculateCharacterMetrics();
+    this.checkCharacterCollision();
+    this.handleFirstContact(metrics.distance, metrics.isLeft);
+    
+    if (this.hadfirstContact) {
+        this.handleBossActiveBehavior(metrics.distance, metrics.isLeft);
+    } else {
+        this.handleIdleState();
+    }
+}
+
+/**
+ * Calculates distance and relative position to character
+ * @returns {Object} Object with distance and isLeft properties
+ */
+calculateCharacterMetrics() {
+    const distance = Math.abs(this.x - this.world.character.x);
+    const isLeft = this.world.character.x < this.x;
+    
+    return {
+        distance: distance,
+        isLeft: isLeft
+    };
+}
+
+/**
+ * Handles boss behavior when dead
+ */
+handleDeathState() {
+    if (!this.deathAnimationPlayed) {
+        this.playDeathAnimation();
+    }
+}
+
+/**
+ * Handles boss behavior when hurt
+ */
+handleHurtState() {
+    this.animateImages(this.IMAGES_HURT);
+}
+
+/**
+ * Checks for collision with character and damages character if needed
+ */
+checkCharacterCollision() {
+    if (this.isColliding(this.world.character) && !this.world.character.isHurt()) {
+        this.world.character.hit();
+        this.world.updateHealthStatusBar();
+    }
+}
+
+/**
+ * Handles first detection of character
+ * @param {number} distanceToCharacter - Distance to the character
+ * @param {boolean} characterIsLeft - Whether character is to the left of boss
+ */
+handleFirstContact(distanceToCharacter, characterIsLeft) {
+    if (!this.hadfirstContact && distanceToCharacter < 500) {
+        this.hadfirstContact = true;
+        this.alertPhase = true;
+        this.alertFrameCount = 0;
+        this.otherDirection = !characterIsLeft;
+    }
+}
+
+/**
+ * Handles boss behavior when active (after first contact)
+ * @param {number} distanceToCharacter - Distance to the character
+ * @param {boolean} characterIsLeft - Whether character is to the left of boss
+ */
+handleBossActiveBehavior(distanceToCharacter, characterIsLeft) {
+    if (this.alertPhase) {
+        this.handleAlertPhase(characterIsLeft);
+    } else {
+        this.updateHealthBarPosition();
+        
+        if (distanceToCharacter < 300) {
+            this.handleAttackingBehavior(distanceToCharacter);
+        } else {
+            this.handleNormalMovement();
+        }
+    }
+}
+
+/**
+ * Handles the alert phase animation and state
+ * @param {boolean} characterIsLeft - Whether character is to the left of boss
+ */
+handleAlertPhase(characterIsLeft) {
+    this.otherDirection = !characterIsLeft;
+    this.animateImages(this.IMAGES_ALERT);
+    this.alertFrameCount++;
+    
+    if (this.alertFrameCount >= 12) {
+        this.alertPhase = false;
+        this.showHealthBar = true;  
+    }
+}
+
+/**
+ * Handles boss behavior when in attack range
+ * @param {number} distanceToCharacter - Distance to the character
+ */
+handleAttackingBehavior(distanceToCharacter) {
+    this.animateImages(this.IMAGES_ATTACK);
+    this.updateMovementDirection();
+    this.applyMovement();
+    
+    if (distanceToCharacter < 80 && !this.world.character.isHurt()) {
+        this.world.character.hit();
+        this.world.updateHealthStatusBar();
+    }
+}
+
+/**
+ * Handles normal movement behavior
+ */
+handleNormalMovement() {
+    this.animateImages(this.IMAGES_WALKING);
+    this.updateMovementDirection();
+    this.applyMovement();
+}
+
+/**
+ * Updates movement direction based on timer
+ */
+updateMovementDirection() {
+    if (Date.now() - this.lastDirectionChange > 4000) {
+        this.movingDirection *= -1;
+        this.lastDirectionChange = Date.now();
+    }
+}
+
+/**
+ * Applies movement based on current direction
+ */
+applyMovement() {
+    if (this.movingDirection > 0) {
+        this.x += this.speed;
+        this.otherDirection = true;
+    } else {
+        this.x -= this.speed;
+        this.otherDirection = false;
+    }
+}
+
+/**
+ * Sets the boss to idle state
+ */
+handleIdleState() {
+    this.img = this.imageCache[this.IMAGES_WALKING[0]];
+}
+    
+    /**
+     * Plays the death animation sequence
+     */
     playDeathAnimation() {
         let deathInterval = setInterval(() => {
             if (this.deathAnimationIndex >= this.IMAGES_DEAD.length) {
@@ -181,11 +301,17 @@ class ChickenBoss extends MovableObject {
         }, 200);
     }
     
+    /**
+     * Updates health bar position to follow boss
+     */
     updateHealthBarPosition() {
         this.healthBar.x = this.x + 20;
         this.healthBar.y = this.y - 30;
     }
     
+    /**
+     * Handles boss taking damage
+     */
     hit() {
     this.energy -= 20;
     this.lastHit = new Date().getTime();
@@ -198,20 +324,30 @@ class ChickenBoss extends MovableObject {
     console.log('Boss hit! Energy left:', this.energy);
     }
     
+    /**
+     * Plays sound effect when hit
+     */
     playHitSound() {
         let audio = new Audio('./audio/punch-140236.mp3');
         audio.play().catch(error => {
             console.error('Error playing boss hit sound:', error);
         });
     }
+
+    /**
+     * Checks if boss is currently hurt
+     * @returns {boolean} True if recently hit
+     */
     isHurt() {
         let timePassed = new Date().getTime() - this.lastHit;
         return timePassed < 500;
     }
     
+    /**
+     * Checks if boss is dead
+     * @returns {boolean} True if energy is zero
+     */
     isDead() {
         return this.energy <= 0;
     }
-
-
 }

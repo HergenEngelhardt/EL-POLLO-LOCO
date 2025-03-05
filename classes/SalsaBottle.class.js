@@ -80,7 +80,7 @@ class SalsaBottle extends MovableObject {
     }
     
     removeBottle() {
-        const index = this.world.throwableBottles.indexOf(this);
+        let index = this.world.throwableBottles.indexOf(this);
         if (index > -1) {
             this.world.throwableBottles.splice(index, 1);
         }
