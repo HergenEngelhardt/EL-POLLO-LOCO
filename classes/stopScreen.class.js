@@ -119,7 +119,6 @@ setupEventListeners() {
  * Handles the restart game button click.
  */
 handleRestartGame() {
-    console.log("Restart Game clicked");
     this.removeButtonContainer();
     
     let world = this.world || window.world;
@@ -148,7 +147,6 @@ removeButtonContainer() {
  * @param {World} world - The game world object
  */
 resetGameState(world) {
-    console.log("World found, restarting game...");
     world.gameOver = false;
     world.gameStarted = true;
     this.screenDisplayed = false;
@@ -210,7 +208,6 @@ updateGameUI(world) {
     world.draw();
     setTimeout(() => {
         world.character.startAnimations();
-        console.log("Game successfully restarted!");
     }, 100);
 }
 

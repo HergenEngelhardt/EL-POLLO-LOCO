@@ -130,7 +130,6 @@ class World {
                     bottle.splash();
                     if (enemy instanceof ChickenBoss) {
                         enemy.hit();
-                        console.log('Bottle hit boss!');
                     } else {
                         enemy.toDelete = true;
                     }

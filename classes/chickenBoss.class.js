@@ -320,8 +320,6 @@ handleIdleState() {
         this.energy = 0;
     }
     this.healthBar.setPercentage(this.energy);
-    
-    console.log('Boss hit! Energy left:', this.energy);
     }
     
     /**
