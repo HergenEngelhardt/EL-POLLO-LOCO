@@ -32,7 +32,7 @@ class Chicken extends MovableObject{
         this.loadImages(this.IMAGES_DEAD); 
         this.animate(); 
         this.offset = {
-            top: 12,
+            top: 100,
             bottom: 0, 
             left: 0, 
             right: 0 

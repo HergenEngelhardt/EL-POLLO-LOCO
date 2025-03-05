@@ -331,15 +331,6 @@ handleIdleState() {
             console.error('Error playing boss hit sound:', error);
         });
     }
-
-    /**
-     * Checks if boss is currently hurt
-     * @returns {boolean} True if recently hit
-     */
-    isHurt() {
-        let timePassed = new Date().getTime() - this.lastHit;
-        return timePassed < 500;
-    }
     
     /**
      * Checks if boss is dead

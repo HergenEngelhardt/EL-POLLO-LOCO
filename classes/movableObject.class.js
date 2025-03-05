@@ -17,131 +17,131 @@ class MovableObject extends DrawableObject {
         right: 0
     };
 
-/**
-     * Applies gravity effect to the object, making it fall if above ground
+    /**
+         * Applies gravity effect to the object, making it fall if above ground
+         */
+    applyGravity() {
+        setInterval(() => {
+            if (this.isAboveGround() || this.speedY > 0) {
+                this.y -= this.speedY;
+                this.speedY -= this.acceleration;
+            }
+        }, 1000 / 15);
+    }
+
+    /**
+     * Checks if the object is above the ground level
+     * @returns {boolean} True if above ground, false otherwise
      */
-applyGravity() {
-    setInterval(() => {
-        if(this.isAboveGround() || this.speedY > 0){
-            this.y -= this.speedY;
-            this.speedY -= this.acceleration;
-        }
-    }, 1000 / 15);
-}
+    isAboveGround() {
+        return this.y < 180;
+    }
 
-/**
- * Checks if the object is above the ground level
- * @returns {boolean} True if above ground, false otherwise
- */
-isAboveGround() {
-    return this.y < 180;
-}
-
-/**
- * Animates the object by cycling through a series of images
- * @param {string[]} images - Array of image paths to animate
- */
-animateImages(images) {
+    /**
+     * Animates the object by cycling through a series of images
+     * @param {string[]} images - Array of image paths to animate
+     */
+    animateImages(images) {
         let i = this.currentImage % images.length;
         let path = images[i];
         this.img = this.imageCache[path];
         this.currentImage++;
-}
-
-/**
- * Makes the object jump by setting a positive vertical speed
- */
-jump() {
-    this.speedY = 18;
-    this.playJumpSound();
-}
-
-/**
- * Plays the jump sound effect
- */
-playJumpSound() {
-    let audio = new Audio('./audio/jump.wav');
-    audio.play().catch(error => {
-        console.error('Error playing audio:', error);
-    });
-}
-
-/**
- * Moves the object to the right
- */
-moveRight() {
-    this.x += this.speed;
-}
-
-/**
- * Moves the object to the left
- */
-moveLeft() {
-    this.x -= this.speed;
-}
-
-/**
- * Checks if this object is colliding with another movable object
- * @param {MovableObject} mo - The other movable object to check collision with
- * @returns {boolean} True if objects are colliding, false otherwise
- */
-isColliding(mo) {
-    return (this.x + this.offset.left + this.width - this.offset.right) >= (mo.x + mo.offset.left) && 
-           (this.x + this.offset.left) <= (mo.x + mo.offset.left + mo.width - mo.offset.right) && 
-           (this.y + this.offset.top + this.height - this.offset.bottom) >= (mo.y + mo.offset.top) &&
-           (this.y + this.offset.top) <= (mo.y + mo.offset.top + mo.height - mo.offset.bottom);
-}
-
-/**
- * Checks if this object is colliding with another object from the top
- * @param {MovableObject} mo - The other movable object to check collision with
- * @returns {boolean} True if colliding from top, false otherwise
- */
-isCollidingFromTop(mo) {
-    return (this.x + this.offset.left + this.width - this.offset.right) > (mo.x + mo.offset.left) &&
-           (this.x + this.offset.left) < (mo.x + mo.offset.left + mo.width - mo.offset.right) &&
-           (this.y + this.offset.top + this.height - this.offset.bottom) < (mo.y + mo.offset.top + (mo.height - mo.offset.bottom) / 2) &&
-           (this.y + this.offset.top + this.height - this.offset.bottom) > (mo.y + mo.offset.top) &&
-           this.speedY < 0;
-}
-
-/**
- * Handles when the object gets hit, reducing energy and triggering hit effects
- */
-hit() {
-    this.energy -= 20;
-    this.playHitSound();
-    if (this.energy < 0) {
-        this.energy = 0;
-    } else {
-        this.lastHit = new Date().getTime();
     }
-}
 
-/**
- * Plays the hit sound effect
- */
-playHitSound() {
-    let audio = new Audio('./audio/hit.wav');
-    audio.play().catch(error => {
-        console.error('Error playing audio:', error);
-    });
-}
+    /**
+     * Makes the object jump by setting a positive vertical speed
+     */
+    jump() {
+        this.speedY = 18;
+        this.playJumpSound();
+    }
 
-/**
- * Checks if the object is currently in a hurt state
- * @returns {boolean} True if the object was recently hit, false otherwise
- */
-isHurt() {
-    let timePassed = new Date().getTime() - this.lastHit;
-    return timePassed < 1;
-}
+    /**
+     * Plays the jump sound effect
+     */
+    playJumpSound() {
+        let audio = new Audio('./audio/jump.wav');
+        audio.play().catch(error => {
+            console.error('Error playing audio:', error);
+        });
+    }
 
-/**
- * Checks if the object is dead (no energy left)
- * @returns {boolean} True if energy is zero, false otherwise
- */
-isDead() {
-    return this.energy == 0;
-}
+    /**
+     * Moves the object to the right
+     */
+    moveRight() {
+        this.x += this.speed;
+    }
+
+    /**
+     * Moves the object to the left
+     */
+    moveLeft() {
+        this.x -= this.speed;
+    }
+
+    /**
+     * Checks if this object is colliding with another movable object
+     * @param {MovableObject} mo - The other movable object to check collision with
+     * @returns {boolean} True if objects are colliding, false otherwise
+     */
+    isColliding(mo) {
+        return (this.x + this.offset.left + this.width - this.offset.right) >= (mo.x + mo.offset.left) &&
+            (this.x + this.offset.left) <= (mo.x + mo.offset.left + mo.width - mo.offset.right) &&
+            (this.y + this.offset.top + this.height - this.offset.bottom) >= (mo.y + mo.offset.top) &&
+            (this.y + this.offset.top) <= (mo.y + mo.offset.top + mo.height - mo.offset.bottom);
+    }
+
+    /**
+     * Checks if this object is colliding with another object from the top
+     * @param {MovableObject} mo - The other movable object to check collision with
+     * @returns {boolean} True if colliding from top, false otherwise
+     */
+    isCollidingFromTop(mo) {
+        return (this.x + this.offset.left + this.width - this.offset.right) > (mo.x + mo.offset.left) &&
+            (this.x + this.offset.left) < (mo.x + mo.offset.left + mo.width - mo.offset.right) &&
+            (this.y + this.offset.top + this.height - this.offset.bottom) < (mo.y + mo.offset.top + 10) && // Reduced vertical collision zone
+            (this.y + this.offset.top + this.height - this.offset.bottom) > (mo.y + mo.offset.top - 5) && // More precise bottom boundary
+            this.speedY < 0;
+    }
+
+    /**
+     * Handles when the object gets hit, reducing energy and triggering hit effects
+     */
+    hit() {
+        this.energy -= 20;
+        this.playHitSound();
+        if (this.energy < 0) {
+            this.energy = 0;
+        } else {
+            this.lastHit = new Date().getTime();
+        }
+    }
+
+    /**
+     * Plays the hit sound effect
+     */
+    playHitSound() {
+        let audio = new Audio('./audio/hit.wav');
+        audio.play().catch(error => {
+            console.error('Error playing audio:', error);
+        });
+    }
+
+    /**
+     * Checks if the object is currently in a hurt state
+     * @returns {boolean} True if the object was recently hit, false otherwise
+     */
+    isHurt() {
+        let timePassed = new Date().getTime() - this.lastHit;
+        return timePassed < 500;
+    }
+
+    /**
+     * Checks if the object is dead (no energy left)
+     * @returns {boolean} True if energy is zero, false otherwise
+     */
+    isDead() {
+        return this.energy == 0;
+    }
 }
