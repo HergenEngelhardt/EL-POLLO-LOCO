@@ -95,6 +95,7 @@ class World {
     handleCoinCollisions() {
         this.level.coins.forEach((coin, index) => {
             if (this.character.isColliding(coin)) {
+                coin.playCollectSound();
                 this.level.coins.splice(index, 1);
                 this.coinsCollected++;
                 this.updateCoinStatusBar();
