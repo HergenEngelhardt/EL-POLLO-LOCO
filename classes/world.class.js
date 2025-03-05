@@ -20,6 +20,8 @@ class World {
         this.keyboard = keyboard;
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
+        this.gameOverScreen = new GameOverScreen();
+        this.gameOverScreen.setWorld(this);
         this.draw();
         this.setWorld();
         this.addKeyboardEvents();
