@@ -148,8 +148,16 @@ class World {
     throwBottle() {
         if (this.throwableBottles.length > 0) {
             let bottle = this.throwableBottles.pop();
-            bottle.throw(this.character.x, this.character.y);
-            bottle.world = this;
+            
+            // Pass the world reference as the third parameter
+            bottle.throw(this.character.x, this.character.y, this);
+            
+            // Add the active bottle to a collection that gets rendered
+            if (!this.activeThrowableBottles) {
+                this.activeThrowableBottles = [];
+            }
+            this.activeThrowableBottles.push(bottle);
+            
             this.bottlesCollected--;
             this.updateBottleStatusBar();
         }
@@ -261,6 +269,7 @@ drawWorldObjects() {
     this.addObjectsToMap(this.level.enemies || []);
     this.addObjectsToMap(this.level.coins || []);
     this.addObjectsToMap(this.level.salsaBottles || []);
+    this.addObjectsToMap(this.activeThrowableBottles || []);
     this.addToMap(this.character);
 }
 

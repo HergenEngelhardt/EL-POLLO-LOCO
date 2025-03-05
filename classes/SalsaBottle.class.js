@@ -25,7 +25,7 @@ class SalsaBottle extends MovableObject {
      * Initializes position, size, and collision offsets.
      */
     constructor() {
-        super().loadImage('/assets/img/6_salsa_bottle/1_salsa_bottle_on_ground.png');
+        super().loadImage('assets/img/6_salsa_bottle/1_salsa_bottle_on_ground.png'); // Removed leading slash
         this.x = 250 + Math.random() * 1000;
         this.y = 350;
         this.height = 100;
@@ -39,12 +39,21 @@ class SalsaBottle extends MovableObject {
     }
 
     /**
+     * Sets the reference to the world object
+     * @param {World} world - The game world
+     */
+    setWorld(world) {
+        this.world = world;
+    }
+
+    /**
      * Initiates throwing the bottle from the specified position.
      * Sets up animation, physics, and movement.
      * @param {number} x - The x-coordinate to throw from
      * @param {number} y - The y-coordinate to throw from
+     * @param {World} world - The game world
      */
-    throw(x, y) {
+    throw(x, y, world) {
         this.loadImages(this.IMAGES_ROTATE);
         this.x = x;
         this.y = y;
@@ -53,7 +62,13 @@ class SalsaBottle extends MovableObject {
         this.hasBeenThrown = true;
         this.speedY = 15; 
         this.speedX = 15; 
+        this.world = world; // Store reference to world
         this.applyGravity();
+        
+        // Clear any existing intervals to prevent multiple animations
+        if (this.animationInterval) clearInterval(this.animationInterval);
+        if (this.moveInterval) clearInterval(this.moveInterval);
+        
         this.animate();
         this.move();
     }
@@ -89,6 +104,12 @@ class SalsaBottle extends MovableObject {
     splash() {
         this.loadImages(this.IMAGES_SPLASH);
         this.currentImage = 0;
+        
+        // Clear rotation animation before starting splash
+        if (this.animationInterval) {
+            clearInterval(this.animationInterval);
+        }
+        
         this.animateSplash();
     }
     
@@ -98,12 +119,10 @@ class SalsaBottle extends MovableObject {
      */
     animateSplash() {
         let splashInterval = setInterval(() => {
-            this.currentImage++;
-            if (this.currentImage >= this.IMAGES_SPLASH.length) {
+            this.animateImages(this.IMAGES_SPLASH);
+            if (this.currentImage >= this.IMAGES_SPLASH.length * 2) { // Ensure we go through the full animation
                 clearInterval(splashInterval);
                 this.removeBottle();
-            } else {
-                this.img = this.imageCache[this.IMAGES_SPLASH[this.currentImage]];
             }
         }, 100);
     }
@@ -113,9 +132,13 @@ class SalsaBottle extends MovableObject {
      * Cleans up resources and moves the bottle offscreen.
      */
     removeBottle() {
-        let index = this.world.throwableBottles.indexOf(this);
-        if (index > -1) {
-            this.world.throwableBottles.splice(index, 1);
+        if (this.world && this.world.activeThrowableBottles) {
+            let index = this.world.activeThrowableBottles.indexOf(this);
+            if (index > -1) {
+                this.world.activeThrowableBottles.splice(index, 1);
+            }
+        } else {
+            console.warn('Cannot remove bottle: world reference or activeThrowableBottles missing');
         }
         this.img = null; 
         this.x = -1000; 
