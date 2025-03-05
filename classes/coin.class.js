@@ -26,7 +26,7 @@ class Coin extends MovableObject {
      * Play the sound effect when coin is collected.
      */
     playCollectSound() {
-        this.collectSound.volume = 0.3; // Adjust volume as needed
+        this.collectSound.volume = 0.3;
         this.collectSound.play().catch(err => console.error('Error playing coin collect sound:', err));
     }
 }

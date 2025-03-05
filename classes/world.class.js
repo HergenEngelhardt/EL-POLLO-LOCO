@@ -62,17 +62,17 @@ class World {
                 this.gameOverScreen.showWinLoseScreen('lose');
                 return;
             }
-            
+
             this.level.enemies = this.level.enemies.filter(enemy => !enemy.toDelete);
             this.handleEnemyCollisions();
             this.handleCoinCollisions();
             this.handleBottleCollisions();
             this.handleThrowableBottleCollisions();
-            
+
             this.checkWinCondition();
-        }, 100); 
+        }, 100);
     }
-    
+
     /**
      * Handles collisions between character and enemies
      */
@@ -80,7 +80,7 @@ class World {
         this.level.enemies.forEach((enemy) => {
             if (this.character.speedY < 0 && this.character.isCollidingFromTop(enemy) && !enemy.isDead) {
                 enemy.die();
-                this.character.speedY = 15; 
+                this.character.speedY = 15;
                 this.character.lastJumpOnEnemy = new Date().getTime();
             } else if (this.character.isColliding(enemy) && !enemy.isDead && !this.isJumpInvulnerable()) {
                 this.character.hit();
@@ -91,7 +91,7 @@ class World {
 
     /**
      * Handles collisions between character and coins
-     */    
+     */
     handleCoinCollisions() {
         this.level.coins.forEach((coin, index) => {
             if (this.character.isColliding(coin)) {
@@ -118,14 +118,14 @@ class World {
             }
         });
     }
-   
+
     /**
      * Handles collisions between thrown bottles and enemies
-     */    
+     */
     handleThrowableBottleCollisions() {
-        this.throwableBottles.forEach((bottle, index) => {
-            if (!bottle.hasBeenThrown) return;
-            
+        if (!this.activeThrowableBottles) return;
+        
+        this.activeThrowableBottles.forEach((bottle) => {
             this.level.enemies.forEach((enemy) => {
                 if (bottle.isColliding(enemy)) {
                     bottle.splash();
@@ -149,16 +149,13 @@ class World {
     throwBottle() {
         if (this.throwableBottles.length > 0) {
             let bottle = this.throwableBottles.pop();
-            
-            // Pass the world reference as the third parameter
             bottle.throw(this.character.x, this.character.y, this);
-            
-            // Add the active bottle to a collection that gets rendered
+
             if (!this.activeThrowableBottles) {
                 this.activeThrowableBottles = [];
             }
             this.activeThrowableBottles.push(bottle);
-            
+
             this.bottlesCollected--;
             this.updateBottleStatusBar();
         }
@@ -217,12 +214,12 @@ class World {
     startGame() {
         this.gameStarted = true;
         this.gameOver = false;
-        initLevel1(); 
-        this.level = level1; 
-        this.setWorld(); 
+        initLevel1();
+        this.level = level1;
+        this.setWorld();
         this.totalCoins = this.level.coins.length;
         this.totalBottles = this.level.salsaBottles.length;
-        this.character.startAnimations();   
+        this.character.startAnimations();
     }
 
     /**
@@ -232,70 +229,70 @@ class World {
         this.gameOverScreen.draw(this.ctx);
     }
 
-/**
- * Main draw function, renders all game elements
- */
-draw() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    /**
+     * Main draw function, renders all game elements
+     */
+    draw() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    if (!this.gameStarted) {
-        this.startScreen.draw(this.ctx);
-    } else {
-        this.drawGameElements();
+        if (!this.gameStarted) {
+            this.startScreen.draw(this.ctx);
+        } else {
+            this.drawGameElements();
+        }
+
+        this.checkGameStateAndContinue();
     }
 
-    this.checkGameStateAndContinue();
-}
+    /**
+     * Draws all game world elements with camera offset
+     */
+    drawGameElements() {
+        this.ctx.translate(this.camera_x, 0);
+        this.drawWorldObjects();
+        this.ctx.translate(-this.camera_x, 0);
+        this.drawUIElements();
 
-/**
- * Draws all game world elements with camera offset
- */
-drawGameElements() {
-    this.ctx.translate(this.camera_x, 0);
-    this.drawWorldObjects();
-    this.ctx.translate(-this.camera_x, 0);
-    this.drawUIElements();
-    
-    if (this.character.energy <= 0) {
-        this.drawGameOverScreen();
+        if (this.character.energy <= 0) {
+            this.drawGameOverScreen();
+        }
     }
-}
 
-/**
- * Draws background elements and game objects
- */
-drawWorldObjects() {
-    this.addObjectsToMap(this.level.background || []);
-    this.addObjectsToMap(this.level.clouds || []);
-    this.addObjectsToMap(this.level.enemies || []);
-    this.addObjectsToMap(this.level.coins || []);
-    this.addObjectsToMap(this.level.salsaBottles || []);
-    this.addObjectsToMap(this.activeThrowableBottles || []);
-    this.addToMap(this.character);
-}
-
-/**
- * Draws UI elements like status bars
- */
-drawUIElements() {
-    this.addToMap(this.statusbarHealth);
-    this.addToMap(this.statusbarCoin);
-    this.addToMap(this.statusbarBottle);
-}
-
-/**
- * Checks game state and continues animation loop if needed
- */
-checkGameStateAndContinue() {
-    if (this.gameOver) {
-        this.drawGameOverScreen();
-    } else {
-        let self = this;
-        requestAnimationFrame(function () {
-            self.draw();
-        });
+    /**
+     * Draws background elements and game objects
+     */
+    drawWorldObjects() {
+        this.addObjectsToMap(this.level.background || []);
+        this.addObjectsToMap(this.level.clouds || []);
+        this.addObjectsToMap(this.level.enemies || []);
+        this.addObjectsToMap(this.level.coins || []);
+        this.addObjectsToMap(this.level.salsaBottles || []);
+        this.addObjectsToMap(this.activeThrowableBottles || []);
+        this.addToMap(this.character);
     }
-}
+
+    /**
+     * Draws UI elements like status bars
+     */
+    drawUIElements() {
+        this.addToMap(this.statusbarHealth);
+        this.addToMap(this.statusbarCoin);
+        this.addToMap(this.statusbarBottle);
+    }
+
+    /**
+     * Checks game state and continues animation loop if needed
+     */
+    checkGameStateAndContinue() {
+        if (this.gameOver) {
+            this.drawGameOverScreen();
+        } else {
+            let self = this;
+            requestAnimationFrame(function () {
+                self.draw();
+            });
+        }
+    }
 
     /**
      * Adds an array of objects to the map for rendering

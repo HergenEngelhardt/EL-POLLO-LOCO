@@ -25,7 +25,7 @@ class SalsaBottle extends MovableObject {
      * Initializes position, size, and collision offsets.
      */
     constructor() {
-        super().loadImage('assets/img/6_salsa_bottle/1_salsa_bottle_on_ground.png'); // Removed leading slash
+        super().loadImage('assets/img/6_salsa_bottle/1_salsa_bottle_on_ground.png'); 
         this.x = 250 + Math.random() * 1000;
         this.y = 350;
         this.height = 100;
@@ -62,13 +62,10 @@ class SalsaBottle extends MovableObject {
         this.hasBeenThrown = true;
         this.speedY = 15; 
         this.speedX = 15; 
-        this.world = world; // Store reference to world
+        this.world = world;
         this.applyGravity();
-        
-        // Clear any existing intervals to prevent multiple animations
         if (this.animationInterval) clearInterval(this.animationInterval);
         if (this.moveInterval) clearInterval(this.moveInterval);
-        
         this.animate();
         this.move();
     }
@@ -105,7 +102,6 @@ class SalsaBottle extends MovableObject {
         this.loadImages(this.IMAGES_SPLASH);
         this.currentImage = 0;
         
-        // Clear rotation animation before starting splash
         if (this.animationInterval) {
             clearInterval(this.animationInterval);
         }
