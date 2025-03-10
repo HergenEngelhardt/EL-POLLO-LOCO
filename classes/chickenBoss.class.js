@@ -205,11 +205,11 @@ class ChickenBoss extends MovableObject {
             this.handleAlertPhase(characterIsLeft);
         } else {
             this.updateHealthBarPosition();
-
+    
             if (distanceToCharacter < 300) {
-                this.handleAttackingBehavior(distanceToCharacter);
+                this.handleAttackingBehavior(distanceToCharacter, characterIsLeft);
             } else {
-                this.handleNormalMovement();
+                this.handleNormalMovement(characterIsLeft);
             }
         }
     }
@@ -232,10 +232,11 @@ class ChickenBoss extends MovableObject {
     /**
      * Handles boss behavior when in attack range
      * @param {number} distanceToCharacter - Distance to the character
+     * @param {boolean} characterIsLeft - Whether character is to the left of boss
      */
-    handleAttackingBehavior(distanceToCharacter) {
+    handleAttackingBehavior(distanceToCharacter, characterIsLeft) {
         this.animateImages(this.IMAGES_ATTACK);
-        this.updateMovementDirection();
+        this.updateMovementDirection(characterIsLeft);
         this.applyMovement();
 
         if (distanceToCharacter < 80 && !this.world.character.isHurt()) {
@@ -245,22 +246,22 @@ class ChickenBoss extends MovableObject {
     }
 
     /**
-     * Handles normal movement behavior
-     */
-    handleNormalMovement() {
+    * Handles normal movement behavior
+    * @param {boolean} characterIsLeft - Whether character is to the left of boss
+    */
+    handleNormalMovement(characterIsLeft) {
         this.animateImages(this.IMAGES_WALKING);
-        this.updateMovementDirection();
+        this.updateMovementDirection(characterIsLeft);
         this.applyMovement();
     }
 
     /**
-     * Updates movement direction based on timer
+     * Updates movement direction based on character position
+     * @param {boolean} characterIsLeft - Whether character is to the left of boss
      */
-    updateMovementDirection() {
-        if (Date.now() - this.lastDirectionChange > 4000) {
-            this.movingDirection *= -1;
-            this.lastDirectionChange = Date.now();
-        }
+    updateMovementDirection(characterIsLeft) {
+        this.movingDirection = characterIsLeft ? -1 : 1;
+        this.otherDirection = !characterIsLeft;
     }
 
     /**

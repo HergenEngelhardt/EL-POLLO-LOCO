@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="de" translate="no">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,6 +30,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet">
     <link rel="shortcut icon" href="./assets/img/4_enemie_boss_chicken/1_walk/G1.png" type="image/x-icon">
 </head>
+
 <body onload="init()">
     <h1>El pollo LOCO</h1>
 
@@ -50,18 +52,33 @@
         </ul>
         <button class="btn" onclick="showMenu()">Back to Menu</button>
     </div>
-    
+
     <div id="imprint" class="imprint-container d-none">
         <h1>Impressum</h1>
         <p>Here you can add your personal information or legal notice.</p>
         <button class="btn" onclick="showMenu()">Back to Menu</button>
     </div>
-    
+
     <div id="win-loose" class="win-loose-container d-none">
         <div class="win-loose-buttons">
             <button class="btn" onclick="playAgain()">Play Again</button>
             <button class="btn" onclick="showMenu()">Back to Menu</button>
         </div>
     </div>
+    <div id="mobileBTN">
+        <div id="mobileBTNDirection">
+            <button id="btnLeft">
+            </button>
+            <button id="btnRight">
+            </button>
+        </div>
+        <div id="mobileBTNactions">
+            <button id="btnJump">
+            </button>
+            <button id="btnThrow">
+            </button>
+        </div>
+    </div>
 </body>
+
 </html>
