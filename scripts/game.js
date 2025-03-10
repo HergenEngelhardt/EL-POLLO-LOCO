@@ -141,3 +141,39 @@ function backToMenu() {
     world.gameOver = false;
     world.draw();
 }
+
+function toggleMobileMenu() {
+    document.getElementById('mobileMenu').classList.toggle('d-none');
+}
+
+function closeMobileMenu() {
+    console.log('Closing mobile menu');
+    let mobileMenu = document.getElementById('mobileMenu');
+    if (mobileMenu) {
+        mobileMenu.classList.add('d-none');
+        mobileMenu.style.display = 'none';
+    }
+}
+
+function showInstructions() {
+    document.getElementById('instructions').classList.remove('d-none');
+    document.getElementById('imprint').classList.add('d-none');
+    document.getElementById('mobileMenu').classList.add('d-none');
+}
+
+function showImprint() {
+    document.getElementById('imprint').classList.remove('d-none');
+    document.getElementById('instructions').classList.add('d-none');
+    document.getElementById('mobileMenu').classList.add('d-none');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    let menuBtn = document.getElementById('mobileMenuBtn');
+    if (menuBtn) {
+        menuBtn.addEventListener('click', toggleMobileMenu);
+    }
+    let closeBtn = document.querySelector('#mobileMenu .mobile-menu-btn:last-child');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeMobileMenu);
+    }
+});

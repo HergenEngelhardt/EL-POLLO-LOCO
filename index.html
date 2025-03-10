@@ -65,6 +65,15 @@
             <button class="btn" onclick="showMenu()">Back to Menu</button>
         </div>
     </div>
+    <div id="mobileMenuBtn" class="mobile-only" onclick="toggleMobileMenu()">
+        <img src="./assets/icons/settingsBTN.png" alt="Menu" onclick="event.stopPropagation(); toggleMobileMenu();">
+    </div>
+    
+    <div id="mobileMenu" class="mobile-menu d-none">
+        <button class="mobile-menu-btn" onclick="showInstructions()">Instructions</button>
+        <button class="mobile-menu-btn" onclick="showImprint()">Imprint</button>
+        <button class="mobile-menu-btn" onclick="closeMobileMenu()">Close</button>
+    </div>
     <div id="mobileBTN">
         <div id="mobileBTNDirection">
             <button id="btnLeft">
