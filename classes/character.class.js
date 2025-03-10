@@ -111,7 +111,7 @@ class Character extends MovableObject {
 
         this.imageAnimationInterval = setInterval(() => {
             this.updateCharacterImages();
-        }, 100);
+        }, 200);
     }
 
     /**

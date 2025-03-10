@@ -24,10 +24,12 @@ canvas {
 }
 
 .d-none {
-    display: none !important; 
+    display: none !important;
 }
 
-.instructions-container, .imprint-container, .win-loose-container {
+.instructions-container,
+.imprint-container,
+.win-loose-container {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -72,12 +74,12 @@ canvas {
 
 @font-face {
     font-family: "Rubik Dirt", serif;
-    src: url('myfont.woff') format('woff'), 
-         url('myfont.ttf') format('truetype'); 
-    src: url('webfont.eot'); 
-    src: url('webfont.eot?#iefix') format('embedded-opentype'), 
-         url('webfont.svg#svgFontName') format('svg'); 
-} 
+    src: url('myfont.woff') format('woff'),
+        url('myfont.ttf') format('truetype');
+    src: url('webfont.eot');
+    src: url('webfont.eot?#iefix') format('embedded-opentype'),
+        url('webfont.svg#svgFontName') format('svg');
+}
 
 @media only screen and (max-width: 720px) {
     canvas {
@@ -105,19 +107,21 @@ canvas {
     justify-content: space-between;
     padding: 0 20px;
     box-sizing: border-box;
-    pointer-events: none; 
-  }
-  
-  #mobileBTNDirection, #mobileBTNactions {
+    pointer-events: none;
+}
+
+#mobileBTNDirection,
+#mobileBTNactions {
     display: flex;
     gap: 10px;
-    pointer-events: auto; 
-  }
-  
-  #mobileBTN button {
+    pointer-events: auto;
+    z-index: 150;
+}
+
+#mobileBTN button {
     width: 40px;
     height: 40px;
-    background-color: rgba(0, 0, 0, 0.3); 
+    background-color: rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 50%;
     display: flex;
@@ -125,32 +129,36 @@ canvas {
     align-items: center;
     padding: 0;
     cursor: pointer;
-  }
-  
-  #mobileBTN button img {
+}
+
+#mobileBTN button img {
     width: 20px;
     height: 20px;
-  }
-  
-  #btnLeft img {
+}
+
+#btnLeft img {
     transform: rotate(180deg);
-  }
-   
-  #btnJump img {
+}
+
+#btnJump img {
     transform: rotate(-90deg);
-  }
-  
-  /* #btnThrow img {
-    transform: rotate(180deg);
-  } */
+}
 
-  @media (min-width: 768px) {
+#btnThrow img {
+    transform: scaleX(-1);
+}
+
+#btnThrow {
+    pointer-events: auto !important;
+}
+
+@media (min-width: 768px) {
     #mobileBTN {
-      display: none;
+        display: none;
     }
-  }
+}
 
-  /* Mobile Menu Styling */
+/* Mobile Menu Styling */
 #mobileMenuBtn {
     position: fixed;
     top: 10px;
@@ -164,7 +172,7 @@ canvas {
     align-items: center;
     cursor: pointer;
     z-index: 200;
-    display: none; 
+    display: none;
 }
 
 #mobileMenuBtn img {
@@ -207,10 +215,11 @@ canvas {
 
 @media only screen and (max-width: 800px) {
     .button-container {
-        display: none; 
+        display: none;
     }
-    
-    #mobileMenuBtn, .mobile-only {
-        display: flex; 
+
+    #mobileMenuBtn,
+    .mobile-only {
+        display: flex;
     }
 }
