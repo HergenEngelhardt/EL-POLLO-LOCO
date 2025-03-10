@@ -43,31 +43,49 @@ class GameOverScreen extends DrawableObject {
      * @param {CanvasRenderingContext2D} ctx - The canvas rendering context
      */
     draw(ctx) {
-        if (this.world && this.world.gameOver) {
+        if (!ctx || !this.world) return;
+        
+        if (this.world.gameOver) {
             ctx.drawImage(this.img, (ctx.canvas.width - this.width) / 2, (ctx.canvas.height - this.height) / 2, this.width, this.height);
             this.playGameOverSound();
             
             if (!this.screenDisplayed) {
-                this.showWinLoseScreen('lose', ctx.canvas);
-                this.screenDisplayed = true;
+                if (ctx && ctx.canvas) {
+                    this.showWinLoseScreen('lose', ctx.canvas);
+                    this.screenDisplayed = true;
+                }
             }
         }
     }
     
-   /**
+/**
  * Shows the win/lose screen with restart and menu buttons.
  * @param {string} result - The result of the game ('win' or 'lose')
  * @param {HTMLCanvasElement} canvas - The game canvas element
  */
 showWinLoseScreen(result, canvas) {
-    if (!canvas || this.buttonsCreated) {
-        canvas || console.error('Canvas is undefined in showWinLoseScreen');
+    if (!canvas || !(canvas instanceof HTMLCanvasElement) || !document.body.contains(canvas)) {
+        console.error('Canvas is invalid or not in document in showWinLoseScreen');
+        
+        const mainCanvas = document.getElementById('canvas');
+        if (mainCanvas && document.body.contains(mainCanvas)) {
+            canvas = mainCanvas;
+            console.log('Using main canvas as fallback');
+        } else {
+            return;
+        }
+    }
+    if (this.buttonsCreated) {
         return;
     }
     
-    this.removeExistingButtonContainer();
-    this.createButtonsContainer(canvas);
-    this.setupEventListeners();
+    try {
+        this.removeExistingButtonContainer();
+        this.createButtonsContainer(canvas);
+        this.setupEventListeners();
+    } catch (error) {
+        console.error('Error showing win/lose screen:', error);
+    }
 }
 
 /**
@@ -85,18 +103,26 @@ removeExistingButtonContainer() {
  * @param {HTMLCanvasElement} canvas - The game canvas element
  */
 createButtonsContainer(canvas) {
-    let canvasRect = canvas.getBoundingClientRect();
-    
-    let buttonsHTML = `
-        <div id="win-loose-buttons-container" style="position: absolute; top: ${canvasRect.top + canvasRect.height * 0.65}px; left: ${canvasRect.left + canvasRect.width / 2}px; transform: translateX(-50%); text-align: center; z-index: 1000;">
-            <button class="btn" id="restart-game-btn">Restart Game</button>
-            <span> </span>
-            <button class="btn" id="back-to-menu-btn">Back to Menu</button>
-        </div>
-    `;
-    
-    document.body.insertAdjacentHTML('beforeend', buttonsHTML);
-    this.buttonsCreated = true;
+    try {
+        if (!canvas || !document.body) return;
+        
+        const canvasRect = canvas.getBoundingClientRect();
+        const top = canvasRect.top + canvasRect.height * 0.65;
+        const left = canvasRect.left + canvasRect.width / 2;
+        
+        let buttonsHTML = `
+            <div id="win-loose-buttons-container" style="position: absolute; top: ${top}px; left: ${left}px; transform: translateX(-50%); text-align: center; z-index: 1000;">
+                <button class="btn" id="restart-game-btn">Restart Game</button>
+                <span> </span>
+                <button class="btn" id="back-to-menu-btn">Back to Menu</button>
+            </div>
+        `;
+        
+        document.body.insertAdjacentHTML('beforeend', buttonsHTML);
+        this.buttonsCreated = true;
+    } catch (error) {
+        console.error('Error creating buttons container:', error);
+    }
 }
 
 /**

@@ -61,7 +61,7 @@ class ChickenBoss extends MovableObject {
     lastHit = 0;
     deathAnimationPlayed = false;
     deathAnimationIndex = 0;
-    
+
     /**
      * Creates a new ChickenBoss instance and initializes animations
      */
@@ -82,207 +82,207 @@ class ChickenBoss extends MovableObject {
             top: 25,
             bottom: 50,
             left: 20,
-            right: 20   
+            right: 20
         };
     }
 
-/**
- * Controls animation and movement based on game state
- */
-animate() {
-    this.setupAnimationLoop();
-}
+    /**
+     * Controls animation and movement based on game state
+     */
+    animate() {
+        this.setupAnimationLoop();
+    }
 
-/**
- * Sets up the main animation interval
- */
-setupAnimationLoop() {
-    setInterval(() => {
-        if (!this.processCurrentState()) {
-            this.handleCharacterInteraction();
+    /**
+     * Sets up the main animation interval
+     */
+    setupAnimationLoop() {
+        setInterval(() => {
+            if (!this.processCurrentState()) {
+                this.handleCharacterInteraction();
+            }
+        }, 150);
+    }
+
+    /**
+     * Processes current state (dead or hurt)
+     * @returns {boolean} True if a state was processed and further processing should be stopped
+     */
+    processCurrentState() {
+        if (this.isDead()) {
+            this.handleDeathState();
+            return true;
         }
-    }, 150);
-}
 
-/**
- * Processes current state (dead or hurt)
- * @returns {boolean} True if a state was processed and further processing should be stopped
- */
-processCurrentState() {
-    if (this.isDead()) {
-        this.handleDeathState();
-        return true;
-    }
-    
-    if (this.isHurt()) {
-        this.handleHurtState();
-        return true;
+        if (this.isHurt()) {
+            this.handleHurtState();
+            return true;
+        }
+
+        return false;
     }
 
-    return false;
-}
+    /**
+     * Handles all character interaction logic
+     */
+    handleCharacterInteraction() {
+        if (!this.world || !this.world.character) {
+            return;
+        }
 
-/**
- * Handles all character interaction logic
- */
-handleCharacterInteraction() {
-    if (!this.world || !this.world.character) {
-        return;
-    }
+        const metrics = this.calculateCharacterMetrics();
+        this.checkCharacterCollision();
+        this.handleFirstContact(metrics.distance, metrics.isLeft);
 
-    const metrics = this.calculateCharacterMetrics();
-    this.checkCharacterCollision();
-    this.handleFirstContact(metrics.distance, metrics.isLeft);
-    
-    if (this.hadfirstContact) {
-        this.handleBossActiveBehavior(metrics.distance, metrics.isLeft);
-    } else {
-        this.handleIdleState();
-    }
-}
-
-/**
- * Calculates distance and relative position to character
- * @returns {Object} Object with distance and isLeft properties
- */
-calculateCharacterMetrics() {
-    const distance = Math.abs(this.x - this.world.character.x);
-    const isLeft = this.world.character.x < this.x;
-    
-    return {
-        distance: distance,
-        isLeft: isLeft
-    };
-}
-
-/**
- * Handles boss behavior when dead
- */
-handleDeathState() {
-    if (!this.deathAnimationPlayed) {
-        this.playDeathAnimation();
-    }
-}
-
-/**
- * Handles boss behavior when hurt
- */
-handleHurtState() {
-    this.animateImages(this.IMAGES_HURT);
-}
-
-/**
- * Checks for collision with character and damages character if needed
- */
-checkCharacterCollision() {
-    if (this.isColliding(this.world.character) && !this.world.character.isHurt()) {
-        this.world.character.hit();
-        this.world.updateHealthStatusBar();
-    }
-}
-
-/**
- * Handles first detection of character
- * @param {number} distanceToCharacter - Distance to the character
- * @param {boolean} characterIsLeft - Whether character is to the left of boss
- */
-handleFirstContact(distanceToCharacter, characterIsLeft) {
-    if (!this.hadfirstContact && distanceToCharacter < 500) {
-        this.hadfirstContact = true;
-        this.alertPhase = true;
-        this.alertFrameCount = 0;
-        this.otherDirection = !characterIsLeft;
-    }
-}
-
-/**
- * Handles boss behavior when active (after first contact)
- * @param {number} distanceToCharacter - Distance to the character
- * @param {boolean} characterIsLeft - Whether character is to the left of boss
- */
-handleBossActiveBehavior(distanceToCharacter, characterIsLeft) {
-    if (this.alertPhase) {
-        this.handleAlertPhase(characterIsLeft);
-    } else {
-        this.updateHealthBarPosition();
-        
-        if (distanceToCharacter < 300) {
-            this.handleAttackingBehavior(distanceToCharacter);
+        if (this.hadfirstContact) {
+            this.handleBossActiveBehavior(metrics.distance, metrics.isLeft);
         } else {
-            this.handleNormalMovement();
+            this.handleIdleState();
         }
     }
-}
 
-/**
- * Handles the alert phase animation and state
- * @param {boolean} characterIsLeft - Whether character is to the left of boss
- */
-handleAlertPhase(characterIsLeft) {
-    this.otherDirection = !characterIsLeft;
-    this.animateImages(this.IMAGES_ALERT);
-    this.alertFrameCount++;
-    
-    if (this.alertFrameCount >= 12) {
-        this.alertPhase = false;
-        this.showHealthBar = true;  
+    /**
+     * Calculates distance and relative position to character
+     * @returns {Object} Object with distance and isLeft properties
+     */
+    calculateCharacterMetrics() {
+        const distance = Math.abs(this.x - this.world.character.x);
+        const isLeft = this.world.character.x < this.x;
+
+        return {
+            distance: distance,
+            isLeft: isLeft
+        };
     }
-}
 
-/**
- * Handles boss behavior when in attack range
- * @param {number} distanceToCharacter - Distance to the character
- */
-handleAttackingBehavior(distanceToCharacter) {
-    this.animateImages(this.IMAGES_ATTACK);
-    this.updateMovementDirection();
-    this.applyMovement();
-    
-    if (distanceToCharacter < 80 && !this.world.character.isHurt()) {
-        this.world.character.hit();
-        this.world.updateHealthStatusBar();
+    /**
+     * Handles boss behavior when dead
+     */
+    handleDeathState() {
+        if (!this.deathAnimationPlayed) {
+            this.playDeathAnimation();
+        }
     }
-}
 
-/**
- * Handles normal movement behavior
- */
-handleNormalMovement() {
-    this.animateImages(this.IMAGES_WALKING);
-    this.updateMovementDirection();
-    this.applyMovement();
-}
-
-/**
- * Updates movement direction based on timer
- */
-updateMovementDirection() {
-    if (Date.now() - this.lastDirectionChange > 4000) {
-        this.movingDirection *= -1;
-        this.lastDirectionChange = Date.now();
+    /**
+     * Handles boss behavior when hurt
+     */
+    handleHurtState() {
+        this.animateImages(this.IMAGES_HURT);
     }
-}
 
-/**
- * Applies movement based on current direction
- */
-applyMovement() {
-    if (this.movingDirection > 0) {
-        this.x += this.speed;
-        this.otherDirection = true;
-    } else {
-        this.x -= this.speed;
-        this.otherDirection = false;
+    /**
+     * Checks for collision with character and damages character if needed
+     */
+    checkCharacterCollision() {
+        if (this.isColliding(this.world.character) && !this.world.character.isHurt()) {
+            this.world.character.hit();
+            this.world.updateHealthStatusBar();
+        }
     }
-}
 
-/**
- * Sets the boss to idle state
- */
-handleIdleState() {
-    this.img = this.imageCache[this.IMAGES_WALKING[0]];
-}
-    
+    /**
+     * Handles first detection of character
+     * @param {number} distanceToCharacter - Distance to the character
+     * @param {boolean} characterIsLeft - Whether character is to the left of boss
+     */
+    handleFirstContact(distanceToCharacter, characterIsLeft) {
+        if (!this.hadfirstContact && distanceToCharacter < 500) {
+            this.hadfirstContact = true;
+            this.alertPhase = true;
+            this.alertFrameCount = 0;
+            this.otherDirection = !characterIsLeft;
+        }
+    }
+
+    /**
+     * Handles boss behavior when active (after first contact)
+     * @param {number} distanceToCharacter - Distance to the character
+     * @param {boolean} characterIsLeft - Whether character is to the left of boss
+     */
+    handleBossActiveBehavior(distanceToCharacter, characterIsLeft) {
+        if (this.alertPhase) {
+            this.handleAlertPhase(characterIsLeft);
+        } else {
+            this.updateHealthBarPosition();
+
+            if (distanceToCharacter < 300) {
+                this.handleAttackingBehavior(distanceToCharacter);
+            } else {
+                this.handleNormalMovement();
+            }
+        }
+    }
+
+    /**
+     * Handles the alert phase animation and state
+     * @param {boolean} characterIsLeft - Whether character is to the left of boss
+     */
+    handleAlertPhase(characterIsLeft) {
+        this.otherDirection = !characterIsLeft;
+        this.animateImages(this.IMAGES_ALERT);
+        this.alertFrameCount++;
+
+        if (this.alertFrameCount >= 12) {
+            this.alertPhase = false;
+            this.showHealthBar = true;
+        }
+    }
+
+    /**
+     * Handles boss behavior when in attack range
+     * @param {number} distanceToCharacter - Distance to the character
+     */
+    handleAttackingBehavior(distanceToCharacter) {
+        this.animateImages(this.IMAGES_ATTACK);
+        this.updateMovementDirection();
+        this.applyMovement();
+
+        if (distanceToCharacter < 80 && !this.world.character.isHurt()) {
+            this.world.character.hit();
+            this.world.updateHealthStatusBar();
+        }
+    }
+
+    /**
+     * Handles normal movement behavior
+     */
+    handleNormalMovement() {
+        this.animateImages(this.IMAGES_WALKING);
+        this.updateMovementDirection();
+        this.applyMovement();
+    }
+
+    /**
+     * Updates movement direction based on timer
+     */
+    updateMovementDirection() {
+        if (Date.now() - this.lastDirectionChange > 4000) {
+            this.movingDirection *= -1;
+            this.lastDirectionChange = Date.now();
+        }
+    }
+
+    /**
+     * Applies movement based on current direction
+     */
+    applyMovement() {
+        if (this.movingDirection > 0) {
+            this.x += this.speed;
+            this.otherDirection = true;
+        } else {
+            this.x -= this.speed;
+            this.otherDirection = false;
+        }
+    }
+
+    /**
+     * Sets the boss to idle state
+     */
+    handleIdleState() {
+        this.img = this.imageCache[this.IMAGES_WALKING[0]];
+    }
+
     /**
      * Plays the death animation sequence
      */
@@ -292,15 +292,21 @@ handleIdleState() {
                 clearInterval(deathInterval);
                 this.deathAnimationPlayed = true;
                 this.toDelete = true;
+
+                // Set game won flag when boss is defeated
+                if (this.world) {
+                    this.world.gameWon = true;
+                }
+
                 return;
             }
-            
+
             let path = this.IMAGES_DEAD[this.deathAnimationIndex];
             this.img = this.imageCache[path];
             this.deathAnimationIndex++;
         }, 200);
     }
-    
+
     /**
      * Updates health bar position to follow boss
      */
@@ -308,20 +314,20 @@ handleIdleState() {
         this.healthBar.x = this.x + 20;
         this.healthBar.y = this.y - 30;
     }
-    
+
     /**
      * Handles boss taking damage
      */
     hit() {
-    this.energy -= 15;
-    this.lastHit = new Date().getTime();
-    this.playHitSound();
-    if (this.energy < 0) {
-        this.energy = 0;
+        this.energy -= 15;
+        this.lastHit = new Date().getTime();
+        this.playHitSound();
+        if (this.energy < 0) {
+            this.energy = 0;
+        }
+        this.healthBar.setPercentage(this.energy);
     }
-    this.healthBar.setPercentage(this.energy);
-    }
-    
+
     /**
      * Plays sound effect when hit
      */
@@ -331,7 +337,7 @@ handleIdleState() {
             console.error('Error playing boss hit sound:', error);
         });
     }
-    
+
     /**
      * Checks if boss is dead
      * @returns {boolean} True if energy is zero

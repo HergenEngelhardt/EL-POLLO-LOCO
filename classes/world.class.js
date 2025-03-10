@@ -37,6 +37,9 @@ class World {
         this.addMouseEvents();
         this.checkCollisions();
         this.totalInitialBottles = 5;
+        this.gameWon = false;
+        this.winScreen = new GameWinScreen();
+        this.winScreen.setWorld(this);
     }
 
     /**
@@ -62,13 +65,11 @@ class World {
                 this.gameOverScreen.showWinLoseScreen('lose');
                 return;
             }
-
             this.level.enemies = this.level.enemies.filter(enemy => !enemy.toDelete);
             this.handleEnemyCollisions();
             this.handleCoinCollisions();
             this.handleBottleCollisions();
             this.handleThrowableBottleCollisions();
-
             this.checkWinCondition();
         }, 100);
     }
@@ -124,7 +125,7 @@ class World {
      */
     handleThrowableBottleCollisions() {
         if (!this.activeThrowableBottles) return;
-        
+
         this.activeThrowableBottles.forEach((bottle) => {
             this.level.enemies.forEach((enemy) => {
                 if (bottle.isColliding(enemy)) {
@@ -136,7 +137,7 @@ class World {
                     }
                 }
             });
-            
+
             if (bottle.y > 350) {
                 bottle.splash();
             }
@@ -240,8 +241,23 @@ class World {
         } else {
             this.drawGameElements();
         }
-
         this.checkGameStateAndContinue();
+    }
+
+    /**
+    * Checks game state and continues animation loop if needed
+    */
+    checkGameStateAndContinue() {
+        if (this.gameOver) {
+            this.drawGameOverScreen();
+        } else if (this.gameWon) {
+            this.winScreen.draw(this.ctx);
+        } else {
+            let self = this;
+            requestAnimationFrame(function () {
+                self.draw();
+            });
+        }
     }
 
     /**
