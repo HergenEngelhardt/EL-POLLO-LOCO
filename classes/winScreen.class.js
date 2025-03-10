@@ -30,7 +30,7 @@ class GameWinScreen extends DrawableObject {
      */
     playWinSound() {
         if (!this.soundPlayed) {
-            let audio = new Audio('./audio/winning.mp3');
+            let audio = new Audio('./audio/winning.wav');
             audio.play().catch(error => {
                 console.error('Error playing audio:', error);
             });

@@ -64,28 +64,21 @@ class GameOverScreen extends DrawableObject {
  * @param {HTMLCanvasElement} canvas - The game canvas element
  */
 showWinLoseScreen(result, canvas) {
-    if (!canvas || !(canvas instanceof HTMLCanvasElement) || !document.body.contains(canvas)) {
-        console.error('Canvas is invalid or not in document in showWinLoseScreen');
-        
-        let mainCanvas = document.getElementById('canvas');
-        if (mainCanvas && document.body.contains(mainCanvas)) {
-            canvas = mainCanvas;
-            console.log('Using main canvas as fallback');
-        } else {
-            return;
-        }
-    }
     if (this.buttonsCreated) {
         return;
     }
     
-    try {
+    if (!canvas || !(canvas instanceof HTMLCanvasElement) || !document.body.contains(canvas)) {
+        
+        canvas = document.getElementById('canvas') || 
+                 document.getElementById('gameCanvas') || 
+                 document.querySelector('canvas');
+    }
+
         this.removeExistingButtonContainer();
         this.createButtonsContainer(canvas);
         this.setupEventListeners();
-    } catch (error) {
-        console.error('Error showing win/lose screen:', error);
-    }
+
 }
 
 /**

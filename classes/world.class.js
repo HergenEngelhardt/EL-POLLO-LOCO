@@ -297,20 +297,6 @@ class World {
     }
 
     /**
-     * Checks game state and continues animation loop if needed
-     */
-    checkGameStateAndContinue() {
-        if (this.gameOver) {
-            this.drawGameOverScreen();
-        } else {
-            let self = this;
-            requestAnimationFrame(function () {
-                self.draw();
-            });
-        }
-    }
-
-    /**
      * Adds an array of objects to the map for rendering
      * @param {Array<GameObject>} objects - Array of drawable objects
      */
