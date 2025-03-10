@@ -293,7 +293,6 @@ class ChickenBoss extends MovableObject {
                 this.deathAnimationPlayed = true;
                 this.toDelete = true;
 
-                // Set game won flag when boss is defeated
                 if (this.world) {
                     this.world.gameWon = true;
                 }

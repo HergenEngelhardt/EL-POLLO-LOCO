@@ -100,8 +100,8 @@ class MovableObject extends DrawableObject {
     isCollidingFromTop(mo) {
         return (this.x + this.offset.left + this.width - this.offset.right) > (mo.x + mo.offset.left) &&
             (this.x + this.offset.left) < (mo.x + mo.offset.left + mo.width - mo.offset.right) &&
-            (this.y + this.offset.top + this.height - this.offset.bottom) < (mo.y + mo.offset.top + 10) && // Reduced vertical collision zone
-            (this.y + this.offset.top + this.height - this.offset.bottom) > (mo.y + mo.offset.top - 5) && // More precise bottom boundary
+            (this.y + this.offset.top + this.height - this.offset.bottom) < (mo.y + mo.offset.top + 10) &&
+            (this.y + this.offset.top + this.height - this.offset.bottom) > (mo.y + mo.offset.top - 5) && 
             this.speedY < 0;
     }
 
