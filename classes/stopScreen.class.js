@@ -67,7 +67,7 @@ showWinLoseScreen(result, canvas) {
     if (!canvas || !(canvas instanceof HTMLCanvasElement) || !document.body.contains(canvas)) {
         console.error('Canvas is invalid or not in document in showWinLoseScreen');
         
-        const mainCanvas = document.getElementById('canvas');
+        let mainCanvas = document.getElementById('canvas');
         if (mainCanvas && document.body.contains(mainCanvas)) {
             canvas = mainCanvas;
             console.log('Using main canvas as fallback');
@@ -106,9 +106,9 @@ createButtonsContainer(canvas) {
     try {
         if (!canvas || !document.body) return;
         
-        const canvasRect = canvas.getBoundingClientRect();
-        const top = canvasRect.top + canvasRect.height * 0.65;
-        const left = canvasRect.left + canvasRect.width / 2;
+        let canvasRect = canvas.getBoundingClientRect();
+        let top = canvasRect.top + canvasRect.height * 0.65;
+        let left = canvasRect.left + canvasRect.width / 2;
         
         let buttonsHTML = `
             <div id="win-loose-buttons-container" style="position: absolute; top: ${top}px; left: ${left}px; transform: translateX(-50%); text-align: center; z-index: 1000;">

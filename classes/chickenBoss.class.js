@@ -130,7 +130,7 @@ class ChickenBoss extends MovableObject {
             return;
         }
 
-        const metrics = this.calculateCharacterMetrics();
+        let metrics = this.calculateCharacterMetrics();
         this.checkCharacterCollision();
         this.handleFirstContact(metrics.distance, metrics.isLeft);
 
@@ -146,8 +146,8 @@ class ChickenBoss extends MovableObject {
      * @returns {Object} Object with distance and isLeft properties
      */
     calculateCharacterMetrics() {
-        const distance = Math.abs(this.x - this.world.character.x);
-        const isLeft = this.world.character.x < this.x;
+        let distance = Math.abs(this.x - this.world.character.x);
+        let isLeft = this.world.character.x < this.x;
 
         return {
             distance: distance,
