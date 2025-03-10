@@ -96,3 +96,56 @@ canvas {
         display: none;
     }
 }
+
+#mobileBTN {
+    position: fixed;
+    bottom: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    box-sizing: border-box;
+    pointer-events: none; 
+  }
+  
+  #mobileBTNDirection, #mobileBTNactions {
+    display: flex;
+    gap: 10px;
+    pointer-events: auto; 
+  }
+  
+  #mobileBTN button {
+    width: 40px;
+    height: 40px;
+    background-color: rgba(0, 0, 0, 0.3); 
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    cursor: pointer;
+  }
+  
+  #mobileBTN button img {
+    width: 20px;
+    height: 20px;
+  }
+  
+  #btnLeft img {
+    transform: rotate(90deg);
+  }
+  
+  #btnRight img {
+    transform: rotate(270deg);
+  }
+  
+  #btnJump img {
+    transform: rotate(180deg);
+  }
+  
+  @media (min-width: 768px) {
+    #mobileBTN {
+      display: none;
+    }
+  }
