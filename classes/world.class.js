@@ -199,14 +199,42 @@ class World {
      * Adds mouse event listeners for game controls
      */
     addMouseEvents() {
+        // For mouse clicks
         this.canvas.addEventListener('click', (event) => {
-            let rect = this.canvas.getBoundingClientRect();
-            let x = event.clientX - rect.left;
-            let y = event.clientY - rect.top;
-            if (this.startScreen.isPlayButtonClicked(x, y)) {
-                this.startGame();
+            this.handlePointerEvent(event);
+        });
+    
+        // For mobile touch events
+        this.canvas.addEventListener('touchstart', (event) => {
+            event.preventDefault(); // Prevent scrolling
+            if (event.touches.length > 0) {
+                const touch = event.touches[0];
+                this.handlePointerEvent({
+                    clientX: touch.clientX,
+                    clientY: touch.clientY
+                });
             }
         });
+    }
+    
+    handlePointerEvent(event) {
+        let rect = this.canvas.getBoundingClientRect();
+        let x = event.clientX - rect.left;
+        let y = event.clientY - rect.top;
+        
+        // Apply scale correction if the canvas is being rendered at a different size
+        const scaleX = this.canvas.width / rect.width;
+        const scaleY = this.canvas.height / rect.height;
+        x *= scaleX;
+        y *= scaleY;
+        
+        console.log('Touch/Click at:', x, y);
+        console.log('Play button at:', this.startScreen.playButton.x, this.startScreen.playButton.y);
+        
+        if (this.startScreen.isPlayButtonClicked(x, y)) {
+            console.log('Play button clicked!');
+            this.startGame();
+        }
     }
 
     /**
