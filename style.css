@@ -158,7 +158,6 @@ canvas {
     }
 }
 
-/* Mobile Menu Styling */
 #mobileMenuBtn {
     position: fixed;
     top: 10px;
@@ -213,6 +212,25 @@ canvas {
     display: none;
 }
 
+#fullscreenBtn {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    z-index: 999;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+}
+
+#fullscreenBtn img {
+    width: 25px;
+    height: 25px;
+}
+
 @media only screen and (max-width: 800px) {
     .button-container {
         display: none;
@@ -221,5 +239,11 @@ canvas {
     #mobileMenuBtn,
     .mobile-only {
         display: flex;
+    }
+
+    #fullscreenBtn {
+        bottom: auto;
+        top: 4px;
+        right: 50px;
     }
 }
