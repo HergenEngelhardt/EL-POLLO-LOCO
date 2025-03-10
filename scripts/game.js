@@ -13,6 +13,7 @@ let keyboard = new Keyboard();
 function init() {
     setupGameObjects();
     setupEventListeners();
+    initMobileControls()
 }
 
 /**
@@ -111,6 +112,54 @@ window.addEventListener('keyup', (e) => {
         keyboard.JUMP = false;
     }
 });
+
+/**
+ * Initializes mobile control buttons
+ * Sets up touch and mouse events to update keyboard state
+ */
+function initMobileControls() {
+    document.getElementById('btnLeft').addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        keyboard.LEFT = true;
+    });
+
+    document.getElementById('btnLeft').addEventListener('touchend', (e) => {
+        e.preventDefault();
+        keyboard.LEFT = false;
+    });
+
+    document.getElementById('btnRight').addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        keyboard.RIGHT = true;
+    });
+
+    document.getElementById('btnRight').addEventListener('touchend', (e) => {
+        e.preventDefault();
+        keyboard.RIGHT = false;
+    });
+
+    document.getElementById('btnJump').addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        keyboard.JUMP = true;
+    });
+
+    document.getElementById('btnJump').addEventListener('touchend', (e) => {
+        e.preventDefault();
+        keyboard.JUMP = false;
+    });
+
+    document.getElementById('btnThrow').addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        keyboard.THROW = true;
+    });
+
+    document.getElementById('btnThrow').addEventListener('touchend', (e) => {
+        e.preventDefault();
+        keyboard.THROW = false;
+    });
+}
+
+
 
 /**
  * Hides all UI overlay elements (instructions, imprint, win/lose screen)

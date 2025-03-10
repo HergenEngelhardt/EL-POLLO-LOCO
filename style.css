@@ -137,7 +137,7 @@ canvas {
   }
    
   #btnJump img {
-    transform: rotate(90deg);
+    transform: rotate(-90deg);
   }
   
   /* #btnThrow img {
