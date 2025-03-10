@@ -9,7 +9,7 @@ class Clouds extends MovableObject{
      * Initializes position, dimensions and animation.
      */
     constructor() {
-        super().loadImage('/assets/img/5_background/layers/4_clouds/1.png');
+        super().loadImage('./assets/img/5_background/layers/4_clouds/1.png');
 
         this.x = -100 + Math.random() * 800;
         this.animate();

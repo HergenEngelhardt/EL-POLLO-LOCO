@@ -8,7 +8,7 @@ class GameWinScreen extends DrawableObject {
      */
     constructor() {
         super();
-        this.loadImage('assets/img/9_intro_outro_screens/win/win_2.png'); 
+        this.loadImage('./assets/img/9_intro_outro_screens/win/win_2.png'); 
         this.width = 720;
         this.height = 480;
         this.soundPlayed = false;

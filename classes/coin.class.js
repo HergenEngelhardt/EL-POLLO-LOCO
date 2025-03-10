@@ -8,7 +8,7 @@ class Coin extends MovableObject {
      * Coins appear at random positions within defined boundaries.
      */
     constructor() {
-        super().loadImage('/assets/img/8_coin/coin_1.png');
+        super().loadImage('./assets/img/8_coin/coin_1.png');
         this.x = 150 + Math.random() * 1175;
         this.y = 290 - Math.random() *  200;
         this.height = 100;
