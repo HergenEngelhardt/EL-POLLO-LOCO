@@ -119,7 +119,9 @@ class World {
      */
     handleBottleCollisions() {
         this.level.salsaBottles.forEach((bottle, index) => {
-            if (this.character.isColliding(bottle)) {
+            if (this.character.isColliding(bottle) && 
+                (!this.character.isAboveGround() || this.character.speedY > 0)) {
+                bottle.playCollectSound();
                 this.level.salsaBottles.splice(index, 1);
                 this.bottlesCollected++;
                 let newBottle = new SalsaBottle();
