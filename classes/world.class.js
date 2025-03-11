@@ -188,8 +188,8 @@ class World {
      * Updates the coin status bar based on collected coins
      */
     updateCoinStatusBar() {
-        let coinPercentage = (this.coinsCollected / this.level.coins.length) * 100;
-        this.statusbarCoin.setCoinPercentage(coinPercentage);
+        let coinPercentage = (this.coinsCollected / 5) * 100;
+        this.statusbarCoin.setCoinPercentage(Math.min(coinPercentage, 100));
     }
 
     /**
