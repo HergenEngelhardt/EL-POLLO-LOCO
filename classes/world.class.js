@@ -59,7 +59,7 @@ class World {
      */
     checkCollisions() {
         this.collisionInterval = setInterval(() => {
-            if (!this.gameOver && !this.character.isDead()) {
+            if (!this.gameOver && !this.gameWon && !this.character.isDead()) {
                 this.handleEnemyCollisions();
                 this.handleCoinCollisions();
                 this.handleBottleCollisions();
@@ -83,11 +83,11 @@ class World {
                 isJumpingOnEnemy = true;
             }
         });
-        let jumpSafePeriod = 500; 
-        let safeFromJumpingOnEnemy = 
-            this.character.lastJumpOnEnemy && 
+        let jumpSafePeriod = 500;
+        let safeFromJumpingOnEnemy =
+            this.character.lastJumpOnEnemy &&
             new Date().getTime() - this.character.lastJumpOnEnemy < jumpSafePeriod;
-    
+
         if (!isJumpingOnEnemy && !safeFromJumpingOnEnemy && !this.isJumpInvulnerable()) {
             this.level.enemies.forEach((enemy) => {
                 if (this.character.isColliding(enemy) && !enemy.isDead) {
@@ -120,7 +120,7 @@ class World {
     handleBottleCollisions() {
         if (!this.level || !this.level.salsaBottles) return;
         this.level.salsaBottles.forEach((bottle, index) => {
-            if (this.character.isColliding(bottle) && 
+            if (this.character.isColliding(bottle) &&
                 (!this.character.isAboveGround() || this.character.speedY > 0)) {
                 bottle.playCollectSound();
                 this.level.salsaBottles.splice(index, 1);
@@ -217,7 +217,7 @@ class World {
             this.handlePointerEvent(event);
         });
         this.canvas.addEventListener('touchstart', (event) => {
-            event.preventDefault(); 
+            event.preventDefault();
             if (event.touches.length > 0) {
                 let touch = event.touches[0];
                 this.handlePointerEvent({
@@ -422,24 +422,36 @@ class World {
     checkWinCondition() {
         if (this.level && this.level.enemies.length === 0) {
             this.gameOver = true;
+            this.gameWon = true;
+            this.clearAllGameIntervals();
             this.gameOverScreen.showWinLoseScreen('win');
         }
     }
-        /**
-     * Clears all game-related intervals
+
+    /**
+     * Clears all game-related intervals properly
      */
-        clearAllGameIntervals() {
-            if (this.character.animationInterval)
-                clearInterval(this.character.animationInterval);
-            if (this.character.imageAnimationInterval)
-                clearInterval(this.character.imageAnimationInterval);
-            if (this.level && this.level.enemies) {
-                this.level.enemies.forEach(enemy => {
-                    if (enemy.animationInterval) clearInterval(enemy.animationInterval);
-                    if (enemy.moveInterval) clearInterval(enemy.moveInterval);
-                });
-            }
-            if (this.collisionInterval) clearInterval(this.collisionInterval);
+    clearAllGameIntervals() {
+        if (this.character.animationInterval) {
+            clearInterval(this.character.animationInterval);
         }
-    
+        if (this.character.imageAnimationInterval) {
+            clearInterval(this.character.imageAnimationInterval);
+        }
+        if (this.level && this.level.enemies) {
+            this.level.enemies.forEach(enemy => {
+                if (enemy.animationInterval) clearInterval(enemy.animationInterval);
+            });
+        }
+        if (this.collisionInterval) {
+            clearInterval(this.collisionInterval);
+        }
+        if (this.activeThrowableBottles) {
+            this.activeThrowableBottles.forEach(bottle => {
+                if (bottle.animationInterval) clearInterval(bottle.animationInterval);
+                if (bottle.moveInterval) clearInterval(bottle.moveInterval);
+            });
+        }
+    }
+
 }
