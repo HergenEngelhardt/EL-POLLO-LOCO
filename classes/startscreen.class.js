@@ -43,13 +43,10 @@ class StartScreen extends DrawableObject {
         this.height = 480;
         this.backgroundMusic = new Audio('./audio/backgroundMusic.mp3');
         this.backgroundMusic.loop = true;
-
-        // Handle mouse clicks
         canvas.addEventListener("click", (event) => {
             this.handleInteraction(event);
         });
 
-        // Handle touch events for mobile
         canvas.addEventListener("touchstart", (event) => {
             this.handleInteraction(event);
         });

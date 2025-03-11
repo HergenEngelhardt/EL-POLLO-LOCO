@@ -67,7 +67,6 @@ function toggleFullscreen() {
     let gameCanvas = document.getElementById('gameCanvas');
     
     if (!document.fullscreenElement) {
-        // Enter fullscreen
         if (gameCanvas.requestFullscreen) {
             gameCanvas.requestFullscreen();
         } else if (gameCanvas.webkitRequestFullscreen) {
@@ -76,7 +75,6 @@ function toggleFullscreen() {
             gameCanvas.msRequestFullscreen();
         }
     } else {
-        // Exit fullscreen
         if (document.exitFullscreen) {
             document.exitFullscreen();
         } else if (document.webkitExitFullscreen) { 

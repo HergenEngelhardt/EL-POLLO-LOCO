@@ -213,14 +213,11 @@ class World {
      * Adds mouse event listeners for game controls
      */
     addMouseEvents() {
-        // For mouse clicks
         this.canvas.addEventListener('click', (event) => {
             this.handlePointerEvent(event);
         });
-
-        // For mobile touch events
         this.canvas.addEventListener('touchstart', (event) => {
-            event.preventDefault(); // Prevent scrolling
+            event.preventDefault(); 
             if (event.touches.length > 0) {
                 let touch = event.touches[0];
                 this.handlePointerEvent({
@@ -235,8 +232,6 @@ class World {
         let rect = this.canvas.getBoundingClientRect();
         let x = event.clientX - rect.left;
         let y = event.clientY - rect.top;
-
-        // Apply scale correction if the canvas is being rendered at a different size
         let scaleX = this.canvas.width / rect.width;
         let scaleY = this.canvas.height / rect.height;
         x *= scaleX;
@@ -317,15 +312,12 @@ class World {
     }
 
     checkKeyboardStates() {
-        // Check if throw button is pressed (from mobile or keyboard)
         if (this.keyboard.THROW) {
-            // Only throw if character has the method, otherwise use World's method
             if (typeof this.character.throwBottle === 'function') {
                 this.character.throwBottle();
             } else {
                 this.throwBottle();
             }
-            // Reset to prevent continuous throwing
             this.keyboard.THROW = false;
         }
     }
