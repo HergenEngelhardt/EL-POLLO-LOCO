@@ -64,7 +64,7 @@ function toggleImprint() {
  * Toggles fullscreen mode for the game
  */
 function toggleFullscreen() {
-    const gameCanvas = document.getElementById('gameCanvas');
+    let gameCanvas = document.getElementById('gameCanvas');
     
     if (!document.fullscreenElement) {
         // Enter fullscreen

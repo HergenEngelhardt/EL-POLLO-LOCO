@@ -140,4 +140,13 @@ class SalsaBottle extends MovableObject {
         this.x = -1000; 
         this.y = -1000; 
     }
+
+    /**
+ * Plays the bottle collection sound effect
+ */
+playCollectSound() {
+    let sound = new Audio('audio/collectBottle.mp3');
+    sound.volume = 0.3; 
+    sound.play();
+}
 }

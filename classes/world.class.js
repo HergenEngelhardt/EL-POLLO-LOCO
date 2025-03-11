@@ -79,7 +79,6 @@ class World {
      */
     handleEnemyCollisions() {
         let isJumpingOnEnemy = false;
-
         this.level.enemies.forEach((enemy) => {
             if (this.character.speedY < 0 && this.character.isCollidingFromTop(enemy) && !enemy.isDead) {
                 enemy.die();
@@ -88,8 +87,12 @@ class World {
                 isJumpingOnEnemy = true;
             }
         });
-
-        if (!isJumpingOnEnemy && !this.isJumpInvulnerable()) {
+        let jumpSafePeriod = 500; 
+        let safeFromJumpingOnEnemy = 
+            this.character.lastJumpOnEnemy && 
+            new Date().getTime() - this.character.lastJumpOnEnemy < jumpSafePeriod;
+    
+        if (!isJumpingOnEnemy && !safeFromJumpingOnEnemy && !this.isJumpInvulnerable()) {
             this.level.enemies.forEach((enemy) => {
                 if (this.character.isColliding(enemy) && !enemy.isDead) {
                     this.character.hit();
@@ -220,7 +223,7 @@ class World {
         this.canvas.addEventListener('touchstart', (event) => {
             event.preventDefault(); // Prevent scrolling
             if (event.touches.length > 0) {
-                const touch = event.touches[0];
+                let touch = event.touches[0];
                 this.handlePointerEvent({
                     clientX: touch.clientX,
                     clientY: touch.clientY
@@ -235,8 +238,8 @@ class World {
         let y = event.clientY - rect.top;
 
         // Apply scale correction if the canvas is being rendered at a different size
-        const scaleX = this.canvas.width / rect.width;
-        const scaleY = this.canvas.height / rect.height;
+        let scaleX = this.canvas.width / rect.width;
+        let scaleY = this.canvas.height / rect.height;
         x *= scaleX;
         y *= scaleY;
 
