@@ -133,7 +133,6 @@ function toggleMobileMenu() {
 }
 
 function closeMobileMenu() {
-    console.log('Closing mobile menu');
     let mobileMenu = document.getElementById('mobileMenu');
     if (mobileMenu) {
         mobileMenu.classList.add('d-none');

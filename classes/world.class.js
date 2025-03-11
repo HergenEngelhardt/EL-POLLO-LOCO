@@ -228,11 +228,7 @@ class World {
         x *= scaleX;
         y *= scaleY;
         
-        console.log('Touch/Click at:', x, y);
-        console.log('Play button at:', this.startScreen.playButton.x, this.startScreen.playButton.y);
-        
         if (this.startScreen.isPlayButtonClicked(x, y)) {
-            console.log('Play button clicked!');
             this.startGame();
         }
     }
@@ -316,7 +312,7 @@ class World {
             this.keyboard.THROW = false;
         }
     }
-    
+
     /**
      * Draws background elements and game objects
      */

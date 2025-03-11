@@ -48,7 +48,6 @@ function initMobileControls() {
     document.getElementById('btnThrow').addEventListener('touchstart', (e) => {
         e.preventDefault();
         keyboard.THROW = true;
-        console.log('Throw button pressed', keyboard);
     });
 
     document.getElementById('btnThrow').addEventListener('touchend', (e) => {
