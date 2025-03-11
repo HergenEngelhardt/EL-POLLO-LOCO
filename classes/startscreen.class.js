@@ -64,18 +64,22 @@ class StartScreen extends DrawableObject {
         let x, y;
         
         if (event.type === 'touchstart') {
-            // For touch events
             x = event.touches[0].clientX - rect.left;
             y = event.touches[0].clientY - rect.top;
-            event.preventDefault(); // Prevent scrolling
+            event.preventDefault();
         } else {
-            // For mouse clicks
             x = event.clientX - rect.left;
             y = event.clientY - rect.top;
         }
     
         if (this.isPlayButtonClicked(x, y)) {
-            this.stopMusic();
+            this.stopMusic(); 
+            setTimeout(() => {
+                if (!this.backgroundMusic.paused) {
+                    this.backgroundMusic.pause();
+                    this.backgroundMusic.currentTime = 0;
+                }
+            }, 100);
         } else if (this.isGuitarButtonClicked(x, y)) {
             this.toggleMusic();
         } else if (this.isInstructionsButtonClicked(x, y)) {

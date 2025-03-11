@@ -296,12 +296,27 @@ class World {
         this.drawWorldObjects();
         this.ctx.translate(-this.camera_x, 0);
         this.drawUIElements();
+        this.checkKeyboardStates();
 
         if (this.character.energy <= 0) {
             this.drawGameOverScreen();
         }
     }
 
+    checkKeyboardStates() {
+        // Check if throw button is pressed (from mobile or keyboard)
+        if (this.keyboard.THROW) {
+            // Only throw if character has the method, otherwise use World's method
+            if (typeof this.character.throwBottle === 'function') {
+                this.character.throwBottle();
+            } else {
+                this.throwBottle();
+            }
+            // Reset to prevent continuous throwing
+            this.keyboard.THROW = false;
+        }
+    }
+    
     /**
      * Draws background elements and game objects
      */
