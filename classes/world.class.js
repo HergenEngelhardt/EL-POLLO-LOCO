@@ -58,7 +58,7 @@ class World {
      * Sets up collision detection interval
      */
     checkCollisions() {
-        setInterval(() => {
+        this.collisionInterval = setInterval(() => {
             if (!this.level) return;
             if (this.character.energy <= 0) {
                 this.gameOver = true;
@@ -78,16 +78,26 @@ class World {
      * Handles collisions between character and enemies
      */
     handleEnemyCollisions() {
+        let isJumpingOnEnemy = false;
+
         this.level.enemies.forEach((enemy) => {
             if (this.character.speedY < 0 && this.character.isCollidingFromTop(enemy) && !enemy.isDead) {
                 enemy.die();
                 this.character.speedY = 15;
                 this.character.lastJumpOnEnemy = new Date().getTime();
-            } else if (this.character.isColliding(enemy) && !enemy.isDead && !this.isJumpInvulnerable()) {
-                this.character.hit();
-                this.updateHealthStatusBar();
+                isJumpingOnEnemy = true;
             }
         });
+
+        if (!isJumpingOnEnemy && !this.isJumpInvulnerable()) {
+            this.level.enemies.forEach((enemy) => {
+                if (this.character.isColliding(enemy) && !enemy.isDead) {
+                    this.character.hit();
+                    this.updateHealthStatusBar();
+                    return;
+                }
+            });
+        }
     }
 
     /**
@@ -203,7 +213,7 @@ class World {
         this.canvas.addEventListener('click', (event) => {
             this.handlePointerEvent(event);
         });
-    
+
         // For mobile touch events
         this.canvas.addEventListener('touchstart', (event) => {
             event.preventDefault(); // Prevent scrolling
@@ -216,18 +226,18 @@ class World {
             }
         });
     }
-    
+
     handlePointerEvent(event) {
         let rect = this.canvas.getBoundingClientRect();
         let x = event.clientX - rect.left;
         let y = event.clientY - rect.top;
-        
+
         // Apply scale correction if the canvas is being rendered at a different size
         const scaleX = this.canvas.width / rect.width;
         const scaleY = this.canvas.height / rect.height;
         x *= scaleX;
         y *= scaleY;
-        
+
         if (this.startScreen.isPlayButtonClicked(x, y)) {
             this.startGame();
         }
@@ -244,7 +254,10 @@ class World {
         this.setWorld();
         this.totalCoins = this.level.coins.length;
         this.totalBottles = this.level.salsaBottles.length;
-        this.character.startAnimations();
+        this.checkCollisions();
+        setTimeout(() => {
+            this.character.startAnimations();
+        }, 150);
     }
 
     /**
@@ -416,4 +429,26 @@ class World {
             this.gameOverScreen.showWinLoseScreen('win');
         }
     }
+        /**
+     * Clears all game-related intervals
+     */
+        clearAllGameIntervals() {
+            // Clear character intervals
+            if (this.character.animationInterval) clearInterval(this.character.animationInterval);
+            if (this.character.imageAnimationInterval) clearInterval(this.character.imageAnimationInterval);
+            
+            // Clear enemy intervals - need to modify enemy classes to store interval IDs
+            if (this.level && this.level.enemies) {
+                this.level.enemies.forEach(enemy => {
+                    if (enemy.animationInterval) clearInterval(enemy.animationInterval);
+                    if (enemy.moveInterval) clearInterval(enemy.moveInterval);
+                });
+            }
+            
+            // Clear the collision check interval
+            if (this.collisionInterval) clearInterval(this.collisionInterval);
+            
+            // Clear other intervals as needed
+        }
+    
 }

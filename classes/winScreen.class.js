@@ -8,13 +8,13 @@ class GameWinScreen extends DrawableObject {
      */
     constructor() {
         super();
-        this.loadImage('./assets/img/9_intro_outro_screens/win/win_2.png'); 
+        this.loadImage('./assets/img/9_intro_outro_screens/win/win_2.png');
         this.width = 720;
         this.height = 480;
         this.soundPlayed = false;
         this.screenDisplayed = false;
         this.buttonsCreated = false;
-        this.world = null; 
+        this.world = null;
     }
 
     /**
@@ -44,11 +44,11 @@ class GameWinScreen extends DrawableObject {
      */
     draw(ctx) {
         if (!ctx || !this.world) return;
-        
+
         if (this.world.gameWon) {
             ctx.drawImage(this.img, (ctx.canvas.width - this.width) / 2, (ctx.canvas.height - this.height) / 2, this.width, this.height);
             this.playWinSound();
-            
+
             if (!this.screenDisplayed) {
                 if (ctx && ctx.canvas) {
                     this.showWinScreen(ctx.canvas);
@@ -57,7 +57,7 @@ class GameWinScreen extends DrawableObject {
             }
         }
     }
-    
+
     /**
      * Shows the win screen with restart and menu buttons.
      * @param {HTMLCanvasElement} canvas - The game canvas element
@@ -67,7 +67,7 @@ class GameWinScreen extends DrawableObject {
             canvas || console.error('Canvas is undefined in showWinScreen');
             return;
         }
-        
+
         this.removeExistingButtonContainer();
         this.createButtonsContainer(canvas);
         this.setupEventListeners();
@@ -89,7 +89,7 @@ class GameWinScreen extends DrawableObject {
      */
     createButtonsContainer(canvas) {
         let canvasRect = canvas.getBoundingClientRect();
-        
+
         let buttonsHTML = `
             <div id="win-loose-buttons-container" style="position: absolute; top: ${canvasRect.top + canvasRect.height * 0.65}px; left: ${canvasRect.left + canvasRect.width / 2}px; transform: translateX(-50%); text-align: center; z-index: 1000;">
                 <button class="btn" id="restart-game-btn">Restart Game</button>
@@ -97,7 +97,7 @@ class GameWinScreen extends DrawableObject {
                 <button class="btn" id="back-to-menu-btn">Back to Menu</button>
             </div>
         `;
-        
+
         document.body.insertAdjacentHTML('beforeend', buttonsHTML);
         this.buttonsCreated = true;
     }
@@ -107,12 +107,12 @@ class GameWinScreen extends DrawableObject {
      */
     setupEventListeners() {
         let self = this;
-        document.getElementById('restart-game-btn').addEventListener('click', function(event) {
+        document.getElementById('restart-game-btn').addEventListener('click', function (event) {
             event.preventDefault();
             event.stopPropagation();
             self.handleRestartGame();
         });
-        
+
         document.getElementById('back-to-menu-btn').addEventListener('click', () => {
             this.handleBackToMenu();
         });
@@ -123,13 +123,17 @@ class GameWinScreen extends DrawableObject {
      */
     handleRestartGame() {
         this.removeButtonContainer();
-        
+        if (this.world) {
+            this.world.clearAllGameIntervals();
+        }
         let world = this.world || window.world;
         if (world) {
             this.resetGameState(world);
             this.resetCharacterState(world);
             this.resetWorldState(world);
             this.reinitializeLevel(world);
+            world.startGame();
+            world.checkCollisions();
         } else {
             this.handleMissingWorld();
         }
@@ -156,7 +160,7 @@ class GameWinScreen extends DrawableObject {
         this.screenDisplayed = false;
         this.buttonsCreated = false;
         this.soundPlayed = false;
-        
+
         if (world.character.animationInterval) {
             clearInterval(world.character.animationInterval);
         }
@@ -169,8 +173,8 @@ class GameWinScreen extends DrawableObject {
     resetCharacterState(world) {
         world.character.energy = 100;
         world.character.deadAnimationPlayed = false;
-        world.character.x = 100; 
-        world.character.y = 180; 
+        world.character.x = 100;
+        world.character.y = 180;
         world.character.speedY = 0;
         world.character.otherDirection = false;
     }
@@ -198,7 +202,7 @@ class GameWinScreen extends DrawableObject {
                 world.setWorld();
             }
         }
-        
+
         this.updateGameUI(world);
     }
 
@@ -211,9 +215,6 @@ class GameWinScreen extends DrawableObject {
         world.updateCoinStatusBar();
         world.updateBottleStatusBar();
         world.draw();
-        setTimeout(() => {
-            world.character.startAnimations();
-        }, 100);
     }
 
     /**
@@ -229,7 +230,7 @@ class GameWinScreen extends DrawableObject {
         } catch (e) {
             console.error("Fallback failed:", e);
         }
-        
+
         console.warn("Using reload as last resort");
         location.reload();
     }
