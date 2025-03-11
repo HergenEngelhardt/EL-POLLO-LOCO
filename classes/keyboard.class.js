@@ -103,3 +103,6 @@ window.addEventListener('keyup', (e) => {
         keyboard.JUMP = false;
     }
 });
+
+guitarElement.addEventListener('click', playMusic); 
+guitarElement.addEventListener('touchstart', playMusic);

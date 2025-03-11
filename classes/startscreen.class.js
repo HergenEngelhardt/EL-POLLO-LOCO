@@ -44,21 +44,45 @@ class StartScreen extends DrawableObject {
         this.backgroundMusic = new Audio('./audio/backgroundMusic.mp3');
         this.backgroundMusic.loop = true;
 
+        // Handle mouse clicks
         canvas.addEventListener("click", (event) => {
-            let rect = canvas.getBoundingClientRect();
-            let x = event.clientX - rect.left;
-            let y = event.clientY - rect.top;
-        
-            if (this.isPlayButtonClicked(x, y)) {
-                this.stopMusic();
-            } else if (this.isGuitarButtonClicked(x, y)) {
-                this.toggleMusic();
-            } else if (this.isInstructionsButtonClicked(x, y)) {
-                this.showInstructions();
-            } else if (this.isImprintButtonClicked(x, y)) {
-                this.showImprint();
-            }
+            this.handleInteraction(event);
         });
+
+        // Handle touch events for mobile
+        canvas.addEventListener("touchstart", (event) => {
+            this.handleInteraction(event);
+        });
+    }
+
+    /**
+     * Handles both mouse clicks and touch interactions
+     * @param {Event} event - The interaction event (click or touch)
+     */
+    handleInteraction(event) {
+        let rect = canvas.getBoundingClientRect();
+        let x, y;
+        
+        if (event.type === 'touchstart') {
+            // For touch events
+            x = event.touches[0].clientX - rect.left;
+            y = event.touches[0].clientY - rect.top;
+            event.preventDefault(); // Prevent scrolling
+        } else {
+            // For mouse clicks
+            x = event.clientX - rect.left;
+            y = event.clientY - rect.top;
+        }
+    
+        if (this.isPlayButtonClicked(x, y)) {
+            this.stopMusic();
+        } else if (this.isGuitarButtonClicked(x, y)) {
+            this.toggleMusic();
+        } else if (this.isInstructionsButtonClicked(x, y)) {
+            this.showInstructions();
+        } else if (this.isImprintButtonClicked(x, y)) {
+            this.showImprint();
+        }
     }
 
     /**
@@ -117,7 +141,7 @@ class StartScreen extends DrawableObject {
                y >= this.imprintButton.y && y <= this.imprintButton.y + this.imprintButton.height;
     }
 
-     /**
+    /**
      * Toggles the background music play state.
      * If music is paused, it will play. If music is playing, it will pause.
      */
