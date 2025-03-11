@@ -188,6 +188,12 @@ class GameWinScreen extends DrawableObject {
         world.coinsCollected = 0;
         world.bottlesCollected = 0;
         world.throwableBottles = [];
+        world.activeThrowableBottles = [];
+        world.gameWon = false;
+        if (world.collisionInterval) {
+            clearInterval(world.collisionInterval);
+            world.collisionInterval = null;
+        }
     }
 
     /**

@@ -110,7 +110,9 @@ class MovableObject extends DrawableObject {
      */
     hit() {
         this.energy -= 20;
-        this.playHitSound();
+        if (this.world && !this.world.gameWon && !this.world.gameOver) {
+            this.playHitSound();
+        }
         if (this.energy < 0) {
             this.energy = 0;
         } else {

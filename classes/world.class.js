@@ -434,22 +434,37 @@ class World {
     clearAllGameIntervals() {
         if (this.character.animationInterval) {
             clearInterval(this.character.animationInterval);
+            this.character.animationInterval = null;
         }
+    
         if (this.character.imageAnimationInterval) {
             clearInterval(this.character.imageAnimationInterval);
+            this.character.imageAnimationInterval = null;
         }
+    
         if (this.level && this.level.enemies) {
             this.level.enemies.forEach(enemy => {
-                if (enemy.animationInterval) clearInterval(enemy.animationInterval);
+                if (enemy.animationInterval) {
+                    clearInterval(enemy.animationInterval);
+                    enemy.animationInterval = null;
+                }
             });
         }
+    
         if (this.collisionInterval) {
             clearInterval(this.collisionInterval);
+            this.collisionInterval = null;
         }
         if (this.activeThrowableBottles) {
             this.activeThrowableBottles.forEach(bottle => {
-                if (bottle.animationInterval) clearInterval(bottle.animationInterval);
-                if (bottle.moveInterval) clearInterval(bottle.moveInterval);
+                if (bottle.animationInterval) {
+                    clearInterval(bottle.animationInterval);
+                    bottle.animationInterval = null;
+                }
+                if (bottle.moveInterval) {
+                    clearInterval(bottle.moveInterval);
+                    bottle.moveInterval = null;
+                }
             });
         }
     }

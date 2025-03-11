@@ -321,7 +321,9 @@ class ChickenBoss extends MovableObject {
     hit() {
         this.energy -= 15;
         this.lastHit = new Date().getTime();
-        this.playHitSound();
+        if (this.world && !this.world.gameWon && !this.world.gameOver) {
+            this.playHitSound();
+        }
         if (this.energy < 0) {
             this.energy = 0;
         }
