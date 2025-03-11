@@ -2,7 +2,7 @@
  * Represents a background element in the game.
  * @extends MovableObject
  */
-class Background extends MovableObject{
+class Background extends MovableObject {
     width = 720;
     height = 480;
     
@@ -10,13 +10,11 @@ class Background extends MovableObject{
      * Creates a new background element.
      * @param {string} imagePath - Path to the background image
      * @param {number} x - X-coordinate position
-     * @param {number} y - Y-coordinate position (will be adjusted based on height)
+     * @param {number} [yPosition] - Optional Y-coordinate position (defaults to bottom of canvas)
      */
-    constructor(imagePath, x, y) {
+    constructor(imagePath, x, yPosition) {
         super().loadImage(imagePath);
         this.x = x;
-        this.y = 480 - this.height;
-    }   
-
-
+        this.y = yPosition !== undefined ? yPosition : 480 - this.height;
+    }
 }
