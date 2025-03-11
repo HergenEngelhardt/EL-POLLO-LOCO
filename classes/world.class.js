@@ -59,18 +59,13 @@ class World {
      */
     checkCollisions() {
         this.collisionInterval = setInterval(() => {
-            if (!this.level) return;
-            if (this.character.energy <= 0) {
-                this.gameOver = true;
-                this.gameOverScreen.showWinLoseScreen('lose');
-                return;
+            if (!this.gameOver && !this.character.isDead()) {
+                this.handleEnemyCollisions();
+                this.handleCoinCollisions();
+                this.handleBottleCollisions();
+                this.handleThrowableBottleCollisions();
+                this.checkWinCondition();
             }
-            this.level.enemies = this.level.enemies.filter(enemy => !enemy.toDelete);
-            this.handleEnemyCollisions();
-            this.handleCoinCollisions();
-            this.handleBottleCollisions();
-            this.handleThrowableBottleCollisions();
-            this.checkWinCondition();
         }, 100);
     }
 
@@ -78,6 +73,7 @@ class World {
      * Handles collisions between character and enemies
      */
     handleEnemyCollisions() {
+        if (!this.level || !this.level.enemies) return;
         let isJumpingOnEnemy = false;
         this.level.enemies.forEach((enemy) => {
             if (this.character.speedY < 0 && this.character.isCollidingFromTop(enemy) && !enemy.isDead) {
@@ -107,6 +103,7 @@ class World {
      * Handles collisions between character and coins
      */
     handleCoinCollisions() {
+        if (!this.level || !this.level.coins) return;
         this.level.coins.forEach((coin, index) => {
             if (this.character.isColliding(coin)) {
                 coin.playCollectSound();
@@ -121,6 +118,7 @@ class World {
      * Handles collisions between character and collectible bottles
      */
     handleBottleCollisions() {
+        if (!this.level || !this.level.salsaBottles) return;
         this.level.salsaBottles.forEach((bottle, index) => {
             if (this.character.isColliding(bottle) && 
                 (!this.character.isAboveGround() || this.character.speedY > 0)) {
@@ -139,6 +137,7 @@ class World {
      * Handles collisions between thrown bottles and enemies
      */
     handleThrowableBottleCollisions() {
+        if (!this.activeThrowableBottles || !this.level || !this.level.enemies) return;
         if (!this.activeThrowableBottles) return;
 
         this.activeThrowableBottles.forEach((bottle) => {
@@ -438,22 +437,17 @@ class World {
      * Clears all game-related intervals
      */
         clearAllGameIntervals() {
-            // Clear character intervals
-            if (this.character.animationInterval) clearInterval(this.character.animationInterval);
-            if (this.character.imageAnimationInterval) clearInterval(this.character.imageAnimationInterval);
-            
-            // Clear enemy intervals - need to modify enemy classes to store interval IDs
+            if (this.character.animationInterval)
+                clearInterval(this.character.animationInterval);
+            if (this.character.imageAnimationInterval)
+                clearInterval(this.character.imageAnimationInterval);
             if (this.level && this.level.enemies) {
                 this.level.enemies.forEach(enemy => {
                     if (enemy.animationInterval) clearInterval(enemy.animationInterval);
                     if (enemy.moveInterval) clearInterval(enemy.moveInterval);
                 });
             }
-            
-            // Clear the collision check interval
             if (this.collisionInterval) clearInterval(this.collisionInterval);
-            
-            // Clear other intervals as needed
         }
     
 }
