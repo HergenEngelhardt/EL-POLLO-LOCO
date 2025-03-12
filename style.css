@@ -206,34 +206,15 @@ canvas {
     height: 25px;
 }
 
-#restartBtn {
-    position: relative;
-    top: -530px;
-    right: -335px;
-    z-index: 3;
-    cursor: pointer;
-    border-radius: 50%;
-    padding: 5px;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
 
 #win-loose-buttons-container {
     margin-top: 15px;
 }
 
-#restartBtn img {
-    width: 40px;
-    height: 40px;
-}
-
 #soundBtn {
     position: relative;
-    top: -581px;
-    right: -292px;
+    top: -529px;
+    right: -338px;
     z-index: 3;
     cursor: pointer;
     border-radius: 50%;

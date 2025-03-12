@@ -36,9 +36,4 @@
     #fullscreenBtn {
         display: none;
     }
-
-    #restartBtn {
-        top: 42px;
-        right: 37px;
-    }
 }

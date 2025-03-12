@@ -160,11 +160,7 @@ class World {
     startGame() {
         this.gameStarted = true;
         this.gameOver = false;
-        document.getElementById('restartBtn').classList.remove('d-none');
         document.getElementById('soundBtn').classList.remove('d-none');
-        if (!document.getElementById('restartBtn').onclick) {
-            document.getElementById('restartBtn').onclick = restartGame;
-        }
         initLevel1();
         this.level = level1;
         this.setWorld();

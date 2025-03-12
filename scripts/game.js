@@ -126,10 +126,6 @@ function playAgain() {
     document.getElementById('win-loose').classList.add('d-none');
     world.gameOver = false;
     world.startGame();
-    document.getElementById('restartBtn').classList.remove('d-none');
-    if (!document.getElementById('restartBtn').onclick) {
-        document.getElementById('restartBtn').onclick = restartGame;
-    }
 }
 
 /**
@@ -161,7 +157,6 @@ function stopGame() {
         world.stopAllBackgroundSounds();
         
         world.clearAllGameIntervals();
-        document.getElementById('restartBtn').classList.add('d-none');
     }
 }
 
