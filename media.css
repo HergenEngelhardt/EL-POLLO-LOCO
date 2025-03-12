@@ -1,0 +1,39 @@
+
+@media only screen and (max-width: 720px) {
+    canvas {
+        margin-top: 5%;
+        width: 100%;
+    }
+}
+
+@media only screen and (max-height: 480px) {
+    canvas {
+        margin-top: 0;
+        height: 100vh;
+    }
+
+    h1 {
+        display: none;
+    }
+}
+
+@media (min-width: 800px) {
+    #mobileBTN {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 800px) {
+    .button-container {
+        display: none;
+    }
+
+    #mobileMenuBtn,
+    .mobile-only {
+        display: flex;
+    }
+
+    #fullscreenBtn {
+        display: none;
+    }
+}

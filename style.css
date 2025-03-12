@@ -81,24 +81,6 @@ canvas {
         url('webfont.svg#svgFontName') format('svg');
 }
 
-@media only screen and (max-width: 720px) {
-    canvas {
-        margin-top: 5%;
-        width: 100%;
-    }
-}
-
-@media only screen and (max-height: 480px) {
-    canvas {
-        margin-top: 0;
-        height: 100vh;
-    }
-
-    h1 {
-        display: none;
-    }
-}
-
 #mobileBTN {
     position: fixed;
     bottom: 20px;
@@ -150,12 +132,6 @@ canvas {
 
 #btnThrow {
     pointer-events: auto !important;
-}
-
-@media (min-width: 768px) {
-    #mobileBTN {
-        display: none;
-    }
 }
 
 #mobileMenuBtn {
@@ -213,9 +189,9 @@ canvas {
 }
 
 #fullscreenBtn {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
+    position: relative;
+    bottom: 42px;
+    right: -339px;
     z-index: 999;
     cursor: pointer;
     width: 40px;
@@ -229,23 +205,6 @@ canvas {
 #fullscreenBtn img {
     width: 25px;
     height: 25px;
-}
-
-@media only screen and (max-width: 800px) {
-    .button-container {
-        display: none;
-    }
-
-    #mobileMenuBtn,
-    .mobile-only {
-        display: flex;
-    }
-
-    #fullscreenBtn {
-        bottom: auto;
-        top: 42px;
-        right: 35px;
-    }
 }
 
 #orientation-message {
@@ -278,7 +237,15 @@ canvas {
 }
 
 @keyframes rotate {
-    0% { transform: rotate(0deg); }
-    50% { transform: rotate(90deg); }
-    100% { transform: rotate(0deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    50% {
+        transform: rotate(90deg);
+    }
+
+    100% {
+        transform: rotate(0deg);
+    }
 }
