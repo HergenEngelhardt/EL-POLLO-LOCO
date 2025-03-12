@@ -27,6 +27,12 @@ level1 = new Level(
         new SalsaBottle()
     ],
     [
+        new Clouds(),
+        new Clouds(),
+        new Clouds(),
+        new Clouds(),
+        new Clouds(),
+        new Clouds(),
         new Clouds()
     ],
     [
