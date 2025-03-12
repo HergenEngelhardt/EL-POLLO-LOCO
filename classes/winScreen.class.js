@@ -32,7 +32,7 @@ class GameWinScreen extends DrawableObject {
     playWinSound() {
         if (!this.soundPlayed) {
             this.winAudio = new Audio('./audio/winning.wav');
-            audio.volume = 0.2;
+            this.winAudio.volume = 0.2;
             this.winAudio.play().catch(error => {
                 console.error('Error playing audio:', error);
             });
