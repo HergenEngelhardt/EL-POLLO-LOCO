@@ -51,17 +51,19 @@ class GameWinScreen extends DrawableObject {
      */
     draw(ctx) {
         if (!ctx || !this.world) return;
-
+    
         if (this.world.gameWon) {
-            ctx.drawImage(this.img, (ctx.canvas.width - this.width) / 2, (ctx.canvas.height - this.height) / 2, this.width, this.height);
-            this.playWinSound();
-
             if (!this.screenDisplayed) {
+                this.stopAllGameSounds();
+                this.screenDisplayed = true;
+                
                 if (ctx && ctx.canvas) {
                     this.showWinScreen(ctx.canvas);
-                    this.screenDisplayed = true;
                 }
             }
+            
+            ctx.drawImage(this.img, (ctx.canvas.width - this.width) / 2, (ctx.canvas.height - this.height) / 2, this.width, this.height);
+            this.playWinSound();
         }
     }
 
@@ -282,5 +284,16 @@ class GameWinScreen extends DrawableObject {
         }
         this.stopWinSound();
         location.reload();
+    }
+
+    stopAllGameSounds() {
+        SoundManager.stopAll();
+        if (this.world && this.world.character) {
+            if (this.world.character.runningSound) {
+                this.world.character.runningSound.pause();
+                this.world.character.runningSound.currentTime = 0;
+            }
+        }
+        // SoundManager.stop('snoring');
     }
 }
