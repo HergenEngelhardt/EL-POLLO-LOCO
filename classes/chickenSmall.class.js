@@ -66,7 +66,7 @@ class ChickenSmall extends MovableObject {
             this.toDelete = true;
         }, 1500);
     }
-    
+
     /**
     * Handles the small chicken being hit by a salsa bottle.
     * Kills the chicken on hit.
@@ -75,7 +75,7 @@ class ChickenSmall extends MovableObject {
         if (!this.isDead) {
             this.die();
             if (this.world) {
-                SoundManager.play('chickenHit');
+               SoundManager.play('punch');
             }
         }
     }

@@ -79,7 +79,7 @@ class Chicken extends MovableObject{
         if (!this.isDead) {
             this.die();
             if (this.world) {
-                SoundManager.play('chickenHit');
+                SoundManager.play('punch');  
             }
         }
     }

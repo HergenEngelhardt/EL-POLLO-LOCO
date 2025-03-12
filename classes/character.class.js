@@ -193,7 +193,7 @@ class Character extends MovableObject {
         if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
             this.animateImages(this.IMAGES_WALKING);
             this.stopSnoringSound();
-        } else if (Date.now() - this.lastMoveTime > 6000) {
+        } else if (Date.now() - this.lastMoveTime > 6000 && !this.world.gameOver && !this.world.gameWon) {
             this.animateImages(this.IMAGES_IDLE_LONG);
             this.playSnoringSound();
         } else {
