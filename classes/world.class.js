@@ -157,7 +157,7 @@ class World {
         this.setWorld();
         this.totalCoins = this.level.coins.length;
         this.totalBottles = this.level.salsaBottles.length;
-        this.checkCollisions();
+        this.collisionManager.startCollisionDetection();
         setTimeout(() => {
             this.character.startAnimations();
         }, 150);
