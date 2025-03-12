@@ -12,6 +12,7 @@ let soundEnabled = true;
  * Initializes the game by setting up the canvas, world, and UI event listeners
  */
 function init() {
+    soundEnabled = localStorage.getItem('soundEnabled') !== 'false'; 
     setupGameObjects();
     setupEventListeners();
     initMobileControls();
@@ -20,6 +21,7 @@ function init() {
     document.getElementById('soundBtn').addEventListener('click', toggleSound);
     SoundManager.init();
     SoundManager.enabled = soundEnabled;
+    updateSoundButtonUI();
 }
 
 /**
@@ -115,11 +117,12 @@ function hideAllPanels() {
  * Shows the main menu and hides other elements
  */
 function showMenu() {
-    // Hide various containers
     document.getElementById('instructions').classList.add('d-none');
     document.getElementById('imprint').classList.add('d-none');
     document.getElementById('win-loose').classList.add('d-none');
     document.getElementById('mobileMenu').classList.add('d-none');
+    document.querySelector('.button-container').classList.remove('d-none');
+    
     if (world) {
         stopGame();
     }
@@ -155,6 +158,7 @@ function restartGame() {
  */
 function startGame() {
     document.getElementById('soundBtn').classList.remove('d-none');
+    document.querySelector('.button-container').classList.add('d-none');
 }
 
 /**
@@ -196,24 +200,31 @@ function closeMobileMenu() {
 }
 
 /**
- * Toggles sound state and updates UI
+ * Toggles sound state, updates UI, and saves preference to localStorage
  */
 function toggleSound() {
     soundEnabled = !soundEnabled;
+    localStorage.setItem('soundEnabled', soundEnabled);
+    updateSoundButtonUI();
+    
+    SoundManager.toggleSound(soundEnabled);
+    if (world && world.startScreen && world.startScreen.backgroundMusic) {
+        if (!soundEnabled) {
+            world.startScreen.backgroundMusic.pause();
+        }
+    }
+}
+
+/**
+ * Updates the sound button UI based on current sound state
+ */
+function updateSoundButtonUI() {
     let soundBtn = document.getElementById('soundBtn');
     let soundImage = soundBtn.querySelector('img');
     if (soundEnabled) {
         soundImage.classList.remove('disabled-icon');
     } else {
         soundImage.classList.add('disabled-icon');
-    }
-    
-    SoundManager.toggleSound(soundEnabled);
-    if (world && world.startScreen && world.startScreen.backgroundMusic) {
-        if (!soundEnabled) {
-            world.startScreen.backgroundMusic.pause();
-            world.startScreen.backgroundMusic.currentTime = 0;
-        }
     }
 }
 

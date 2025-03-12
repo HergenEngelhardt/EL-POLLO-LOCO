@@ -161,6 +161,7 @@ class World {
         this.gameStarted = true;
         this.gameOver = false;
         document.getElementById('soundBtn').classList.remove('d-none');
+        document.querySelector('.button-container').classList.add('d-none');
         initLevel1();
         this.level = level1;
         this.setWorld();

@@ -10,7 +10,7 @@ class SoundManager {
      * Initializes the sound manager with default settings and preloads common sounds
      */
     static init() {
-        this.enabled = true;
+        this.enabled = localStorage.getItem('soundEnabled') !== 'false';
         this.sounds = {};
         
         this.preload('hit', './audio/hit.wav');
