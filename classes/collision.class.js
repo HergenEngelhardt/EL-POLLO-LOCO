@@ -66,7 +66,7 @@ class CollisionManager {
             this.world.character.lastJumpOnEnemy &&
             new Date().getTime() - this.world.character.lastJumpOnEnemy < jumpSafePeriod;
 
-        if (!isJumpingOnEnemy && !safeFromJumpingOnEnemy && !this.world.isJumpInvulnerable()) {
+        if (!isJumpingOnEnemy && !safeFromJumpingOnEnemy && !this.world.isJumpInvulnerable() && !this.world.character.isHurt()) {
             this.world.level.enemies.forEach((enemy) => {
                 if (this.world.character.isColliding(enemy) && !enemy.isDead) {
                     this.world.character.hit();
