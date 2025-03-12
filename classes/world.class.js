@@ -199,8 +199,10 @@ class World {
     */
     checkGameStateAndContinue() {
         if (this.gameOver) {
+            this.stopAllBackgroundSounds();
             this.drawGameOverScreen();
         } else if (this.gameWon) {
+            this.stopAllBackgroundSounds();
             this.winScreen.draw(this.ctx);
         } else {
             let self = this;
@@ -260,13 +262,30 @@ class World {
     }
 
     /**
- * Removes enemies marked for deletion from the game
- */
+    * Removes enemies marked for deletion from the game
+    */
     cleanupDeadEnemies() {
         if (this.level && this.level.enemies) {
             this.level.enemies = this.level.enemies.filter(enemy => !enemy.toDelete);
             this.checkWinCondition();
         }
+    }
+
+    /**
+    * Stops all background sounds when game ends
+    */
+    stopAllBackgroundSounds() {
+        if (this.character && this.character.runningSound) {
+            this.character.stopRunningSound();
+        }
+        if (window.backgroundMusic && typeof window.backgroundMusic.pause === 'function') {
+            window.backgroundMusic.pause();
+            window.backgroundMusic.currentTime = 0;
+        }
+        document.querySelectorAll('audio').forEach(audio => {
+            audio.pause();
+            audio.currentTime = 0;
+        });
     }
 
     /**
