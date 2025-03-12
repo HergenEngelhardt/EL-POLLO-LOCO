@@ -197,7 +197,7 @@ class StartScreen extends DrawableObject {
         let imprintElement = document.getElementById('imprint');
         imprintElement.classList.remove('d-none');
         if (!imprintElement.classList.contains('loaded')) {
-            const backButton = imprintElement.querySelector('.btn');
+            let backButton = imprintElement.querySelector('.btn');
             fetch('imprint.html')
                 .then(response => response.text())
                 .then(data => {

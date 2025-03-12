@@ -294,6 +294,6 @@ class GameWinScreen extends DrawableObject {
                 this.world.character.runningSound.currentTime = 0;
             }
         }
-        // SoundManager.stop('snoring');
+        SoundManager.stop('snoring');
     }
 }

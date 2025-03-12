@@ -275,7 +275,20 @@ class ChickenBoss extends MovableObject {
             this.x -= this.speed;
             this.otherDirection = false;
         }
+        this.playMovementSound();
     }
+
+        /**
+     * Plays boss movement sound with throttling to prevent sound overlap
+     */
+        playMovementSound() {
+            let now = new Date().getTime();
+            
+            if (!this.isDead() && (!this.lastMovementSoundTime || now - this.lastMovementSoundTime > 1000)) {
+                SoundManager.play('chickenboss', 0.3);
+                this.lastMovementSoundTime = now;
+            }
+        }
 
     /**
      * Sets the boss to idle state

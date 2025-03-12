@@ -67,7 +67,7 @@ function toggleImprint() {
             fetch('imprint.html')
                 .then(response => response.text())
                 .then(data => {
-                    const backButtonHTML = '<button class="btn" onclick="showMenu()">Back to Menu</button>';
+                    let backButtonHTML = '<button class="btn" onclick="showMenu()">Back to Menu</button>';
                     imprintElement.innerHTML = data + backButtonHTML;
                     imprintElement.classList.add('loaded');
                 })
