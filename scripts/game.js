@@ -1,5 +1,5 @@
 let canvas;
-let ctx; 
+let ctx;
 let world;
 let keyboard = new Keyboard();
 
@@ -66,21 +66,21 @@ function toggleImprint() {
  */
 function toggleFullscreen() {
     let gameCanvas = document.getElementById('gameCanvas');
-    
+
     if (!document.fullscreenElement) {
         if (gameCanvas.requestFullscreen) {
             gameCanvas.requestFullscreen();
         } else if (gameCanvas.webkitRequestFullscreen) {
             gameCanvas.webkitRequestFullscreen();
-        } else if (gameCanvas.msRequestFullscreen) { 
+        } else if (gameCanvas.msRequestFullscreen) {
             gameCanvas.msRequestFullscreen();
         }
     } else {
         if (document.exitFullscreen) {
             document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) { 
+        } else if (document.webkitExitFullscreen) {
             document.webkitExitFullscreen();
-        } else if (document.msExitFullscreen) { 
+        } else if (document.msExitFullscreen) {
             document.msExitFullscreen();
         }
     }
@@ -95,15 +95,23 @@ function hideAllPanels() {
     document.getElementById('win-loose').classList.add('d-none');
 }
 
-
-
 /**
- * Hides all UI overlay elements (instructions, imprint, win/lose screen)
+ * Shows the main menu and hides other elements
  */
 function showMenu() {
+    // Hide various containers
     document.getElementById('instructions').classList.add('d-none');
     document.getElementById('imprint').classList.add('d-none');
     document.getElementById('win-loose').classList.add('d-none');
+    document.getElementById('mobileMenu').classList.add('d-none');
+    if (world) {
+        stopGame();
+    }
+    if (typeof startGame === 'function') {
+        startGame();
+    } else {
+        init();
+    }
 }
 
 /**
@@ -114,6 +122,20 @@ function playAgain() {
     document.getElementById('win-loose').classList.add('d-none');
     world.gameOver = false;
     world.startGame();
+    document.getElementById('restartBtn').classList.remove('d-none');
+    if (!document.getElementById('restartBtn').onclick) {
+        document.getElementById('restartBtn').onclick = restartGame;
+    }
+}
+
+/**
+ * Restarts the game
+ */
+function restartGame() {
+    if (world) {
+        stopGame();
+    }
+    init();
 }
 
 /**
@@ -151,7 +173,7 @@ function showImprint() {
     document.getElementById('mobileMenu').classList.add('d-none');
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     let menuBtn = document.getElementById('mobileMenuBtn');
     if (menuBtn) {
         menuBtn.addEventListener('click', toggleMobileMenu);
@@ -180,8 +202,8 @@ function checkMobileAlignment() {
  * @returns {boolean} True if mobile device, false otherwise
  */
 function isMobileDevice() {
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
-           window.innerWidth <= 1024;
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+        window.innerWidth <= 1024;
 }
 
 /**
@@ -205,13 +227,13 @@ function setupOrientationHandling(orientationMessage) {
     function updateOrientation() {
         if (window.innerHeight > window.innerWidth) {
             orientationMessage.classList.remove('d-none');
-            orientationMessage.style.display = 'flex'; 
+            orientationMessage.style.display = 'flex';
         } else {
             orientationMessage.classList.add('d-none');
         }
     }
-    
-    updateOrientation(); 
+
+    updateOrientation();
     window.addEventListener('resize', updateOrientation);
     window.addEventListener('orientationchange', () => {
         setTimeout(updateOrientation, 100);

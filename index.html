@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>El pollo loco</title>
     <link rel="stylesheet" href="./style.css">
-    <link rel="stylesheet" href="./mobile.css">
+    <link rel="stylesheet" href="./media.css">
     <script src="./classes/drawableObject.class.js"></script>
     <script src="./classes/movableObject.class.js"></script>
     <script src="./classes/character.class.js"></script>
@@ -43,9 +43,13 @@
     <div id="fullscreenBtn">
         <img src="./assets/icons/fullscreen.png" alt="Fullscreen">
     </div>
+    <div id="restartBtn" class="d-none">
+        <img src="./assets/icons/restart.png" alt="Restart">
+    </div>
     <div class="button-container">
         <button id="instructions-btn" class="btn">Instructions</button>
         <button id="imprint-btn" class="btn">Imprint</button>
+        <button class="btn" onclick="showMenu()">Back to Menu</button>
     </div>
     <div id="instructions" class="instructions-container d-none">
         <h1>Instructions</h1>
