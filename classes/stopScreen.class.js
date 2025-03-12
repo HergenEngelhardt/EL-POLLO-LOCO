@@ -99,8 +99,8 @@ class GameOverScreen extends DrawableObject {
         try {
             if (!this.validateCanvas(canvas)) return;
 
-            const position = this.calculateButtonPosition(canvas);
-            const buttonsHTML = this.generateButtonsHTML(position.top, position.left);
+            let position = this.calculateButtonPosition(canvas);
+            let buttonsHTML = this.generateButtonsHTML(position.top, position.left);
             this.insertButtonsIntoDOM(buttonsHTML);
         } catch (error) {
             console.error('Error creating buttons container:', error);
@@ -185,7 +185,11 @@ class GameOverScreen extends DrawableObject {
             this.resetWorldState(world);
             this.reinitializeLevel(world);
             world.startGame();
-            this.collisionManager.startCollisionDetection();
+            if (world.collisionManager) {
+                world.collisionManager.startCollisionDetection();
+            } else if (typeof world.startCollisionDetection === 'function') {
+                world.startCollisionDetection();
+            }
         } else {
             this.handleMissingWorld();
         }

@@ -187,6 +187,7 @@ class World {
         if (!this.gameStarted) {
             this.startScreen.draw(this.ctx);
         } else {
+            this.cleanupDeadEnemies();
             this.renderManager.drawGameElements();
             this.checkKeyboardStates();
         }
@@ -255,6 +256,16 @@ class World {
             this.gameWon = true;
             this.clearAllGameIntervals();
             this.gameOverScreen.showWinLoseScreen('win');
+        }
+    }
+
+    /**
+ * Removes enemies marked for deletion from the game
+ */
+    cleanupDeadEnemies() {
+        if (this.level && this.level.enemies) {
+            this.level.enemies = this.level.enemies.filter(enemy => !enemy.toDelete);
+            this.checkWinCondition();
         }
     }
 

@@ -29,8 +29,7 @@ class CollisionManager {
      */
     handleEnemyCollisions() {
         if (!this.world.level || !this.world.level.enemies) return;
-
-        const isJumpingOnEnemy = this.handleJumpOnEnemies();
+        let isJumpingOnEnemy = this.handleJumpOnEnemies();
         this.handleEnemyDamageToCharacter(isJumpingOnEnemy);
     }
 
@@ -58,8 +57,8 @@ class CollisionManager {
      * @param {boolean} isJumpingOnEnemy - Whether the character is currently jumping on any enemy
      */
     handleEnemyDamageToCharacter(isJumpingOnEnemy) {
-        const jumpSafePeriod = 500;
-        const safeFromJumpingOnEnemy =
+        let jumpSafePeriod = 500;
+        let safeFromJumpingOnEnemy =
             this.world.character.lastJumpOnEnemy &&
             new Date().getTime() - this.world.character.lastJumpOnEnemy < jumpSafePeriod;
 

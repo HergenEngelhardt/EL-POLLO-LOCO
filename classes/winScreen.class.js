@@ -133,7 +133,11 @@ class GameWinScreen extends DrawableObject {
             this.resetWorldState(world);
             this.reinitializeLevel(world);
             world.startGame();
-            this.collisionManager.startCollisionDetection();
+            if (world.collisionManager) {
+                world.collisionManager.startCollisionDetection();
+            } else if (typeof world.startCollisionDetection === 'function') {
+                world.startCollisionDetection();
+            }
         } else {
             this.handleMissingWorld();
         }

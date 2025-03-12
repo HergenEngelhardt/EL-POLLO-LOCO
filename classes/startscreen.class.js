@@ -57,7 +57,7 @@ class StartScreen extends DrawableObject {
      * @param {Event} event - The interaction event (click or touch)
      */
     handleInteraction(event) {
-        const coordinates = this.getCoordinatesFromEvent(event);
+        let coordinates = this.getCoordinatesFromEvent(event);
         this.handleButtonClick(coordinates.x, coordinates.y);
     }
 
