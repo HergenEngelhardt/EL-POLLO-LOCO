@@ -174,24 +174,56 @@ class GameOverScreen extends DrawableObject {
      */
     handleRestartGame() {
         this.removeButtonContainer();
-        if (this.world) {
-            this.world.clearAllGameIntervals();
-        }
+        this.stopAllSounds();
 
         let world = this.world || window.world;
         if (world) {
-            this.resetGameState(world);
-            this.resetCharacterState(world);
-            this.resetWorldState(world);
-            this.reinitializeLevel(world);
-            world.startGame();
-            if (world.collisionManager) {
-                world.collisionManager.startCollisionDetection();
-            } else if (typeof world.startCollisionDetection === 'function') {
-                world.startCollisionDetection();
-            }
+            this.prepareGameRestart(world);
+            this.startNewGame(world);
         } else {
             this.handleMissingWorld();
+        }
+    }
+
+    /**
+     * Stops all game sounds
+     */
+    stopAllSounds() {
+        if (this.world) {
+            this.world.stopAllBackgroundSounds();
+            this.world.clearAllGameIntervals();
+        }
+    }
+
+    /**
+     * Prepares the game for restart by resetting all necessary states
+     * @param {World} world - The game world object
+     */
+    prepareGameRestart(world) {
+        this.resetGameState(world);
+        this.resetCharacterState(world);
+        this.resetWorldState(world);
+        this.reinitializeLevel(world);
+    }
+
+    /**
+     * Starts the new game and initializes collision detection
+     * @param {World} world - The game world object
+     */
+    startNewGame(world) {
+        world.startGame();
+        this.initializeCollisionDetection(world);
+    }
+
+    /**
+     * Initializes the collision detection system
+     * @param {World} world - The game world object
+     */
+    initializeCollisionDetection(world) {
+        if (world.collisionManager) {
+            world.collisionManager.startCollisionDetection();
+        } else if (typeof world.startCollisionDetection === 'function') {
+            world.startCollisionDetection();
         }
     }
 

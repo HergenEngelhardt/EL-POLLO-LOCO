@@ -15,6 +15,7 @@ class GameWinScreen extends DrawableObject {
         this.screenDisplayed = false;
         this.buttonsCreated = false;
         this.world = null;
+        this.winAudio = null;
     }
 
     /**
@@ -30,11 +31,22 @@ class GameWinScreen extends DrawableObject {
      */
     playWinSound() {
         if (!this.soundPlayed) {
-            let audio = new Audio('./audio/winning.wav');
-            audio.play().catch(error => {
+            this.winAudio = new Audio('./audio/winning.wav');
+            this.winAudio.play().catch(error => {
                 console.error('Error playing audio:', error);
             });
             this.soundPlayed = true;
+        }
+    }
+
+    /**
+    * Stops the win sound if it's playing.
+    */
+    stopWinSound() {
+        if (this.winAudio) {
+            this.winAudio.pause();
+            this.winAudio.currentTime = 0;
+            this.winAudio = null;
         }
     }
 
@@ -118,30 +130,50 @@ class GameWinScreen extends DrawableObject {
         });
     }
 
-    /**
-     * Handles the restart game button click.
-     */
-    handleRestartGame() {
-        this.removeButtonContainer();
-        if (this.world) {
-            this.world.clearAllGameIntervals();
-        }
-        let world = this.world || window.world;
-        if (world) {
-            this.resetGameState(world);
-            this.resetCharacterState(world);
-            this.resetWorldState(world);
-            this.reinitializeLevel(world);
-            world.startGame();
-            if (world.collisionManager) {
-                world.collisionManager.startCollisionDetection();
-            } else if (typeof world.startCollisionDetection === 'function') {
-                world.startCollisionDetection();
-            }
-        } else {
-            this.handleMissingWorld();
-        }
+/**
+ * Handles the restart game button click.
+ */
+handleRestartGame() {
+    this.removeButtonContainer();
+    this.stopWinSound();
+    
+    if (this.world) {
+        this.world.clearAllGameIntervals();
     }
+    
+    let world = this.world || window.world;
+    if (world) {
+        this.resetGameAndWorldState(world);
+        this.startGameAndCollisionDetection(world);
+    } else {
+        this.handleMissingWorld();
+    }
+}
+
+/**
+ * Resets all game and world state when restarting.
+ * @param {World} world - The game world object
+ */
+resetGameAndWorldState(world) {
+    this.resetGameState(world);
+    this.resetCharacterState(world);
+    this.resetWorldState(world);
+    this.reinitializeLevel(world);
+}
+
+/**
+ * Starts the game and collision detection.
+ * @param {World} world - The game world object
+ */
+startGameAndCollisionDetection(world) {
+    world.startGame();
+    
+    if (world.collisionManager) {
+        world.collisionManager.startCollisionDetection();
+    } else if (typeof world.startCollisionDetection === 'function') {
+        world.startCollisionDetection();
+    }
+}
 
     /**
      * Removes the buttons container from the DOM.
@@ -253,6 +285,7 @@ class GameWinScreen extends DrawableObject {
         if (container) {
             container.remove();
         }
+        this.stopWinSound();
         location.reload();
     }
 }
