@@ -24,6 +24,7 @@ class SoundManager {
         this.preload('punch', './audio/punch-140236.mp3');
         this.preload('snoring', './audio/snoring.mp3', true); 
         this.preload('chickenboss', './audio/chickenboss.mp3');
+        this.preload('bossAlert', './audio/boss-alert.mp3');
     }
     
     /**

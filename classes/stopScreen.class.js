@@ -197,6 +197,7 @@ class GameOverScreen extends DrawableObject {
                 this.world.character.runningSound.currentTime = 0;
             }
         }
+        SoundManager.stop('chickenboss');
     }
 
         /**

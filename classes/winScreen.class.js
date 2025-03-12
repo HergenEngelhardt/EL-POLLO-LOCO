@@ -295,5 +295,6 @@ class GameWinScreen extends DrawableObject {
             }
         }
         SoundManager.stop('snoring');
+        SoundManager.stop('chickenboss');
     }
 }
