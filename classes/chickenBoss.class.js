@@ -6,7 +6,7 @@ class ChickenBoss extends MovableObject {
     y = 80;
     height = 400;
     width = 220;
-    x = 1700;
+    x = 4000;
     healthBar = new Statusbar('health');
     showHealthBar = false;
 

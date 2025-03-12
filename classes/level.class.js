@@ -8,7 +8,7 @@ class Level {
     clouds;
     coins;
     salsaBottles;
-    level_end_x = 1900;
+    level_end_x = 5000;
     
     
     /**
