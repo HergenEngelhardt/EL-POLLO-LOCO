@@ -139,6 +139,22 @@ function restartGame() {
 }
 
 /**
+ * Stops the current game and resets game state
+ */
+function stopGame() {
+    if (world) {
+        world.gameStarted = false;
+        world.gameOver = false;
+        world.gameWon = false;
+        
+        world.stopAllBackgroundSounds();
+        
+        world.clearAllGameIntervals();
+        document.getElementById('restartBtn').classList.add('d-none');
+    }
+}
+
+/**
  * Returns to the main menu from the game
  * Hides the result screen and resets game state to initial values
  */
