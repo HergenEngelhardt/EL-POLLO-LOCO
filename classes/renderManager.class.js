@@ -17,37 +17,34 @@ class RenderManager {
      * Draws all game world elements with camera offset
      */
     drawGameElements() {
-        this.ctx.translate(this.camera_x, 0);
+        this.ctx.translate(this.world.camera_x, 0);
         this.drawWorldObjects();
-        this.ctx.translate(-this.camera_x, 0);
+        this.ctx.translate(-this.world.camera_x, 0);
         this.drawUIElements();
-        this.checkKeyboardStates();
-
-        if (this.character.energy <= 0) {
-            this.drawGameOverScreen();
-        }
     }
 
     /**
     * Draws background elements and game objects
     */
     drawWorldObjects() {
-        this.addObjectsToMap(this.level.background || []);
-        this.addObjectsToMap(this.level.clouds || []);
-        this.addObjectsToMap(this.level.enemies || []);
-        this.addObjectsToMap(this.level.coins || []);
-        this.addObjectsToMap(this.level.salsaBottles || []);
-        this.addObjectsToMap(this.activeThrowableBottles || []);
-        this.addToMap(this.character);
+        if (this.world.level) {
+            this.addObjectsToMap(this.world.level.background || []);
+            this.addObjectsToMap(this.world.level.clouds || []);
+            this.addObjectsToMap(this.world.level.enemies || []);
+            this.addObjectsToMap(this.world.level.coins || []);
+            this.addObjectsToMap(this.world.level.salsaBottles || []);
+        }
+        this.addObjectsToMap(this.world.activeThrowableBottles || []);
+        this.addToMap(this.world.character);
     }
 
     /**
      * Draws UI elements like status bars
      */
     drawUIElements() {
-        this.addToMap(this.statusbarHealth);
-        this.addToMap(this.statusbarCoin);
-        this.addToMap(this.statusbarBottle);
+        this.addToMap(this.world.statusbarHealth);
+        this.addToMap(this.world.statusbarCoin);
+        this.addToMap(this.world.statusbarBottle);
     }
 
     /**
