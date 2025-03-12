@@ -61,6 +61,18 @@ function toggleImprint() {
     } else {
         hideAllPanels();
         imprintElement.classList.remove('d-none');
+        if (!imprintElement.classList.contains('loaded')) {
+            fetch('imprint.html')
+                .then(response => response.text())
+                .then(data => {
+                    const backButtonHTML = '<button class="btn" onclick="showMenu()">Back to Menu</button>';
+                    imprintElement.innerHTML = data + backButtonHTML;
+                    imprintElement.classList.add('loaded');
+                })
+                .catch(error => {
+                    console.error('Error loading imprint content:', error);
+                });
+        }
     }
 }
 
@@ -188,8 +200,8 @@ function closeMobileMenu() {
  */
 function toggleSound() {
     soundEnabled = !soundEnabled;
-    const soundBtn = document.getElementById('soundBtn');
-    const soundImage = soundBtn.querySelector('img');
+    let soundBtn = document.getElementById('soundBtn');
+    let soundImage = soundBtn.querySelector('img');
     if (soundEnabled) {
         soundImage.classList.remove('disabled-icon');
     } else {
@@ -229,6 +241,7 @@ function showImprint() {
     document.getElementById('imprint').classList.remove('d-none');
     document.getElementById('instructions').classList.add('d-none');
     document.getElementById('mobileMenu').classList.add('d-none');
+    toggleImprint()
 }
 
 document.addEventListener('DOMContentLoaded', function () {

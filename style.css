@@ -9,7 +9,7 @@ body {
 }
 
 h1 {
-    color: black;
+    color: white;
     font-size: 5rem;
     margin-top: 4%;
     font-family: "Rubik Dirt", serif;
@@ -28,7 +28,6 @@ canvas {
 }
 
 .instructions-container,
-.imprint-container,
 .win-loose-container {
     position: absolute;
     top: 50%;
@@ -41,6 +40,43 @@ canvas {
     max-width: 80%;
     text-align: center;
     z-index: 100;
+}
+
+.imprint-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.95);
+    color: black;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 600px;
+    max-height: 70vh;
+    overflow-y: auto;
+    text-align: left;
+    z-index: 100;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+.imprint-container h1 {
+    font-size: 2rem;
+    color: #333;
+    margin-top: 0;
+}
+
+.imprint-container .btn {
+    display: block;
+    margin: 20px auto 10px auto;
+}
+
+.legalNotice a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.legalNotice a:hover {
+    text-decoration: underline;
 }
 
 .btn {

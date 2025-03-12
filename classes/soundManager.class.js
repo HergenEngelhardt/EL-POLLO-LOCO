@@ -31,7 +31,7 @@ class SoundManager {
      * @param {boolean} loop - Whether sound should loop
      */
     static preload(name, path, loop = false) {
-        const audio = new Audio(path);
+        let audio = new Audio(path);
         audio.loop = loop;
         this.sounds[name] = audio;
     }
@@ -87,8 +87,8 @@ static toggleSound(enabled) {
             audio.currentTime = 0; 
         }
     });
-    for (const name in this.sounds) {
-        const sound = this.sounds[name];
+    for (let name in this.sounds) {
+        let sound = this.sounds[name];
         if (!enabled) {
             sound.pause();
             sound.currentTime = 0; 
@@ -105,7 +105,7 @@ static toggleSound(enabled) {
      */
     static stopAll() {
         // Stop preloaded sounds
-        for (const name in this.sounds) {
+        for (let name in this.sounds) {
             this.stop(name);
         }
         

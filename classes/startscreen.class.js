@@ -191,9 +191,23 @@ class StartScreen extends DrawableObject {
     }
 
     /**
-     * Displays the imprint information by showing the imprint element.
+     * Displays the imprint information by loading and showing the imprint element.
      */
     showImprint() {
-        document.getElementById('imprint').style.display = 'block';
+        let imprintElement = document.getElementById('imprint');
+        imprintElement.classList.remove('d-none');
+        if (!imprintElement.classList.contains('loaded')) {
+            const backButton = imprintElement.querySelector('.btn');
+            fetch('imprint.html')
+                .then(response => response.text())
+                .then(data => {
+                    imprintElement.innerHTML = data;
+                    imprintElement.appendChild(backButton);
+                    imprintElement.classList.add('loaded');
+                })
+                .catch(error => {
+                    console.error('Error loading imprint content:', error);
+                });
+        }
     }
 }
