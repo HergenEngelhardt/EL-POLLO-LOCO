@@ -111,20 +111,28 @@ class CollisionManager {
 
     /**
      * Handles collisions between thrown bottles and enemies
-     * Damages boss enemies or marks regular enemies for deletion
+     * Damages boss enemies or calls hitByBottle for regular enemies
      * Also handles bottles hitting the ground (splashing)
      */
     handleThrowableBottleCollisions() {
         if (!this.world.activeThrowableBottles || !this.world.level || !this.world.level.enemies) return;
 
-        this.world.activeThrowableBottles.forEach((bottle) => {
+        this.world.activeThrowableBottles.forEach((bottle, bottleIndex) => {
+            let bottleHit = false;
+
             this.world.level.enemies.forEach((enemy) => {
-                if (bottle.isColliding(enemy)) {
+                if (bottle.isColliding(enemy) && !bottleHit) {
+                    bottleHit = true;
                     bottle.splash();
+
                     if (enemy instanceof ChickenBoss) {
                         enemy.hit();
                     } else {
-                        enemy.toDelete = true;
+                        enemy.hitByBottle();
+                    }
+
+                    if (this.world.activeThrowableBottles && bottleIndex > -1) {
+                        this.world.activeThrowableBottles.splice(bottleIndex, 1);
                     }
                 }
             });

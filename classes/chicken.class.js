@@ -70,4 +70,17 @@ class Chicken extends MovableObject{
             this.toDelete = true; 
         }, 1500);
     }
+    
+    /**
+     * Handles the chicken being hit by a salsa bottle.
+     * Kills the chicken on hit.
+     */
+    hitByBottle() {
+        if (!this.isDead) {
+            this.die();
+            if (this.world) {
+                SoundManager.play('chickenHit');
+            }
+        }
+    }
 }

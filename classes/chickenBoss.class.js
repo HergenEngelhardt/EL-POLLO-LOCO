@@ -57,7 +57,7 @@ class ChickenBoss extends MovableObject {
     movingDirection = -1;
     lastDirectionChange = 0;
     attackCooldown = 0;
-    energy = 100;
+    energy = 120;
     lastHit = 0;
     deathAnimationPlayed = false;
     deathAnimationIndex = 0;
@@ -319,7 +319,7 @@ class ChickenBoss extends MovableObject {
      * Handles boss taking damage
      */
     hit() {
-        this.energy -= 15;
+        this.energy -= 25;
         this.lastHit = new Date().getTime();
         if (this.world && !this.world.gameWon && !this.world.gameOver) {
             this.playHitSound();

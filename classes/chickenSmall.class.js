@@ -2,13 +2,13 @@
  * Represents a small chicken enemy in the game
  * @extends MovableObject
  */
-class ChickenSmall extends MovableObject{
+class ChickenSmall extends MovableObject {
     y = 355;
     height = 80;
     width = 50;
     isDead = false;
-    
-    IMAGES_WALKING = [ 
+
+    IMAGES_WALKING = [
         './assets/img/3_enemies_chicken/chicken_small/1_walk/1_w.png',
         './assets/img/3_enemies_chicken/chicken_small/1_walk/2_w.png',
         './assets/img/3_enemies_chicken/chicken_small/1_walk/3_w.png'
@@ -65,5 +65,18 @@ class ChickenSmall extends MovableObject{
         setTimeout(() => {
             this.toDelete = true;
         }, 1500);
+    }
+    
+    /**
+    * Handles the small chicken being hit by a salsa bottle.
+    * Kills the chicken on hit.
+    */
+    hitByBottle() {
+        if (!this.isDead) {
+            this.die();
+            if (this.world) {
+                SoundManager.play('chickenHit');
+            }
+        }
     }
 }
