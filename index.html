@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="./style.css">
     <link rel="stylesheet" href="./media.css">
     <script src="./classes/drawableObject.class.js"></script>
+    <script src="./classes/soundManager.class.js"></script>
     <script src="./classes/movableObject.class.js"></script>
     <script src="./classes/character.class.js"></script>
     <script src="./classes/startScreen.class.js"></script>
@@ -46,10 +47,12 @@
     <div id="restartBtn" class="d-none">
         <img src="./assets/icons/restart.png" alt="Restart">
     </div>
+    <div id="soundBtn" class="d-none">
+        <img src="./assets/icons/music.png" alt="Toggle Sound">
+    </div>
     <div class="button-container">
         <button id="instructions-btn" class="btn">Instructions</button>
         <button id="imprint-btn" class="btn">Imprint</button>
-        <button class="btn" onclick="showMenu()">Back to Menu</button>
     </div>
     <div id="instructions" class="instructions-container d-none">
         <h1>Instructions</h1>

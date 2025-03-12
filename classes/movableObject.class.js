@@ -60,11 +60,7 @@ class MovableObject extends DrawableObject {
      * Plays the jump sound effect
      */
     playJumpSound() {
-        let audio = new Audio('./audio/jump.wav');
-        audio.volume = 0.2;
-        audio.play().catch(error => {
-            console.error('Error playing audio:', error);
-        });
+        SoundManager.play('jump');
     }
 
     /**
@@ -125,11 +121,7 @@ class MovableObject extends DrawableObject {
      * Plays the hit sound effect
      */
     playHitSound() {
-        let audio = new Audio('./audio/hit.wav');
-        audio.volume = 0.2;
-        audio.play().catch(error => {
-            console.error('Error playing audio:', error);
-        });
+        SoundManager.play('hit');
     }
 
     /**

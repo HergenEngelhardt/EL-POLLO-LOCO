@@ -161,6 +161,7 @@ class World {
         this.gameStarted = true;
         this.gameOver = false;
         document.getElementById('restartBtn').classList.remove('d-none');
+        document.getElementById('soundBtn').classList.remove('d-none');
         if (!document.getElementById('restartBtn').onclick) {
             document.getElementById('restartBtn').onclick = restartGame;
         }
@@ -275,22 +276,16 @@ class World {
         }
     }
 
-    /**
+   /**
     * Stops all background sounds when game ends
     */
-    stopAllBackgroundSounds() {
-        if (this.character && this.character.runningSound) {
-            this.character.stopRunningSound();
-        }
-        if (window.backgroundMusic && typeof window.backgroundMusic.pause === 'function') {
-            window.backgroundMusic.pause();
-            window.backgroundMusic.currentTime = 0;
-        }
-        document.querySelectorAll('audio').forEach(audio => {
-            audio.pause();
-            audio.currentTime = 0;
-        });
+   stopAllBackgroundSounds() {
+    if (this.character) {
+        this.character.stopRunningSound();
     }
+    SoundManager.stopBackgroundMusic();
+    SoundManager.stopAll();
+}
 
     /**
      * Clears all game-related intervals properly

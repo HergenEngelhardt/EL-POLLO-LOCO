@@ -96,6 +96,7 @@ class Character extends MovableObject {
             left: 10,
             right: 20
         };
+        this.runningSound = null;
     }
 
     /**
@@ -238,21 +239,14 @@ class Character extends MovableObject {
      * Plays the running sound effect if not already playing
      */
     playRunningSound() {
-        if (this.runningSound.paused) {
-            this.runningSound.play().catch(error => {
-                console.error('Error playing running sound:', error);
-            });
-        }
+        SoundManager.play('running', 0.2, true);
     }
 
     /**
      * Stops the running sound effect and resets it
      */
     stopRunningSound() {
-        if (!this.runningSound.paused) {
-            this.runningSound.pause();
-            this.runningSound.currentTime = 0;
-        }
+        SoundManager.stop('running');
     }
 
     /**

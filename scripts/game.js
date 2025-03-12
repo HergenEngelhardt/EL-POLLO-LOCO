@@ -2,6 +2,7 @@ let canvas;
 let ctx;
 let world;
 let keyboard = new Keyboard();
+let soundEnabled = true;
 
 /**
  * Initializes the game by setting up the canvas, creating the world,
@@ -16,6 +17,9 @@ function init() {
     initMobileControls();
     checkMobileAlignment();
     document.getElementById('fullscreenBtn').addEventListener('click', toggleFullscreen);
+    document.getElementById('soundBtn').addEventListener('click', toggleSound);
+    SoundManager.init();
+    SoundManager.enabled = soundEnabled;
 }
 
 /**
@@ -139,6 +143,13 @@ function restartGame() {
 }
 
 /**
+ * Starts the game
+ */
+function startGame() {
+    document.getElementById('soundBtn').classList.remove('d-none');
+}
+
+/**
  * Stops the current game and resets game state
  */
 function stopGame() {
@@ -175,6 +186,37 @@ function closeMobileMenu() {
         mobileMenu.classList.add('d-none');
         mobileMenu.style.display = 'none';
     }
+}
+
+/**
+ * Toggles sound state and updates UI
+ */
+function toggleSound() {
+    soundEnabled = !soundEnabled;
+    const soundBtn = document.getElementById('soundBtn');
+    const soundImage = soundBtn.querySelector('img');
+    
+    if (soundEnabled) {
+        soundImage.classList.remove('disabled-icon');
+    } else {
+        soundImage.classList.add('disabled-icon');
+    }
+    
+    SoundManager.toggleSound(soundEnabled);
+}
+
+/**
+ * Enables all game sounds
+ */
+function enableAllSounds() {
+    SoundManager.toggleSound(true);
+}
+
+/**
+ * Disables all game sounds
+ */
+function disableAllSounds() {
+    SoundManager.toggleSound(false);
 }
 
 function showInstructions() {
