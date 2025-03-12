@@ -31,11 +31,9 @@ class GameWinScreen extends DrawableObject {
      */
     playWinSound() {
         if (!this.soundPlayed) {
-            this.winAudio = new Audio('./audio/winning.wav');
-            this.winAudio.volume = 0.2;
-            this.winAudio.play().catch(error => {
-                console.error('Error playing audio:', error);
-            });
+            if (SoundManager.enabled) {
+                SoundManager.play('winning', 0.2);
+            }
             this.soundPlayed = true;
         }
     }
@@ -44,11 +42,7 @@ class GameWinScreen extends DrawableObject {
     * Stops the win sound if it's playing.
     */
     stopWinSound() {
-        if (this.winAudio) {
-            this.winAudio.pause();
-            this.winAudio.currentTime = 0;
-            this.winAudio = null;
-        }
+        SoundManager.stop('winning');
     }
 
     /**
@@ -131,50 +125,50 @@ class GameWinScreen extends DrawableObject {
         });
     }
 
-/**
- * Handles the restart game button click.
- */
-handleRestartGame() {
-    this.removeButtonContainer();
-    this.stopWinSound();
-    
-    if (this.world) {
-        this.world.clearAllGameIntervals();
-    }
-    
-    let world = this.world || window.world;
-    if (world) {
-        this.resetGameAndWorldState(world);
-        this.startGameAndCollisionDetection(world);
-    } else {
-        this.handleMissingWorld();
-    }
-}
+    /**
+     * Handles the restart game button click.
+     */
+    handleRestartGame() {
+        this.removeButtonContainer();
+        this.stopWinSound();
 
-/**
- * Resets all game and world state when restarting.
- * @param {World} world - The game world object
- */
-resetGameAndWorldState(world) {
-    this.resetGameState(world);
-    this.resetCharacterState(world);
-    this.resetWorldState(world);
-    this.reinitializeLevel(world);
-}
+        if (this.world) {
+            this.world.clearAllGameIntervals();
+        }
 
-/**
- * Starts the game and collision detection.
- * @param {World} world - The game world object
- */
-startGameAndCollisionDetection(world) {
-    world.startGame();
-    
-    if (world.collisionManager) {
-        world.collisionManager.startCollisionDetection();
-    } else if (typeof world.startCollisionDetection === 'function') {
-        world.startCollisionDetection();
+        let world = this.world || window.world;
+        if (world) {
+            this.resetGameAndWorldState(world);
+            this.startGameAndCollisionDetection(world);
+        } else {
+            this.handleMissingWorld();
+        }
     }
-}
+
+    /**
+     * Resets all game and world state when restarting.
+     * @param {World} world - The game world object
+     */
+    resetGameAndWorldState(world) {
+        this.resetGameState(world);
+        this.resetCharacterState(world);
+        this.resetWorldState(world);
+        this.reinitializeLevel(world);
+    }
+
+    /**
+     * Starts the game and collision detection.
+     * @param {World} world - The game world object
+     */
+    startGameAndCollisionDetection(world) {
+        world.startGame();
+
+        if (world.collisionManager) {
+            world.collisionManager.startCollisionDetection();
+        } else if (typeof world.startCollisionDetection === 'function') {
+            world.startCollisionDetection();
+        }
+    }
 
     /**
      * Removes the buttons container from the DOM.

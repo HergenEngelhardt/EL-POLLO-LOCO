@@ -44,13 +44,7 @@ class StartScreen extends DrawableObject {
         this.backgroundMusic = new Audio('./audio/backgroundMusic.mp3');
         this.backgroundMusic.volume = 0.2;
         this.backgroundMusic.loop = true;
-        canvas.addEventListener("click", (event) => {
-            this.handleInteraction(event);
-        });
-
-        canvas.addEventListener("touchstart", (event) => {
-            this.handleInteraction(event);
-        });
+        this.backgroundMusic.muted = !SoundManager.enabled;
     }
 
     /**

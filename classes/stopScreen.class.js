@@ -30,10 +30,9 @@ class GameOverScreen extends DrawableObject {
      */
     playGameOverSound() {
         if (!this.soundPlayed) {
-            let audio = new Audio('./audio/losing.wav');
-            audio.play().catch(error => {
-                console.error('Error playing audio:', error);
-            });
+            if (SoundManager.enabled) {
+                SoundManager.play('losing', 0.2);
+            }
             this.soundPlayed = true;
         }
     }

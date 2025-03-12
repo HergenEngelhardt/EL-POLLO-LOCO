@@ -74,31 +74,31 @@ class SoundManager {
         }
     }
     
-    /**
-     * Toggles all game sounds on or off
-     * @param {boolean} enabled - Whether sound should be enabled
-     */
-    static toggleSound(enabled) {
-        this.enabled = enabled;
-        
-        document.querySelectorAll('audio').forEach(audio => {
-            audio.muted = !enabled;
-            if (!enabled) {
-                audio.pause();
-            }
-        });
-        
-        for (const name in this.sounds) {
-            const sound = this.sounds[name];
-            if (!enabled && !sound.paused) {
-                sound.pause();
-                sound.dataset.wasPlaying = 'true';
-            } else if (enabled && sound.dataset.wasPlaying === 'true') {
-                sound.play().catch(e => console.error("Couldn't resume sound:", e));
-                sound.dataset.wasPlaying = 'false';
-            }
+/**
+ * Toggles all game sounds on or off
+ * @param {boolean} enabled - Whether sound should be enabled
+ */
+static toggleSound(enabled) {
+    this.enabled = enabled;
+    document.querySelectorAll('audio').forEach(audio => {
+        audio.muted = !enabled;
+        if (!enabled) {
+            audio.pause();
+            audio.currentTime = 0; 
+        }
+    });
+    for (const name in this.sounds) {
+        const sound = this.sounds[name];
+        if (!enabled) {
+            sound.pause();
+            sound.currentTime = 0; 
+            sound.dataset.wasPlaying = 'false';
+        } else if (sound.dataset.wasPlaying === 'true') {
+            sound.play().catch(e => console.error("Couldn't resume sound:", e));
+            sound.dataset.wasPlaying = 'false';
         }
     }
+}
     
     /**
      * Stops all sounds

@@ -190,7 +190,6 @@ function toggleSound() {
     soundEnabled = !soundEnabled;
     const soundBtn = document.getElementById('soundBtn');
     const soundImage = soundBtn.querySelector('img');
-    
     if (soundEnabled) {
         soundImage.classList.remove('disabled-icon');
     } else {
@@ -198,6 +197,12 @@ function toggleSound() {
     }
     
     SoundManager.toggleSound(soundEnabled);
+    if (world && world.startScreen && world.startScreen.backgroundMusic) {
+        if (!soundEnabled) {
+            world.startScreen.backgroundMusic.pause();
+            world.startScreen.backgroundMusic.currentTime = 0;
+        }
+    }
 }
 
 /**
