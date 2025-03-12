@@ -13,7 +13,8 @@ let keyboard = new Keyboard();
 function init() {
     setupGameObjects();
     setupEventListeners();
-    initMobileControls()
+    initMobileControls();
+    checkMobileAlignment();
     document.getElementById('fullscreenBtn').addEventListener('click', toggleFullscreen);
 }
 
@@ -160,3 +161,24 @@ document.addEventListener('DOMContentLoaded', function() {
         closeBtn.addEventListener('click', closeMobileMenu);
     }
 });
+
+/**
+ * Prüft die Geräteorientierung und zeigt eine Meldung an, 
+ * wenn das Gerät im Hochformat gehalten wird
+ */
+function  checkMobileAlignment() {
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        let orientationMessage = document.getElementById('orientation-message');
+        
+        function updateOrientation() {
+            if (window.innerHeight > window.innerWidth) {
+                orientationMessage.classList.remove('d-none');
+            } else {
+                orientationMessage.classList.add('d-none');
+            }
+        }
+        updateOrientation();
+        window.addEventListener('resize', updateOrientation);
+        window.addEventListener('orientationchange', updateOrientation);
+    }
+}
