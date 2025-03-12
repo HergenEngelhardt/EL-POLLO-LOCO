@@ -22,6 +22,7 @@ class SoundManager {
         this.preload('losing', './audio/losing.wav');
         this.preload('backgroundMusic', './audio/backgroundMusic.mp3', true);
         this.preload('punch', './audio/punch-140236.mp3');
+        this.preload('snoring', './audio/snoring.mp3', true); 
     }
     
     /**

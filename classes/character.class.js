@@ -189,11 +189,28 @@ class Character extends MovableObject {
     updateGroundedImages() {
         if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
             this.animateImages(this.IMAGES_WALKING);
+            this.stopSnoringSound();
         } else if (Date.now() - this.lastMoveTime > 6000) {
             this.animateImages(this.IMAGES_IDLE_LONG);
+            this.playSnoringSound();
         } else {
             this.animateImages(this.IMAGES_IDLE);
+            this.stopSnoringSound();
         }
+    }
+
+    /**
+     * Plays the snoring sound effect
+     */
+    playSnoringSound() {
+        SoundManager.play('snoring', 0.3, true);
+    }
+
+    /**
+     * Stops the snoring sound effect
+     */
+    stopSnoringSound() {
+        SoundManager.stop('snoring');
     }
 
     /**
