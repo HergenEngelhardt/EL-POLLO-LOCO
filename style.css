@@ -160,8 +160,8 @@ canvas {
 
 #mobileMenuBtn {
     position: fixed;
-    top: 10px;
-    right: 10px;
+    top: 48px;
+    right: 2px;
     background-color: rgba(0, 0, 0, 0.5);
     width: 40px;
     height: 40px;
@@ -243,8 +243,8 @@ canvas {
 
     #fullscreenBtn {
         bottom: auto;
-        top: 4px;
-        right: 50px;
+        top: 42px;
+        right: 35px;
     }
 }
 

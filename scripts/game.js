@@ -163,22 +163,57 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 /**
- * Prüft die Geräteorientierung und zeigt eine Meldung an, 
- * wenn das Gerät im Hochformat gehalten wird
+ * Checks device orientation and displays a message 
+ * when the device is held in portrait mode
  */
-function  checkMobileAlignment() {
-    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-        let orientationMessage = document.getElementById('orientation-message');
-        
-        function updateOrientation() {
-            if (window.innerHeight > window.innerWidth) {
-                orientationMessage.classList.remove('d-none');
-            } else {
-                orientationMessage.classList.add('d-none');
-            }
+function checkMobileAlignment() {
+    if (isMobileDevice()) {
+        let orientationMessage = getOrientationMessageElement();
+        if (orientationMessage) {
+            setupOrientationHandling(orientationMessage);
         }
-        updateOrientation();
-        window.addEventListener('resize', updateOrientation);
-        window.addEventListener('orientationchange', updateOrientation);
     }
+}
+
+/**
+ * Checks if the current device is a mobile device
+ * @returns {boolean} True if mobile device, false otherwise
+ */
+function isMobileDevice() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+           window.innerWidth <= 1024;
+}
+
+/**
+ * Finds the orientation message element in the DOM
+ * @returns {HTMLElement|null} The orientation message element or null
+ */
+function getOrientationMessageElement() {
+    let orientationMessage = document.getElementById('orientation-message');
+    if (!orientationMessage) {
+        console.error('Orientation message element not found');
+        return null;
+    }
+    return orientationMessage;
+}
+
+/**
+ * Sets up orientation monitoring for a given element
+ * @param {HTMLElement} orientationMessage - The orientation message element
+ */
+function setupOrientationHandling(orientationMessage) {
+    function updateOrientation() {
+        if (window.innerHeight > window.innerWidth) {
+            orientationMessage.classList.remove('d-none');
+            orientationMessage.style.display = 'flex'; 
+        } else {
+            orientationMessage.classList.add('d-none');
+        }
+    }
+    
+    updateOrientation(); 
+    window.addEventListener('resize', updateOrientation);
+    window.addEventListener('orientationchange', () => {
+        setTimeout(updateOrientation, 100);
+    });
 }
