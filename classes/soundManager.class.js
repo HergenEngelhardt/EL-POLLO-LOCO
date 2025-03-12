@@ -25,6 +25,7 @@ class SoundManager {
         this.preload('snoring', './audio/snoring.mp3', true); 
         this.preload('chickenboss', './audio/chickenboss.mp3');
         this.preload('bossAlert', './audio/boss-alert.mp3');
+        this.preload('chickenDeath', './audio/chicken death.mp3');
     }
     
     /**

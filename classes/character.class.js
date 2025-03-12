@@ -220,7 +220,7 @@ class Character extends MovableObject {
                 this.jumpAnimationComplete = true;
             }
         }
-        
+
         this.lastMoveTime = Date.now();
     }
 
@@ -262,7 +262,7 @@ class Character extends MovableObject {
         } else {
             this.x += this.speed;
         }
-        
+
         if (!this.isAboveGround()) {
             this.playRunningSound();
         } else {
@@ -275,11 +275,11 @@ class Character extends MovableObject {
      */
     moveLeft() {
         if (this.isAboveGround()) {
-            this.x -= this.speed * 0.4;
+            this.x -= this.speed * 0.6;
         } else {
             this.x -= this.speed;
         }
-        
+
         if (!this.isAboveGround()) {
             this.playRunningSound();
         } else {
