@@ -10,7 +10,9 @@ class Character extends MovableObject {
     speed = 4;
     deadAnimationPlayed = false;
     lastMoveTime = Date.now();
-    runningSound = new Audio('audio/running-1-6846.mp3');
+    jumpAnimationActive = false;
+    jumpAnimationFrame = 0;
+    jumpAnimationComplete = false;
 
     IMAGES_IDLE = [
         './assets/img/2_character_pepe/1_idle/idle/I-1.png',
@@ -96,7 +98,6 @@ class Character extends MovableObject {
             left: 10,
             right: 20
         };
-        this.runningSound = null;
     }
 
     /**
@@ -157,7 +158,6 @@ class Character extends MovableObject {
     handleJump() {
         if (this.world.keyboard.JUMP && !this.isAboveGround()) {
             this.jump();
-            this.lastMoveTime = Date.now();
         }
     }
 
@@ -177,8 +177,11 @@ class Character extends MovableObject {
         } else if (this.isHurt()) {
             this.animateImages(this.IMAGES_HURT);
         } else if (this.isAboveGround()) {
-            this.animateImages(this.IMAGES_JUMPING);
+            this.handleJumpAnimation();
         } else {
+            this.jumpAnimationActive = false;
+            this.jumpAnimationFrame = 0;
+            this.jumpAnimationComplete = false;
             this.updateGroundedImages();
         }
     }
@@ -200,10 +203,32 @@ class Character extends MovableObject {
     }
 
     /**
+     * Handles the jump animation sequence
+     * Plays through the jump animation once per jump
+     */
+    handleJumpAnimation() {
+        if (this.jumpAnimationComplete) {
+            this.img = this.imageCache[this.IMAGES_JUMPING[this.IMAGES_JUMPING.length - 1]];
+        } else {
+            let frameIndex = Math.min(
+                this.jumpAnimationFrame,
+                this.IMAGES_JUMPING.length - 1
+            );
+            this.img = this.imageCache[this.IMAGES_JUMPING[frameIndex]];
+            this.jumpAnimationFrame++;
+            if (this.jumpAnimationFrame >= this.IMAGES_JUMPING.length) {
+                this.jumpAnimationComplete = true;
+            }
+        }
+        
+        this.lastMoveTime = Date.now();
+    }
+
+    /**
      * Plays the snoring sound effect
      */
     playSnoringSound() {
-        SoundManager.play('snoring', 0.3, true);
+        SoundManager.play('snoring', 0.1, true);
     }
 
     /**
@@ -266,7 +291,7 @@ class Character extends MovableObject {
      * Plays the running sound effect if not already playing
      */
     playRunningSound() {
-        SoundManager.play('running', 0.2, true);
+        SoundManager.play('running', 0.6, true);
     }
 
     /**

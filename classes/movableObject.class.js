@@ -54,6 +54,11 @@ class MovableObject extends DrawableObject {
     jump() {
         this.speedY = 18;
         this.playJumpSound();
+        this.jumpAnimationActive = true;
+        this.jumpAnimationFrame = 0;
+        this.jumpAnimationComplete = false;
+        this.img = this.imageCache[this.IMAGES_JUMPING[0]];
+        this.lastMoveTime = Date.now();
     }
 
     /**
