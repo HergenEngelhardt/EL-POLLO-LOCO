@@ -97,25 +97,60 @@ class GameOverScreen extends DrawableObject {
      */
     createButtonsContainer(canvas) {
         try {
-            if (!canvas || !document.body) return;
+            if (!this.validateCanvas(canvas)) return;
 
-            let canvasRect = canvas.getBoundingClientRect();
-            let top = canvasRect.top + canvasRect.height * 0.65;
-            let left = canvasRect.left + canvasRect.width / 2;
-
-            let buttonsHTML = `
-            <div id="win-loose-buttons-container" style="position: absolute; top: ${top}px; left: ${left}px; transform: translateX(-50%); text-align: center; z-index: 1000;">
-                <button class="btn" id="restart-game-btn">Restart Game</button>
-                <span> </span>
-                <button class="btn" id="back-to-menu-btn">Back to Menu</button>
-            </div>
-        `;
-
-            document.body.insertAdjacentHTML('beforeend', buttonsHTML);
-            this.buttonsCreated = true;
+            const position = this.calculateButtonPosition(canvas);
+            const buttonsHTML = this.generateButtonsHTML(position.top, position.left);
+            this.insertButtonsIntoDOM(buttonsHTML);
         } catch (error) {
             console.error('Error creating buttons container:', error);
         }
+    }
+
+    /**
+     * Validates that the canvas element is usable
+     * @param {HTMLCanvasElement} canvas - The game canvas element
+     * @returns {boolean} - Whether the canvas is valid
+     */
+    validateCanvas(canvas) {
+        return canvas && document.body;
+    }
+
+    /**
+     * Calculates the position for the buttons container
+     * @param {HTMLCanvasElement} canvas - The game canvas element
+     * @returns {Object} - The top and left position
+     */
+    calculateButtonPosition(canvas) {
+        let canvasRect = canvas.getBoundingClientRect();
+        let top = canvasRect.top + canvasRect.height * 0.65;
+        let left = canvasRect.left + canvasRect.width / 2;
+        return { top, left };
+    }
+
+    /**
+     * Generates the HTML for the buttons container
+     * @param {number} top - The top position
+     * @param {number} left - The left position
+     * @returns {string} - The HTML for the buttons container
+     */
+    generateButtonsHTML(top, left) {
+        return `
+        <div id="win-loose-buttons-container" style="position: absolute; top: ${top}px; left: ${left}px; transform: translateX(-50%); text-align: center; z-index: 1000;">
+            <button class="btn" id="restart-game-btn">Restart Game</button>
+            <span> </span>
+            <button class="btn" id="back-to-menu-btn">Back to Menu</button>
+        </div>
+    `;
+    }
+
+    /**
+     * Inserts the buttons HTML into the DOM
+     * @param {string} buttonsHTML - The HTML for the buttons container
+     */
+    insertButtonsIntoDOM(buttonsHTML) {
+        document.body.insertAdjacentHTML('beforeend', buttonsHTML);
+        this.buttonsCreated = true;
     }
 
     /**

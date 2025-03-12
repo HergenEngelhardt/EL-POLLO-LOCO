@@ -26,13 +26,13 @@ class StartScreen extends DrawableObject {
         this.guitarButton.y = 10;
         this.guitarButton.width = 50;
         this.guitarButton.height = 75;
-        
+
         this.instructionsButton = new DrawableObject();
         this.instructionsButton.x = 650;
         this.instructionsButton.y = 70;
         this.instructionsButton.width = 50;
         this.instructionsButton.height = 50;
-        
+
         this.imprintButton = new DrawableObject();
         this.imprintButton.x = 650;
         this.imprintButton.y = 130;
@@ -57,9 +57,19 @@ class StartScreen extends DrawableObject {
      * @param {Event} event - The interaction event (click or touch)
      */
     handleInteraction(event) {
+        const coordinates = this.getCoordinatesFromEvent(event);
+        this.handleButtonClick(coordinates.x, coordinates.y);
+    }
+
+    /**
+     * Extracts coordinates from mouse or touch event
+     * @param {Event} event - The interaction event (click or touch)
+     * @returns {Object} - Object containing x and y coordinates
+     */
+    getCoordinatesFromEvent(event) {
         let rect = canvas.getBoundingClientRect();
         let x, y;
-        
+
         if (event.type === 'touchstart') {
             x = event.touches[0].clientX - rect.left;
             y = event.touches[0].clientY - rect.top;
@@ -68,15 +78,18 @@ class StartScreen extends DrawableObject {
             x = event.clientX - rect.left;
             y = event.clientY - rect.top;
         }
-    
+
+        return { x, y };
+    }
+
+    /**
+     * Handles button clicks based on coordinates
+     * @param {number} x - The x-coordinate of the click
+     * @param {number} y - The y-coordinate of the click
+     */
+    handleButtonClick(x, y) {
         if (this.isPlayButtonClicked(x, y)) {
-            this.stopMusic(); 
-            setTimeout(() => {
-                if (!this.backgroundMusic.paused) {
-                    this.backgroundMusic.pause();
-                    this.backgroundMusic.currentTime = 0;
-                }
-            }, 100);
+            this.handlePlayButton();
         } else if (this.isGuitarButtonClicked(x, y)) {
             this.toggleMusic();
         } else if (this.isInstructionsButtonClicked(x, y)) {
@@ -84,6 +97,19 @@ class StartScreen extends DrawableObject {
         } else if (this.isImprintButtonClicked(x, y)) {
             this.showImprint();
         }
+    }
+
+    /**
+     * Handles play button click actions
+     */
+    handlePlayButton() {
+        this.stopMusic();
+        setTimeout(() => {
+            if (!this.backgroundMusic.paused) {
+                this.backgroundMusic.pause();
+                this.backgroundMusic.currentTime = 0;
+            }
+        }, 100);
     }
 
     /**
@@ -106,7 +132,7 @@ class StartScreen extends DrawableObject {
      */
     isPlayButtonClicked(x, y) {
         return x >= this.playButton.x && x <= this.playButton.x + this.playButton.width &&
-               y >= this.playButton.y && y <= this.playButton.y + this.playButton.height;
+            y >= this.playButton.y && y <= this.playButton.y + this.playButton.height;
     }
 
     /**
@@ -117,9 +143,9 @@ class StartScreen extends DrawableObject {
      */
     isGuitarButtonClicked(x, y) {
         return x >= this.guitarButton.x && x <= this.guitarButton.x + this.guitarButton.width &&
-               y >= this.guitarButton.y && y <= this.guitarButton.y + this.guitarButton.height;
+            y >= this.guitarButton.y && y <= this.guitarButton.y + this.guitarButton.height;
     }
-    
+
     /**
      * Checks if the instructions button was clicked.
      * @param {number} x - The x-coordinate of the click event.
@@ -128,9 +154,9 @@ class StartScreen extends DrawableObject {
      */
     isInstructionsButtonClicked(x, y) {
         return x >= this.instructionsButton.x && x <= this.instructionsButton.x + this.instructionsButton.width &&
-               y >= this.instructionsButton.y && y <= this.instructionsButton.y + this.instructionsButton.height;
+            y >= this.instructionsButton.y && y <= this.instructionsButton.y + this.instructionsButton.height;
     }
-    
+
     /**
      * Checks if the imprint button was clicked.
      * @param {number} x - The x-coordinate of the click event.
@@ -139,7 +165,7 @@ class StartScreen extends DrawableObject {
      */
     isImprintButtonClicked(x, y) {
         return x >= this.imprintButton.x && x <= this.imprintButton.x + this.imprintButton.width &&
-               y >= this.imprintButton.y && y <= this.imprintButton.y + this.imprintButton.height;
+            y >= this.imprintButton.y && y <= this.imprintButton.y + this.imprintButton.height;
     }
 
     /**
@@ -159,16 +185,16 @@ class StartScreen extends DrawableObject {
      */
     stopMusic() {
         this.backgroundMusic.pause();
-        this.backgroundMusic.currentTime = 0; 
+        this.backgroundMusic.currentTime = 0;
     }
-    
+
     /**
      * Displays the game instructions by showing the instructions element.
      */
     showInstructions() {
         document.getElementById('instructions').style.display = 'block';
     }
-    
+
     /**
      * Displays the imprint information by showing the imprint element.
      */

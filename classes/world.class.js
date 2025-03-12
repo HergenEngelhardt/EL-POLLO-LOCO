@@ -133,6 +133,13 @@ class World {
         });
     }
 
+    /**
+     * Processes pointer events (mouse clicks or touch) on the canvas
+     * Converts client coordinates to canvas coordinates with proper scaling
+     * Detects if the play button was clicked and starts the game accordingly
+     * 
+     * @param {Event} event - The mouse or touch event containing clientX and clientY coordinates
+     */
     handlePointerEvent(event) {
         let rect = this.canvas.getBoundingClientRect();
         let x = event.clientX - rect.left;
@@ -176,7 +183,7 @@ class World {
      */
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    
+
         if (!this.gameStarted) {
             this.startScreen.draw(this.ctx);
         } else {
@@ -202,6 +209,12 @@ class World {
         }
     }
 
+    /**
+     * Checks and processes keyboard input states for game actions
+     * Handles the bottle throwing action when the THROW key is activated
+     * Calls either character's throwBottle method if available or falls back to world's implementation
+     * Resets the keyboard state after processing
+     */
     checkKeyboardStates() {
         if (this.keyboard.THROW) {
             if (typeof this.character.throwBottle === 'function') {
@@ -212,8 +225,6 @@ class World {
             this.keyboard.THROW = false;
         }
     }
-
-
 
     /**
      * Adds keyboard event listeners
