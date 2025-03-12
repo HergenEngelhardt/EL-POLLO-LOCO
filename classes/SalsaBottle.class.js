@@ -25,17 +25,18 @@ class SalsaBottle extends MovableObject {
      * Initializes position, size, and collision offsets.
      */
     constructor() {
-        super().loadImage('./assets/img/6_salsa_bottle/1_salsa_bottle_on_ground.png'); 
+        super().loadImage('./assets/img/6_salsa_bottle/1_salsa_bottle_on_ground.png');
         this.x = 250 + Math.random() * 3500;
         this.y = 350;
         this.height = 100;
         this.width = 80;
         this.hasBeenThrown = false;
-        this.offset = { 
+        this.offset = {
             left: 20,
             right: 10,
             top: 40,
-            bottom: 10 };
+            bottom: 10
+        };
     }
 
     /**
@@ -60,8 +61,8 @@ class SalsaBottle extends MovableObject {
         this.height = 100;
         this.width = 80;
         this.hasBeenThrown = true;
-        this.speedY = 15; 
-        this.speedX = 15; 
+        this.speedY = 15;
+        this.speedX = 15;
         this.world = world;
         this.applyGravity();
         if (this.animationInterval) clearInterval(this.animationInterval);
@@ -78,10 +79,10 @@ class SalsaBottle extends MovableObject {
         this.moveInterval = setInterval(() => {
             this.x += this.speedX;
             this.y -= this.speedY;
-            this.speedY -= 1; 
-            if (this.y > 350) { 
+            this.speedY -= 1;
+            if (this.y > 350) {
                 this.splash();
-                clearInterval(this.moveInterval); 
+                clearInterval(this.moveInterval);
             }
         }, 1000 / 60);
     }
@@ -101,14 +102,14 @@ class SalsaBottle extends MovableObject {
     splash() {
         this.loadImages(this.IMAGES_SPLASH);
         this.currentImage = 0;
-        
+
         if (this.animationInterval) {
             clearInterval(this.animationInterval);
         }
-        
+
         this.animateSplash();
     }
-    
+
     /**
      * Controls the splash animation sequence.
      * Removes the bottle after animation completes.
@@ -116,13 +117,13 @@ class SalsaBottle extends MovableObject {
     animateSplash() {
         let splashInterval = setInterval(() => {
             this.animateImages(this.IMAGES_SPLASH);
-            if (this.currentImage >= this.IMAGES_SPLASH.length) { 
+            if (this.currentImage >= this.IMAGES_SPLASH.length) {
                 clearInterval(splashInterval);
                 this.removeBottle();
             }
         }, 100);
     }
-    
+
     /**
      * Removes the bottle from the game world after splash animation.
      * Cleans up resources and moves the bottle offscreen.
@@ -136,17 +137,17 @@ class SalsaBottle extends MovableObject {
         } else {
             console.warn('Cannot remove bottle: world reference or activeThrowableBottles missing');
         }
-        this.img = null; 
-        this.x = -1000; 
-        this.y = -1000; 
+        this.img = null;
+        this.x = -1000;
+        this.y = -1000;
     }
 
     /**
- * Plays the bottle collection sound effect
- */
-playCollectSound() {
-    let sound = new Audio('audio/collectBottle.mp3');
-    sound.volume = 0.3; 
-    sound.play();
-}
+    * Plays the bottle collection sound effect
+    */
+    playCollectSound() {
+        let sound = new Audio('audio/collectBottle.mp3');
+        sound.volume = 0.3;
+        sound.play();
+    }
 }

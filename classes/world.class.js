@@ -31,11 +31,12 @@ class World {
         this.canvas = canvas;
         this.gameOverScreen = new GameOverScreen();
         this.gameOverScreen.setWorld(this);
+        this.collisionManager = new CollisionManager(this);
         this.draw();
         this.setWorld();
         this.addKeyboardEvents();
         this.addMouseEvents();
-        this.checkCollisions();
+        this.initCollisionDetection();
         this.totalInitialBottles = 5;
         this.gameWon = false;
         this.winScreen = new GameWinScreen();
@@ -57,105 +58,8 @@ class World {
     /**
      * Sets up collision detection interval
      */
-    checkCollisions() {
-        this.collisionInterval = setInterval(() => {
-            if (!this.gameOver && !this.gameWon && !this.character.isDead()) {
-                this.handleEnemyCollisions();
-                this.handleCoinCollisions();
-                this.handleBottleCollisions();
-                this.handleThrowableBottleCollisions();
-                this.checkWinCondition();
-            }
-        }, 100);
-    }
-
-    /**
-     * Handles collisions between character and enemies
-     */
-    handleEnemyCollisions() {
-        if (!this.level || !this.level.enemies) return;
-        let isJumpingOnEnemy = false;
-        this.level.enemies.forEach((enemy) => {
-            if (this.character.speedY < 0 && this.character.isCollidingFromTop(enemy) && !enemy.isDead) {
-                enemy.die();
-                this.character.speedY = 15;
-                this.character.lastJumpOnEnemy = new Date().getTime();
-                isJumpingOnEnemy = true;
-            }
-        });
-        let jumpSafePeriod = 500;
-        let safeFromJumpingOnEnemy =
-            this.character.lastJumpOnEnemy &&
-            new Date().getTime() - this.character.lastJumpOnEnemy < jumpSafePeriod;
-
-        if (!isJumpingOnEnemy && !safeFromJumpingOnEnemy && !this.isJumpInvulnerable()) {
-            this.level.enemies.forEach((enemy) => {
-                if (this.character.isColliding(enemy) && !enemy.isDead) {
-                    this.character.hit();
-                    this.updateHealthStatusBar();
-                    return;
-                }
-            });
-        }
-    }
-
-    /**
-     * Handles collisions between character and coins
-     */
-    handleCoinCollisions() {
-        if (!this.level || !this.level.coins) return;
-        this.level.coins.forEach((coin, index) => {
-            if (this.character.isColliding(coin)) {
-                coin.playCollectSound();
-                this.level.coins.splice(index, 1);
-                this.coinsCollected++;
-                this.updateCoinStatusBar();
-            }
-        });
-    }
-
-    /**
-     * Handles collisions between character and collectible bottles
-     */
-    handleBottleCollisions() {
-        if (!this.level || !this.level.salsaBottles) return;
-        this.level.salsaBottles.forEach((bottle, index) => {
-            if (this.character.isColliding(bottle) &&
-                (!this.character.isAboveGround() || this.character.speedY > 0)) {
-                bottle.playCollectSound();
-                this.level.salsaBottles.splice(index, 1);
-                this.bottlesCollected++;
-                let newBottle = new SalsaBottle();
-                newBottle.world = this;
-                this.throwableBottles.push(newBottle);
-                this.updateBottleStatusBar();
-            }
-        });
-    }
-
-    /**
-     * Handles collisions between thrown bottles and enemies
-     */
-    handleThrowableBottleCollisions() {
-        if (!this.activeThrowableBottles || !this.level || !this.level.enemies) return;
-        if (!this.activeThrowableBottles) return;
-
-        this.activeThrowableBottles.forEach((bottle) => {
-            this.level.enemies.forEach((enemy) => {
-                if (bottle.isColliding(enemy)) {
-                    bottle.splash();
-                    if (enemy instanceof ChickenBoss) {
-                        enemy.hit();
-                    } else {
-                        enemy.toDelete = true;
-                    }
-                }
-            });
-
-            if (bottle.y > 350) {
-                bottle.splash();
-            }
-        });
+    initCollisionDetection() {
+        this.collisionManager.startCollisionDetection();
     }
 
     /**
@@ -432,16 +336,31 @@ class World {
      * Clears all game-related intervals properly
      */
     clearAllGameIntervals() {
+        this.clearCharacterIntervals();
+        this.clearEnemyIntervals();
+        this.collisionManager.clearCollisionInterval();
+        this.clearBottleIntervals();
+    }
+
+    /**
+     * Clears character-specific animation intervals
+     */
+    clearCharacterIntervals() {
         if (this.character.animationInterval) {
             clearInterval(this.character.animationInterval);
             this.character.animationInterval = null;
         }
-    
+
         if (this.character.imageAnimationInterval) {
             clearInterval(this.character.imageAnimationInterval);
             this.character.imageAnimationInterval = null;
         }
-    
+    }
+
+    /**
+     * Clears all enemy animation intervals
+     */
+    clearEnemyIntervals() {
         if (this.level && this.level.enemies) {
             this.level.enemies.forEach(enemy => {
                 if (enemy.animationInterval) {
@@ -450,11 +369,12 @@ class World {
                 }
             });
         }
-    
-        if (this.collisionInterval) {
-            clearInterval(this.collisionInterval);
-            this.collisionInterval = null;
-        }
+    }
+
+    /**
+     * Clears all bottle-related intervals
+     */
+    clearBottleIntervals() {
         if (this.activeThrowableBottles) {
             this.activeThrowableBottles.forEach(bottle => {
                 if (bottle.animationInterval) {
