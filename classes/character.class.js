@@ -232,7 +232,12 @@ class Character extends MovableObject {
      * Moves the character right and handles sound effects
      */
     moveRight() {
-        super.moveRight();
+        if (this.isAboveGround()) {
+            this.x += this.speed * 0.4;
+        } else {
+            this.x += this.speed;
+        }
+        
         if (!this.isAboveGround()) {
             this.playRunningSound();
         } else {
@@ -244,7 +249,12 @@ class Character extends MovableObject {
      * Moves the character left and handles sound effects
      */
     moveLeft() {
-        super.moveLeft();
+        if (this.isAboveGround()) {
+            this.x -= this.speed * 0.4;
+        } else {
+            this.x -= this.speed;
+        }
+        
         if (!this.isAboveGround()) {
             this.playRunningSound();
         } else {

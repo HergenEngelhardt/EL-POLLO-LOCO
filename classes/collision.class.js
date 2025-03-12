@@ -43,7 +43,7 @@ class CollisionManager {
         this.world.level.enemies.forEach((enemy) => {
             if (this.world.character.speedY < 0 && this.world.character.isCollidingFromTop(enemy) && !enemy.isDead) {
                 enemy.die();
-                this.world.character.speedY = 15;
+                this.world.character.speedY = 10;
                 this.world.character.lastJumpOnEnemy = new Date().getTime();
                 isJumpingOnEnemy = true;
             }
