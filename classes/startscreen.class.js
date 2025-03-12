@@ -42,6 +42,7 @@ class StartScreen extends DrawableObject {
         this.width = 720;
         this.height = 480;
         this.backgroundMusic = new Audio('./audio/backgroundMusic.mp3');
+        this.backgroundMusic.volume = 0.2;
         this.backgroundMusic.loop = true;
         canvas.addEventListener("click", (event) => {
             this.handleInteraction(event);

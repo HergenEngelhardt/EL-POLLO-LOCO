@@ -61,6 +61,7 @@ class MovableObject extends DrawableObject {
      */
     playJumpSound() {
         let audio = new Audio('./audio/jump.wav');
+        audio.volume = 0.2;
         audio.play().catch(error => {
             console.error('Error playing audio:', error);
         });
@@ -125,6 +126,7 @@ class MovableObject extends DrawableObject {
      */
     playHitSound() {
         let audio = new Audio('./audio/hit.wav');
+        audio.volume = 0.2;
         audio.play().catch(error => {
             console.error('Error playing audio:', error);
         });

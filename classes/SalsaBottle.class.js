@@ -147,7 +147,7 @@ class SalsaBottle extends MovableObject {
     */
     playCollectSound() {
         let sound = new Audio('audio/collectBottle.mp3');
-        sound.volume = 0.3;
+        sound.volume = 0.2;
         sound.play();
     }
 }

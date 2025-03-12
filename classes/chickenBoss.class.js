@@ -335,6 +335,7 @@ class ChickenBoss extends MovableObject {
      */
     playHitSound() {
         let audio = new Audio('./audio/punch-140236.mp3');
+        audio.volume = 0.2;
         audio.play().catch(error => {
             console.error('Error playing boss hit sound:', error);
         });
