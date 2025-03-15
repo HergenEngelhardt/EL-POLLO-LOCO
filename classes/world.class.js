@@ -149,8 +149,12 @@ class World {
         x *= scaleX;
         y *= scaleY;
 
-        if (this.startScreen.isPlayButtonClicked(x, y)) {
-            this.startGame();
+        if (!this.gameStarted) {
+            if (this.startScreen.isPlayButtonClicked(x, y)) {
+                this.startGame();
+            } else if (this.startScreen.isGuitarButtonClicked(x, y)) {
+                this.toggleBackgroundMusic();
+            }
         }
     }
 
@@ -243,6 +247,17 @@ class World {
     }
 
     /**
+    * Toggles background music on/off
+    */
+    toggleBackgroundMusic() {
+        if (!SoundManager.sounds['backgroundMusic'] || SoundManager.sounds['backgroundMusic'].paused) {
+            SoundManager.playBackgroundMusic();
+        } else {
+            SoundManager.stopBackgroundMusic();
+        }
+    }
+
+    /**
      * Checks if character is invulnerable after jumping on enemy
      * @returns {boolean} True if character is currently invulnerable
      */
@@ -274,29 +289,29 @@ class World {
     }
 
 
-   /**
-    * Stops all background sounds when game ends
-    */
-   stopAllBackgroundSounds() {
-    if (this.character) {
-        this.character.stopRunningSound();
-        this.character.stopSnoringSound();
-    }
-    if (this.level && this.level.enemies) {
-        this.level.enemies.forEach(enemy => {
-            if (enemy instanceof ChickenBoss) {
-                enemy.playMovementSound = function() {};
-                if (enemy.alertSound) {
-                    enemy.alertSound.pause();
-                    enemy.alertSound.currentTime = 0;
-                    enemy.alertSound = null;
+    /**
+     * Stops all background sounds when game ends
+     */
+    stopAllBackgroundSounds() {
+        if (this.character) {
+            this.character.stopRunningSound();
+            this.character.stopSnoringSound();
+        }
+        if (this.level && this.level.enemies) {
+            this.level.enemies.forEach(enemy => {
+                if (enemy instanceof ChickenBoss) {
+                    enemy.playMovementSound = function () { };
+                    if (enemy.alertSound) {
+                        enemy.alertSound.pause();
+                        enemy.alertSound.currentTime = 0;
+                        enemy.alertSound = null;
+                    }
                 }
-            }
-        });
+            });
+        }
+        SoundManager.stopBackgroundMusic();
+        SoundManager.stopAll();
     }
-    SoundManager.stopBackgroundMusic();
-    SoundManager.stopAll();
-}
 
     /**
      * Clears all game-related intervals properly

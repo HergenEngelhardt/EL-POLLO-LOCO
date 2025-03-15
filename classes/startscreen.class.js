@@ -104,12 +104,6 @@ class StartScreen extends DrawableObject {
         ctx.drawImage(this.img, 0, 0, this.width, this.height);
         this.playButton.draw(ctx);
         this.guitarButton.draw(ctx);
-        if (SoundManager.sounds['backgroundMusic'] && !SoundManager.sounds['backgroundMusic'].paused) {
-            ctx.fillStyle = 'rgba(0, 255, 0, 0.3)';
-            ctx.fillRect(this.guitarButton.x, this.guitarButton.y,
-                this.guitarButton.width, this.guitarButton.height);
-        }
-
         this.instructionsButton.draw(ctx);
         this.imprintButton.draw(ctx);
     }
