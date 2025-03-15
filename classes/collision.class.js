@@ -85,7 +85,7 @@ class CollisionManager {
     handleCoinCollisions() {
         if (!this.world.level || !this.world.level.coins) return;
         this.world.level.coins.forEach((coin, index) => {
-            if (this.world.character.isColliding(coin)) {
+            if (this.world.character.isColliding(coin) && this.world.coinsCollected < 5) {
                 coin.playCollectSound();
                 this.world.level.coins.splice(index, 1);
                 this.world.coinsCollected++;
@@ -102,7 +102,7 @@ class CollisionManager {
         if (!this.world.level || !this.world.level.salsaBottles) return;
         this.world.level.salsaBottles.forEach((bottle, index) => {
             if (this.world.character.isColliding(bottle) &&
-                (!this.world.character.isAboveGround() || this.world.character.speedY > 0)) {
+                (!this.world.character.isAboveGround() || this.world.character.speedY > 0) && this.world.bottlesCollected < this.world.totalInitialBottles) {
                 bottle.playCollectSound();
                 this.world.level.salsaBottles.splice(index, 1);
                 this.world.bottlesCollected++;
