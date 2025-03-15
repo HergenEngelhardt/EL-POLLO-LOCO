@@ -258,7 +258,7 @@ class Character extends MovableObject {
      */
     moveRight() {
         if (this.isAboveGround()) {
-            this.x += this.speed * 0.4;
+            this.x += this.speed * 0.9;
         } else {
             this.x += this.speed;
         }
@@ -275,7 +275,7 @@ class Character extends MovableObject {
      */
     moveLeft() {
         if (this.isAboveGround()) {
-            this.x -= this.speed * 0.6;
+            this.x -= this.speed * 0.65;
         } else {
             this.x -= this.speed;
         }
