@@ -200,141 +200,141 @@ class GameOverScreen extends DrawableObject {
         SoundManager.stop('chickenboss');
     }
 
-        /**
-         * Prepares the game for restart by resetting all necessary states
-         * @param {World} world - The game world object
-         */
-        prepareGameRestart(world) {
-            this.resetGameState(world);
-            this.resetCharacterState(world);
-            this.resetWorldState(world);
-            this.reinitializeLevel(world);
-        }
+    /**
+     * Prepares the game for restart by resetting all necessary states
+     * @param {World} world - The game world object
+     */
+    prepareGameRestart(world) {
+        this.resetGameState(world);
+        this.resetCharacterState(world);
+        this.resetWorldState(world);
+        this.reinitializeLevel(world);
+    }
 
-        /**
-         * Starts the new game and initializes collision detection
-         * @param {World} world - The game world object
-         */
-        startNewGame(world) {
-            world.startGame();
-            this.initializeCollisionDetection(world);
-        }
+    /**
+     * Starts the new game and initializes collision detection
+     * @param {World} world - The game world object
+     */
+    startNewGame(world) {
+        world.startGame();
+        this.initializeCollisionDetection(world);
+    }
 
-        /**
-         * Initializes the collision detection system
-         * @param {World} world - The game world object
-         */
-        initializeCollisionDetection(world) {
-            if (world.collisionManager) {
-                world.collisionManager.startCollisionDetection();
-            } else if (typeof world.startCollisionDetection === 'function') {
-                world.startCollisionDetection();
-            }
-        }
-
-        /**
-         * Removes the buttons container from the DOM.
-         */
-        removeButtonContainer() {
-            let container = document.getElementById('win-loose-buttons-container');
-            if (container) {
-                container.remove();
-            }
-        }
-
-        /**
-         * Resets the game state.
-         * @param {World} world - The game world object
-         */
-        resetGameState(world) {
-            world.gameOver = false;
-            world.gameStarted = true;
-            this.screenDisplayed = false;
-            this.buttonsCreated = false;
-            this.soundPlayed = false;
-
-            if (world.character.animationInterval) {
-                clearInterval(world.character.animationInterval);
-            }
-        }
-
-        /**
-         * Resets the character state.
-         * @param {World} world - The game world object
-         */
-        resetCharacterState(world) {
-            world.character.energy = 100;
-            world.character.deadAnimationPlayed = false;
-            world.character.x = 100;
-            world.character.y = 180;
-            world.character.speedY = 0;
-            world.character.otherDirection = false;
-        }
-
-        /**
-         * Resets the world state.
-         * @param {World} world - The game world object
-         */
-        resetWorldState(world) {
-            world.camera_x = 0;
-            world.coinsCollected = 0;
-            world.bottlesCollected = 0;
-            world.throwableBottles = [];
-        }
-
-        /**
-         * Reinitializes the game level.
-         * @param {World} world - The game world object
-         */
-        reinitializeLevel(world) {
-            if (typeof initLevel1 === 'function') {
-                initLevel1();
-                if (typeof level1 !== 'undefined') {
-                    world.level = level1;
-                    world.setWorld();
-                }
-            }
-
-            this.updateGameUI(world);
-        }
-
-        /**
-         * Updates the game UI elements.
-         * @param {World} world - The game world object
-         */
-        updateGameUI(world) {
-            world.updateHealthStatusBar();
-            world.updateCoinStatusBar();
-            world.updateBottleStatusBar();
-            world.draw();
-        }
-
-        /**
-         * Handles the case when the world object is not found.
-         */
-        handleMissingWorld() {
-            console.error("World object not found! Attempting fallback...");
-            try {
-                if (typeof startGame === 'function') {
-                    startGame();
-                    return;
-                }
-            } catch (e) {
-                console.error("Fallback failed:", e);
-            }
-
-            console.warn("Using reload as last resort");
-            location.reload();
-        }
-
-        /**
-         * Handles the back to menu button click.
-         */
-        handleBackToMenu() {
-            let container = document.getElementById('win-loose-buttons-container');
-            if (container) {
-                container.remove();
-            }
-            location.reload();
+    /**
+     * Initializes the collision detection system
+     * @param {World} world - The game world object
+     */
+    initializeCollisionDetection(world) {
+        if (world.collisionManager) {
+            world.collisionManager.startCollisionDetection();
+        } else if (typeof world.startCollisionDetection === 'function') {
+            world.startCollisionDetection();
         }
     }
+
+    /**
+     * Removes the buttons container from the DOM.
+     */
+    removeButtonContainer() {
+        let container = document.getElementById('win-loose-buttons-container');
+        if (container) {
+            container.remove();
+        }
+    }
+
+    /**
+     * Resets the game state.
+     * @param {World} world - The game world object
+     */
+    resetGameState(world) {
+        world.gameOver = false;
+        world.gameStarted = true;
+        this.screenDisplayed = false;
+        this.buttonsCreated = false;
+        this.soundPlayed = false;
+
+        if (world.character.animationInterval) {
+            clearInterval(world.character.animationInterval);
+        }
+    }
+
+    /**
+     * Resets the character state.
+     * @param {World} world - The game world object
+     */
+    resetCharacterState(world) {
+        world.character.energy = 100;
+        world.character.deadAnimationPlayed = false;
+        world.character.x = 100;
+        world.character.y = 180;
+        world.character.speedY = 0;
+        world.character.otherDirection = false;
+    }
+
+    /**
+     * Resets the world state.
+     * @param {World} world - The game world object
+     */
+    resetWorldState(world) {
+        world.camera_x = 0;
+        world.coinsCollected = 0;
+        world.bottlesCollected = 0;
+        world.throwableBottles = [];
+    }
+
+    /**
+     * Reinitializes the game level.
+     * @param {World} world - The game world object
+     */
+    reinitializeLevel(world) {
+        if (typeof initLevel1 === 'function') {
+            initLevel1();
+            if (typeof level1 !== 'undefined') {
+                world.level = level1;
+                world.setWorld();
+            }
+        }
+
+        this.updateGameUI(world);
+    }
+
+    /**
+     * Updates the game UI elements.
+     * @param {World} world - The game world object
+     */
+    updateGameUI(world) {
+        world.updateHealthStatusBar();
+        world.updateCoinStatusBar();
+        world.updateBottleStatusBar();
+        world.draw();
+    }
+
+    /**
+     * Handles the case when the world object is not found.
+     */
+    handleMissingWorld() {
+        console.error("World object not found! Attempting fallback...");
+        try {
+            if (typeof startGame === 'function') {
+                startGame();
+                return;
+            }
+        } catch (e) {
+            console.error("Fallback failed:", e);
+        }
+
+        console.warn("Using reload as last resort");
+        location.reload();
+    }
+
+    /**
+     * Handles the back to menu button click.
+     */
+    handleBackToMenu() {
+        let container = document.getElementById('win-loose-buttons-container');
+        if (container) {
+            container.remove();
+        }
+        location.reload();
+    }
+}

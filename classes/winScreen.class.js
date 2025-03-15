@@ -51,17 +51,17 @@ class GameWinScreen extends DrawableObject {
      */
     draw(ctx) {
         if (!ctx || !this.world) return;
-    
+
         if (this.world.gameWon) {
             if (!this.screenDisplayed) {
                 this.stopAllGameSounds();
                 this.screenDisplayed = true;
-                
+
                 if (ctx && ctx.canvas) {
                     this.showWinScreen(ctx.canvas);
                 }
             }
-            
+
             ctx.drawImage(this.img, (ctx.canvas.width - this.width) / 2, (ctx.canvas.height - this.height) / 2, this.width, this.height);
             this.playWinSound();
         }
@@ -286,6 +286,13 @@ class GameWinScreen extends DrawableObject {
         location.reload();
     }
 
+    /**
+     * Stops all game sounds when the win screen is displayed.
+     * This includes:
+     * - All sounds managed by the SoundManager
+     * - Character-specific running sound
+     * - Specific game sounds (snoring and chickenboss)
+     */
     stopAllGameSounds() {
         SoundManager.stopAll();
         if (this.world && this.world.character) {
