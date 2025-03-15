@@ -243,132 +243,132 @@ class ChickenBoss extends MovableObject {
         }
     }
 
-        /**
-         * Handles boss behavior when in attack range
-         * @param {number} distanceToCharacter - Distance to the character
-         * @param {boolean} characterIsLeft - Whether character is to the left of boss
-         */
-        handleAttackingBehavior(distanceToCharacter, characterIsLeft) {
-            this.animateImages(this.IMAGES_ATTACK);
-            this.updateMovementDirection(characterIsLeft);
-            this.applyMovement();
-
-            if (distanceToCharacter < 80 && !this.world.character.isHurt()) {
-                this.world.character.hit();
-                this.world.updateHealthStatusBar();
-            }
-        }
-
-        /**
-        * Handles normal movement behavior
-        * @param {boolean} characterIsLeft - Whether character is to the left of boss
-        */
-        handleNormalMovement(characterIsLeft) {
-            this.animateImages(this.IMAGES_WALKING);
-            this.updateMovementDirection(characterIsLeft);
-            this.applyMovement();
-        }
-
-        /**
-         * Updates movement direction based on character position
-         * @param {boolean} characterIsLeft - Whether character is to the left of boss
-         */
-        updateMovementDirection(characterIsLeft) {
-            this.movingDirection = characterIsLeft ? -1 : 1;
-            this.otherDirection = !characterIsLeft;
-        }
-
-        /**
-         * Applies movement based on current direction
-         */
-        applyMovement() {
-            if (this.movingDirection > 0) {
-                this.x += this.speed;
-                this.otherDirection = true;
-            } else {
-                this.x -= this.speed;
-                this.otherDirection = false;
-            }
-            this.playMovementSound();
-        }
-
-        /**
-     * Plays boss movement sound with throttling to prevent sound overlap
+    /**
+     * Handles boss behavior when in attack range
+     * @param {number} distanceToCharacter - Distance to the character
+     * @param {boolean} characterIsLeft - Whether character is to the left of boss
      */
-        playMovementSound() {
-            let now = new Date().getTime();
+    handleAttackingBehavior(distanceToCharacter, characterIsLeft) {
+        this.animateImages(this.IMAGES_ATTACK);
+        this.updateMovementDirection(characterIsLeft);
+        this.applyMovement();
 
-            if (!this.isDead() && (!this.lastMovementSoundTime || now - this.lastMovementSoundTime > 1000)) {
-                SoundManager.play('chickenboss', 0.3);
-                this.lastMovementSoundTime = now;
-            }
-        }
-
-        /**
-         * Sets the boss to idle state
-         */
-        handleIdleState() {
-            this.img = this.imageCache[this.IMAGES_WALKING[0]];
-        }
-
-        /**
-         * Plays the death animation sequence
-         */
-        playDeathAnimation() {
-            let deathInterval = setInterval(() => {
-                if (this.deathAnimationIndex >= this.IMAGES_DEAD.length) {
-                    clearInterval(deathInterval);
-                    this.deathAnimationPlayed = true;
-                    this.toDelete = true;
-
-                    if (this.world) {
-                        this.world.gameWon = true;
-                    }
-
-                    return;
-                }
-
-                let path = this.IMAGES_DEAD[this.deathAnimationIndex];
-                this.img = this.imageCache[path];
-                this.deathAnimationIndex++;
-            }, 200);
-        }
-
-        /**
-         * Updates health bar position to follow boss
-         */
-        updateHealthBarPosition() {
-            this.healthBar.x = this.x + 20;
-            this.healthBar.y = this.y - 30;
-        }
-
-        /**
-         * Handles boss taking damage
-         */
-        hit() {
-            this.energy -= 25;
-            this.lastHit = new Date().getTime();
-            if (this.world && !this.world.gameWon && !this.world.gameOver) {
-                this.playHitSound();
-            }
-            if (this.energy < 0) {
-                this.energy = 0;
-            }
-            this.healthBar.setPercentage(this.energy);
-        }
-
-        /**
-         * Plays sound effect when hit
-         */
-        playHitSound() {
-            SoundManager.play('punch');
-        }
-
-        /**
-         * Checks if boss is dead
-         * @returns {boolean} True if energy is zero
-         */
-        isDead() {
-            return this.energy <= 0;
+        if (distanceToCharacter < 80 && !this.world.character.isHurt()) {
+            this.world.character.hit();
+            this.world.updateHealthStatusBar();
         }
     }
+
+    /**
+    * Handles normal movement behavior
+    * @param {boolean} characterIsLeft - Whether character is to the left of boss
+    */
+    handleNormalMovement(characterIsLeft) {
+        this.animateImages(this.IMAGES_WALKING);
+        this.updateMovementDirection(characterIsLeft);
+        this.applyMovement();
+    }
+
+    /**
+     * Updates movement direction based on character position
+     * @param {boolean} characterIsLeft - Whether character is to the left of boss
+     */
+    updateMovementDirection(characterIsLeft) {
+        this.movingDirection = characterIsLeft ? -1 : 1;
+        this.otherDirection = !characterIsLeft;
+    }
+
+    /**
+     * Applies movement based on current direction
+     */
+    applyMovement() {
+        if (this.movingDirection > 0) {
+            this.x += this.speed;
+            this.otherDirection = true;
+        } else {
+            this.x -= this.speed;
+            this.otherDirection = false;
+        }
+        this.playMovementSound();
+    }
+
+    /**
+ * Plays boss movement sound with throttling to prevent sound overlap
+ */
+    playMovementSound() {
+        let now = new Date().getTime();
+
+        if (!this.isDead() && (!this.lastMovementSoundTime || now - this.lastMovementSoundTime > 1000)) {
+            SoundManager.play('chickenboss', 0.3);
+            this.lastMovementSoundTime = now;
+        }
+    }
+
+    /**
+     * Sets the boss to idle state
+     */
+    handleIdleState() {
+        this.img = this.imageCache[this.IMAGES_WALKING[0]];
+    }
+
+    /**
+     * Plays the death animation sequence
+     */
+    playDeathAnimation() {
+        let deathInterval = setInterval(() => {
+            if (this.deathAnimationIndex >= this.IMAGES_DEAD.length) {
+                clearInterval(deathInterval);
+                this.deathAnimationPlayed = true;
+                this.toDelete = true;
+
+                if (this.world) {
+                    this.world.gameWon = true;
+                }
+
+                return;
+            }
+
+            let path = this.IMAGES_DEAD[this.deathAnimationIndex];
+            this.img = this.imageCache[path];
+            this.deathAnimationIndex++;
+        }, 200);
+    }
+
+    /**
+     * Updates health bar position to follow boss
+     */
+    updateHealthBarPosition() {
+        this.healthBar.x = this.x + 20;
+        this.healthBar.y = this.y - 30;
+    }
+
+    /**
+     * Handles boss taking damage
+     */
+    hit() {
+        this.energy -= 25;
+        this.lastHit = new Date().getTime();
+        if (this.world && !this.world.gameWon && !this.world.gameOver) {
+            this.playHitSound();
+        }
+        if (this.energy < 0) {
+            this.energy = 0;
+        }
+        this.healthBar.setPercentage(this.energy);
+    }
+
+    /**
+     * Plays sound effect when hit
+     */
+    playHitSound() {
+        SoundManager.play('punch');
+    }
+
+    /**
+     * Checks if boss is dead
+     * @returns {boolean} True if energy is zero
+     */
+    isDead() {
+        return this.energy <= 0;
+    }
+}
