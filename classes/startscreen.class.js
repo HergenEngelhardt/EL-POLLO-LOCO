@@ -41,10 +41,6 @@ class StartScreen extends DrawableObject {
 
         this.width = 720;
         this.height = 480;
-        this.backgroundMusic = new Audio('./audio/backgroundMusic.mp3');
-        this.backgroundMusic.volume = 0.2;
-        this.backgroundMusic.loop = true;
-        this.backgroundMusic.muted = !SoundManager.enabled;
     }
 
     /**
@@ -55,7 +51,6 @@ class StartScreen extends DrawableObject {
         let coordinates = this.getCoordinatesFromEvent(event);
         this.handleButtonClick(coordinates.x, coordinates.y);
     }
-
     /**
      * Extracts coordinates from mouse or touch event
      * @param {Event} event - The interaction event (click or touch)
@@ -99,12 +94,6 @@ class StartScreen extends DrawableObject {
      */
     handlePlayButton() {
         this.stopMusic();
-        setTimeout(() => {
-            if (!this.backgroundMusic.paused) {
-                this.backgroundMusic.pause();
-                this.backgroundMusic.currentTime = 0;
-            }
-        }, 100);
     }
 
     /**
@@ -115,6 +104,12 @@ class StartScreen extends DrawableObject {
         ctx.drawImage(this.img, 0, 0, this.width, this.height);
         this.playButton.draw(ctx);
         this.guitarButton.draw(ctx);
+        if (SoundManager.sounds['backgroundMusic'] && !SoundManager.sounds['backgroundMusic'].paused) {
+            ctx.fillStyle = 'rgba(0, 255, 0, 0.3)';
+            ctx.fillRect(this.guitarButton.x, this.guitarButton.y,
+                this.guitarButton.width, this.guitarButton.height);
+        }
+
         this.instructionsButton.draw(ctx);
         this.imprintButton.draw(ctx);
     }
@@ -137,8 +132,9 @@ class StartScreen extends DrawableObject {
      * @returns {boolean} True if the guitar button was clicked, false otherwise.
      */
     isGuitarButtonClicked(x, y) {
-        return x >= this.guitarButton.x && x <= this.guitarButton.x + this.guitarButton.width &&
+        let isClicked = x >= this.guitarButton.x && x <= this.guitarButton.x + this.guitarButton.width &&
             y >= this.guitarButton.y && y <= this.guitarButton.y + this.guitarButton.height;
+        return isClicked;
     }
 
     /**
@@ -168,19 +164,18 @@ class StartScreen extends DrawableObject {
      * If music is paused, it will play. If music is playing, it will pause.
      */
     toggleMusic() {
-        if (this.backgroundMusic.paused) {
-            this.backgroundMusic.play().catch(error => console.error('Error playing music:', error));
+        if (!SoundManager.sounds['backgroundMusic'] || SoundManager.sounds['backgroundMusic'].paused) {
+            SoundManager.playBackgroundMusic();
         } else {
-            this.backgroundMusic.pause();
+            SoundManager.stopBackgroundMusic();
         }
     }
 
     /**
-     * Completely stops the background music and resets it to the beginning.
-     */
+    * Completely stops the background music and resets it to the beginning.
+    */
     stopMusic() {
-        this.backgroundMusic.pause();
-        this.backgroundMusic.currentTime = 0;
+        SoundManager.stopBackgroundMusic();
     }
 
     /**

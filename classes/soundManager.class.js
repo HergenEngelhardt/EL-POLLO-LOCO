@@ -50,20 +50,27 @@ class SoundManager {
     static play(nameOrPath, volume = 0.2, loop = false) {
         if (!this.enabled) return null;
         let audio;
-        
+    
         if (this.sounds[nameOrPath]) {
             audio = this.sounds[nameOrPath];
         } else {
             audio = new Audio(nameOrPath);
             audio.loop = loop;
         }
-        
+    
         audio.volume = volume;
-        
-        audio.play().catch(error => {
-            console.error(`Error playing sound: ${nameOrPath}`, error);
+    
+        audio.addEventListener('error', (error) => {
+            console.error(`Error loading or playing sound: ${nameOrPath}`, error);
         });
-        
+    
+        audio.play()
+            .then(() => {
+            })
+            .catch(error => {
+                console.error(`Error playing sound: ${nameOrPath}`, error);
+            });
+    
         return audio;
     }
     
