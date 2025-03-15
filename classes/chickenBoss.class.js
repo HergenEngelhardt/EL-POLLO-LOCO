@@ -192,7 +192,9 @@ class ChickenBoss extends MovableObject {
             this.alertPhase = true;
             this.alertFrameCount = 0;
             this.otherDirection = !characterIsLeft;
-            this.alertSound = SoundManager.play('bossAlert', 0.5);
+            if (!this.alertSound) {
+                this.alertSound = SoundManager.play('bossAlert', 0.5);
+            }
             setTimeout(() => {
                 if (this.alertSound) {
                     this.alertSound.pause();
