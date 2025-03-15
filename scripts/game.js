@@ -58,24 +58,59 @@ function toggleInstructions() {
  */
 function toggleImprint() {
     let imprintElement = document.getElementById('imprint');
+    
     if (!imprintElement.classList.contains('d-none')) {
-        imprintElement.classList.add('d-none');
+        hideImprint(imprintElement);
     } else {
-        hideAllPanels();
-        imprintElement.classList.remove('d-none');
-        if (!imprintElement.classList.contains('loaded')) {
-            fetch('imprint.html')
-                .then(response => response.text())
-                .then(data => {
-                    let backButtonHTML = '<button class="btn" onclick="showMenu()">Back to Menu</button>';
-                    imprintElement.innerHTML = data + backButtonHTML;
-                    imprintElement.classList.add('loaded');
-                })
-                .catch(error => {
-                    console.error('Error loading imprint content:', error);
-                });
-        }
+        showImprint(imprintElement);
     }
+}
+
+/**
+ * Hides the imprint panel
+ * @param {HTMLElement} imprintElement - The imprint panel element
+ */
+function hideImprint(imprintElement) {
+    imprintElement.classList.add('d-none');
+}
+
+/**
+ * Shows the imprint panel and loads its content if needed
+ * @param {HTMLElement} imprintElement - The imprint panel element
+ */
+function showImprint(imprintElement) {
+    hideAllPanels();
+    imprintElement.classList.remove('d-none');
+    
+    if (!imprintElement.classList.contains('loaded')) {
+        loadImprintContent(imprintElement);
+    }
+}
+
+/**
+ * Loads the imprint content from the server
+ * @param {HTMLElement} imprintElement - The imprint panel element
+ */
+function loadImprintContent(imprintElement) {
+    fetch('imprint.html')
+        .then(response => response.text())
+        .then(data => {
+            appendContentWithBackButton(imprintElement, data);
+        })
+        .catch(error => {
+            console.error('Error loading imprint content:', error);
+        });
+}
+
+/**
+ * Appends content to the imprint element with a back button
+ * @param {HTMLElement} imprintElement - The imprint panel element
+ * @param {string} data - The content to append
+ */
+function appendContentWithBackButton(imprintElement, data) {
+    let backButtonHTML = '<button class="btn" onclick="showMenu()">Back to Menu</button>';
+    imprintElement.innerHTML = data + backButtonHTML;
+    imprintElement.classList.add('loaded');
 }
 
 
@@ -186,11 +221,18 @@ function backToMenu() {
     world.gameOver = false;
     world.draw();
 }
-
+/**
+ * Toggles the visibility of the mobile menu
+ * Shows the menu if it's hidden, hides it if it's visible
+ */
 function toggleMobileMenu() {
     document.getElementById('mobileMenu').classList.toggle('d-none');
 }
 
+/**
+ * Explicitly closes the mobile menu by hiding it
+ * Uses both CSS class and inline style to ensure the menu is hidden
+ */
 function closeMobileMenu() {
     let mobileMenu = document.getElementById('mobileMenu');
     if (mobileMenu) {
@@ -242,12 +284,21 @@ function disableAllSounds() {
     SoundManager.toggleSound(false);
 }
 
+/**
+ * Displays the instructions panel and hides other UI elements
+ * Shows instructions while ensuring imprint and mobile menu remain hidden
+ */
 function showInstructions() {
     document.getElementById('instructions').classList.remove('d-none');
     document.getElementById('imprint').classList.add('d-none');
     document.getElementById('mobileMenu').classList.add('d-none');
 }
 
+/**
+ * Displays the imprint panel and hides other UI elements
+ * Shows imprint while ensuring instructions and mobile menu remain hidden
+ * Also triggers toggleImprint to handle content loading if needed
+ */
 function showImprint() {
     document.getElementById('imprint').classList.remove('d-none');
     document.getElementById('instructions').classList.add('d-none');
@@ -255,6 +306,10 @@ function showImprint() {
     toggleImprint()
 }
 
+/**
+ * Sets up event listeners for mobile menu buttons when DOM is fully loaded
+ * Attaches click handlers to the mobile menu toggle and close buttons
+ */
 document.addEventListener('DOMContentLoaded', function () {
     let menuBtn = document.getElementById('mobileMenuBtn');
     if (menuBtn) {
