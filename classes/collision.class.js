@@ -44,7 +44,7 @@ class CollisionManager {
             if (this.world.character.speedY < 0 && this.world.character.isCollidingFromTop(enemy) && !enemy.isDead) {
                 enemy.die();
                 SoundManager.play('chickenDeath');
-                this.world.character.speedY = 10;
+                this.world.character.speedY = 8;
                 this.world.character.lastJumpOnEnemy = new Date().getTime();
                 this.world.character.jumpAnimationActive = true;
                 this.world.character.jumpAnimationFrame = 0;

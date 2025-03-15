@@ -7,7 +7,7 @@ class Character extends MovableObject {
     y = 80;
     width = 130;
     height = 250;
-    speed = 4;
+    speed = 3;
     deadAnimationPlayed = false;
     lastMoveTime = Date.now();
     jumpAnimationActive = false;
