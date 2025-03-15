@@ -203,6 +203,16 @@ class Character extends MovableObject {
     }
 
     /**
+    * Overrides the hit method from MovableObject
+    * Wakes character from idle mode when hit
+    */
+    hit() {
+        super.hit(); // Call the parent class hit method
+        this.lastMoveTime = Date.now(); // Reset the idle timer
+        this.stopSnoringSound(); // Stop snoring sound immediately
+    }
+
+    /**
      * Handles the jump animation sequence
      * Plays through the jump animation once per jump
      */
