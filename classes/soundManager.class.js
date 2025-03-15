@@ -5,14 +5,14 @@
 class SoundManager {
     static sounds = {};
     static enabled = true;
-    
+
     /**
      * Initializes the sound manager with default settings and preloads common sounds
      */
     static init() {
         this.enabled = localStorage.getItem('soundEnabled') !== 'false';
         this.sounds = {};
-        
+
         this.preload('hit', './audio/hit.wav');
         this.preload('jump', './audio/jump.wav');
         this.preload('collect', './audio/collect.mp3');
@@ -22,12 +22,12 @@ class SoundManager {
         this.preload('losing', './audio/losing.wav');
         this.preload('backgroundMusic', './audio/backgroundMusic.mp3', true);
         this.preload('punch', './audio/punch-140236.mp3');
-        this.preload('snoring', './audio/snoring.mp3', true); 
+        this.preload('snoring', './audio/snoring.mp3', true);
         this.preload('chickenboss', './audio/chickenboss.mp3');
         this.preload('bossAlert', './audio/boss-alert.mp3');
         this.preload('chickenDeath', './audio/chicken death.mp3');
     }
-    
+
     /**
      * Preloads a sound file for later use
      * @param {string} name - Identifier for the sound
@@ -39,7 +39,7 @@ class SoundManager {
         audio.loop = loop;
         this.sounds[name] = audio;
     }
-    
+
     /**
      * Plays a sound if sounds are enabled
      * @param {string} nameOrPath - Either a preloaded sound name or a file path
@@ -50,30 +50,36 @@ class SoundManager {
     static play(nameOrPath, volume = 0.2, loop = false) {
         if (!this.enabled) return null;
         let audio;
-    
+
         if (this.sounds[nameOrPath]) {
-            audio = this.sounds[nameOrPath];
+            if (!this.sounds[nameOrPath].paused &&
+                (nameOrPath === 'collect' || nameOrPath === 'collectBottle')) {
+                audio = new Audio(this.sounds[nameOrPath].src);
+                audio.loop = loop;
+            } else {
+                audio = this.sounds[nameOrPath];
+            }
         } else {
             audio = new Audio(nameOrPath);
             audio.loop = loop;
         }
-    
+
         audio.volume = volume;
-    
+
         audio.addEventListener('error', (error) => {
             console.error(`Error loading or playing sound: ${nameOrPath}`, error);
         });
-    
+
         audio.play()
             .then(() => {
             })
             .catch(error => {
                 console.error(`Error playing sound: ${nameOrPath}`, error);
             });
-    
+
         return audio;
     }
-    
+
     /**
      * Stops a specific sound
      * @param {string} name - Name of the preloaded sound to stop
@@ -84,33 +90,33 @@ class SoundManager {
             this.sounds[name].currentTime = 0;
         }
     }
-    
-/**
- * Toggles all game sounds on or off
- * @param {boolean} enabled - Whether sound should be enabled
- */
-static toggleSound(enabled) {
-    this.enabled = enabled;
-    document.querySelectorAll('audio').forEach(audio => {
-        audio.muted = !enabled;
-        if (!enabled) {
-            audio.pause();
-            audio.currentTime = 0; 
-        }
-    });
-    for (let name in this.sounds) {
-        let sound = this.sounds[name];
-        if (!enabled) {
-            sound.pause();
-            sound.currentTime = 0; 
-            sound.dataset.wasPlaying = 'false';
-        } else if (sound.dataset.wasPlaying === 'true') {
-            sound.play().catch(e => console.error("Couldn't resume sound:", e));
-            sound.dataset.wasPlaying = 'false';
+
+    /**
+     * Toggles all game sounds on or off
+     * @param {boolean} enabled - Whether sound should be enabled
+     */
+    static toggleSound(enabled) {
+        this.enabled = enabled;
+        document.querySelectorAll('audio').forEach(audio => {
+            audio.muted = !enabled;
+            if (!enabled) {
+                audio.pause();
+                audio.currentTime = 0;
+            }
+        });
+        for (let name in this.sounds) {
+            let sound = this.sounds[name];
+            if (!enabled) {
+                sound.pause();
+                sound.currentTime = 0;
+                sound.dataset.wasPlaying = 'false';
+            } else if (sound.dataset.wasPlaying === 'true') {
+                sound.play().catch(e => console.error("Couldn't resume sound:", e));
+                sound.dataset.wasPlaying = 'false';
+            }
         }
     }
-}
-    
+
     /**
      * Stops all sounds
      */
@@ -119,20 +125,20 @@ static toggleSound(enabled) {
         for (let name in this.sounds) {
             this.stop(name);
         }
-        
+
         document.querySelectorAll('audio').forEach(audio => {
             audio.pause();
             audio.currentTime = 0;
         });
     }
-    
+
     /**
      * Plays the background music
      */
     static playBackgroundMusic() {
         this.play('backgroundMusic', 0.2, true);
     }
-    
+
     /**
      * Stops the background music
      */
