@@ -61,7 +61,7 @@ class ChickenBoss extends MovableObject {
      */
     constructor() {
         super().loadImage(this.IMAGES_WALKING[0]);
-        this.speed = 20;
+        this.speed = 23;
         this.loadImages(this.IMAGES_ALERT);
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_ATTACK);
