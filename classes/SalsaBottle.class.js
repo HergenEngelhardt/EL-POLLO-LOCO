@@ -97,17 +97,17 @@ class SalsaBottle extends MovableObject {
     }
 
     /**
-     * Initiates the splash animation when bottle hits the ground.
-     */
+   * Initiates the splash animation when bottle hits the ground.
+   */
     splash() {
-        this.loadImages(this.IMAGES_SPLASH);
-        this.currentImage = 0;
-
         if (this.animationInterval) {
             clearInterval(this.animationInterval);
+            this.animationInterval = null;
         }
-
+        this.loadImages(this.IMAGES_SPLASH);
+        this.currentImage = 0;
         this.animateSplash();
+        SoundManager.play('bottleSplash');
     }
 
     /**
@@ -115,11 +115,18 @@ class SalsaBottle extends MovableObject {
      * Removes the bottle after animation completes.
      */
     animateSplash() {
-        let splashInterval = setInterval(() => {
+        if (this.splashInterval) {
+            clearInterval(this.splashInterval);
+        }
+
+        this.splashInterval = setInterval(() => {
             this.animateImages(this.IMAGES_SPLASH);
             if (this.currentImage >= this.IMAGES_SPLASH.length) {
-                clearInterval(splashInterval);
-                this.removeBottle();
+                clearInterval(this.splashInterval);
+                this.splashInterval = null;
+                setTimeout(() => {
+                    this.removeBottle();
+                }, 100);
             }
         }, 100);
     }
@@ -140,6 +147,9 @@ class SalsaBottle extends MovableObject {
         this.img = null;
         this.x = -1000;
         this.y = -1000;
+        if (this.world && this.world.character) {
+            this.world.character.resetIdleTimer();
+        }
     }
 
     /**
