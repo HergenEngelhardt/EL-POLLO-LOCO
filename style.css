@@ -311,5 +311,47 @@ canvas {
 
     100% {
         transform: rotate(0deg);
-    }
+    }   
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s;
+}
+
+.close-btn:hover {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.imprint-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 600px;
+    max-height: 70vh;
+    overflow-y: auto;
+    text-align: left;
+    z-index: 100;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
 }
