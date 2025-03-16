@@ -76,10 +76,14 @@ function hideImprint(imprintElement) {
 
 /**
  * Shows the imprint panel and loads its content if needed
- * @param {HTMLElement} imprintElement - The imprint panel element
+ * @param {HTMLElement} [imprintElement] - Optional imprint panel element
  */
 function showImprint(imprintElement) {
+    if (typeof imprintElement === 'string' || !imprintElement) {
+        imprintElement = document.getElementById('imprint');
+    }
     hideAllPanels();
+    document.getElementById('mobileMenu').classList.add('d-none');
     imprintElement.classList.remove('d-none');
     
     if (!imprintElement.classList.contains('loaded')) {
@@ -291,18 +295,6 @@ function showInstructions() {
     document.getElementById('instructions').classList.remove('d-none');
     document.getElementById('imprint').classList.add('d-none');
     document.getElementById('mobileMenu').classList.add('d-none');
-}
-
-/**
- * Displays the imprint panel and hides other UI elements
- * Shows imprint while ensuring instructions and mobile menu remain hidden
- * Also triggers toggleImprint to handle content loading if needed
- */
-function showImprint() {
-    document.getElementById('imprint').classList.remove('d-none');
-    document.getElementById('instructions').classList.add('d-none');
-    document.getElementById('mobileMenu').classList.add('d-none');
-    toggleImprint()
 }
 
 /**
