@@ -267,6 +267,14 @@ canvas {
     height: 45px;
 }
 
+#menuBtn {
+    position: relative;
+    top: -574px;
+    right: -271px;
+    z-index: 3;
+    cursor: pointer;
+}
+
 .disabled-icon {
     filter: grayscale(100%) opacity(50%);
 }
