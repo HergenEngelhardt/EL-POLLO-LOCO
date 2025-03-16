@@ -4,7 +4,7 @@
  * @extends DrawableObject
  */
 class Statusbar extends DrawableObject {
-    STATUSBAR_HEALTH = [ 
+    STATUSBAR_HEALTH = [
         './assets/img/7_statusbars/1_statusbar/2_statusbar_health/blue/0.png',
         './assets/img/7_statusbars/1_statusbar/2_statusbar_health/blue/20.png',
         './assets/img/7_statusbars/1_statusbar/2_statusbar_health/blue/40.png',
@@ -19,7 +19,7 @@ class Statusbar extends DrawableObject {
         './assets/img/7_statusbars/1_statusbar/1_statusbar_coin/blue/40.png',
         './assets/img/7_statusbars/1_statusbar/1_statusbar_coin/blue/60.png',
         './assets/img/7_statusbars/1_statusbar/1_statusbar_coin/blue/80.png',
-        './assets/img/7_statusbars/1_statusbar/1_statusbar_coin/blue/100.png',        
+        './assets/img/7_statusbars/1_statusbar/1_statusbar_coin/blue/100.png',
     ];
 
     STATUSBAR_BOTTLE = [
@@ -34,10 +34,10 @@ class Statusbar extends DrawableObject {
     percentage = 100;
     type = 'health';
 
-     /**
-     * Creates a new status bar.
-     * @param {string} [type='health'] - Type of the status bar ('health', 'coin', or 'bottle').
-     */
+    /**
+    * Creates a new status bar.
+    * @param {string} [type='health'] - Type of the status bar ('health', 'coin', or 'bottle').
+    */
     constructor(type = 'health') {
         super();
         this.type = type;
@@ -51,12 +51,12 @@ class Statusbar extends DrawableObject {
             this.loadImages(this.STATUSBAR_BOTTLE);
             this.setBottlePercentage(0);
         }
-        this.x = 0; 
-        this.y = type === 'health' ? -15 : (type === 'coin' ? 30 : 80); 
+        this.x = 0;
+        this.y = type === 'health' ? -15 : (type === 'coin' ? 30 : 80);
         this.width = 200;
         this.height = 80;
     }
-    
+
     /**
      * Updates the health status bar percentage and corresponding image.
      * @param {number} percentage - The health percentage value (0-100).
@@ -64,17 +64,27 @@ class Statusbar extends DrawableObject {
     setPercentage(percentage) {
         this.percentage = percentage;
         let path = this.STATUSBAR_HEALTH[this.resolveHealthImageIndex()];
-        this.img = this.imageCache[path];    
+        this.img = this.imageCache[path];
     }
 
-     /**
+    /**
+ * Updates the health status bar percentage and corresponding image.
+ * @param {number} percentage - The health percentage value (0-100).
+ */
+    setPercentage(percentage) {
+        this.percentage = percentage;
+        let path = this.STATUSBAR_HEALTH[this.resolveImageIndex()];
+        this.img = this.imageCache[path];
+    }
+
+    /**
      * Updates the coin status bar percentage and corresponding image.
      * @param {number} percentage - The coin percentage value (0-100).
      */
     setCoinPercentage(percentage) {
         this.percentage = percentage;
         let path = this.STATUSBAR_COIN[this.resolveImageIndex()];
-        this.img = this.imageCache[path];    
+        this.img = this.imageCache[path];
     }
 
     /**
@@ -84,49 +94,26 @@ class Statusbar extends DrawableObject {
     setBottlePercentage(percentage) {
         this.percentage = percentage;
         let path = this.STATUSBAR_BOTTLE[this.resolveImageIndex()];
-        this.img = this.imageCache[path];    
+        this.img = this.imageCache[path];
     }
 
-     /**
-     * Determines the image index for the health status bar based on current percentage.
+    /**
+     * Determines the image index for any status bar based on current percentage.
      * @returns {number} Index of the image to display.
      */
-    resolveHealthImageIndex() {
-        if(this.percentage == 100){
-            return 5;
-        } else if(this.percentage > 80){
-            return 4;
-        } else if(this.percentage > 60){
-            return 3;
-        } else if(this.percentage > 40){
-            return 2;
-        } else if(this.percentage > 20){
-            return 1;
-        } else {
-            return 0;
-        }
-    }
-
     resolveImageIndex() {
-        if (this.type === 'bottle') {
-            let index = Math.floor(this.percentage / 20);
-            if (index > 5) index = 5;
-            if (index < 0) index = 0;
-            return index;
+        if (this.percentage == 0) {
+            return 0;
+        } else if (this.percentage <= 20) {
+            return 1;
+        } else if (this.percentage <= 40) {
+            return 2;
+        } else if (this.percentage <= 60) {
+            return 3;
+        } else if (this.percentage <= 80) {
+            return 4;
         } else {
-            if(this.percentage == 0){
-                return 0;
-            } else if(this.percentage > 0 && this.percentage <= 20){
-                return 1;
-            } else if(this.percentage > 20 && this.percentage <= 40){
-                return 2;
-            } else if(this.percentage > 40 && this.percentage <= 60){
-                return 3;
-            } else if(this.percentage > 60 && this.percentage <= 80){
-                return 4;
-            } else {
-                return 5;
-            }
+            return 5;
         }
     }
 }
