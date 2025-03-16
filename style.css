@@ -47,8 +47,8 @@ canvas {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: rgba(255, 255, 255, 0.95);
-    color: black;
+    background-color: black;
+    color: white;
     padding: 20px;
     border-radius: 10px;
     max-width: 600px;
@@ -61,7 +61,7 @@ canvas {
 
 .imprint-container h1 {
     font-size: 2rem;
-    color: #333;
+    color: white;
     margin-top: 0;
 }
 
