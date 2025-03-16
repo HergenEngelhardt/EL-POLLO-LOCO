@@ -161,9 +161,8 @@ function showMenu() {
     if (world) {
         stopGame();
     }
-    if (typeof startGame === 'function') {
-        startGame();
-    } else {
+
+    if (!world) {
         init();
     }
 }
