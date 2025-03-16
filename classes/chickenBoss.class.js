@@ -57,7 +57,7 @@ class ChickenBoss extends MovableObject {
     movingDirection = -1;
     lastDirectionChange = 0;
     attackCooldown = 0;
-    energy = 120;
+    energy = 100;
     lastHit = 0;
     deathAnimationPlayed = false;
     deathAnimationIndex = 0;

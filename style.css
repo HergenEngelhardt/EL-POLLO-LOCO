@@ -19,7 +19,7 @@ h1 {
 
 canvas {
     margin-top: 12%;
-    background-color: black;
+    /* background-color: black; */
     display: block;
 }
 
@@ -111,10 +111,10 @@ canvas {
 @font-face {
     font-family: "Rubik Dirt", serif;
     src: url('myfont.woff') format('woff'),
-        url('myfont.ttf') format('truetype');
+         url('myfont.ttf') format('truetype');
     src: url('webfont.eot');
     src: url('webfont.eot?#iefix') format('embedded-opentype'),
-        url('webfont.svg#svgFontName') format('svg');
+         url('webfont.svg#svgFontName') format('svg');
 }
 
 #mobileBTN {

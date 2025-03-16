@@ -50,7 +50,7 @@ class SoundManager {
     static play(nameOrPath, volume = 0.2, loop = false) {
         if (!this.enabled) return null;
 
-        const audio = this.getAudioElement(nameOrPath, loop);
+        let audio = this.getAudioElement(nameOrPath, loop);
         this.configureAudio(audio, nameOrPath, volume, loop);
         this.playAudioWithErrorHandling(audio, nameOrPath);
 
@@ -73,7 +73,7 @@ class SoundManager {
                 return this.sounds[nameOrPath];
             }
         } else {
-            const audio = new Audio(nameOrPath);
+            let audio = new Audio(nameOrPath);
             audio.loop = loop;
             return audio;
         }

@@ -121,7 +121,7 @@ handleThrowableBottleCollisions() {
     if (!this.world.activeThrowableBottles || !this.world.level || !this.world.level.enemies) return;
 
     for (let i = this.world.activeThrowableBottles.length - 1; i >= 0; i--) {
-        const bottle = this.world.activeThrowableBottles[i];
+        let bottle = this.world.activeThrowableBottles[i];
         
         if (this.checkBottleEnemyCollision(bottle, i)) continue;
         this.checkBottleGroundCollision(bottle, i);
