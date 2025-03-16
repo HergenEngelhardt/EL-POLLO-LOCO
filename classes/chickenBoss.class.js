@@ -415,7 +415,7 @@ class ChickenBoss extends MovableObject {
      */
     updateJumpPhysics() {
         this.y -= this.jumpSpeed;
-        this.jumpSpeed -= 1;
+        this.jumpSpeed -= this.acceleration;
         if (this.y >= 80) {
             this.y = 80;
             this.isJumping = false;
@@ -450,7 +450,8 @@ class ChickenBoss extends MovableObject {
     jump() {
         if (!this.isJumping && this.canJump) {
             this.isJumping = true;
-            this.jumpSpeed = 25;
+            this.jumpSpeed = 10;
+            this.acceleration = 1.8;
             this.speed *= 1.2;
             setTimeout(() => {
                 this.speed = 15;

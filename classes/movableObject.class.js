@@ -26,7 +26,7 @@ class MovableObject extends DrawableObject {
                 this.y -= this.speedY;
                 this.speedY -= this.acceleration;
             }
-        }, 1000 / 15);
+        }, 1000 / 25);
     }
 
     /**
@@ -53,6 +53,7 @@ class MovableObject extends DrawableObject {
      */
     jump() {
         this.speedY = 18;
+        this.acceleration = 1.5;
         this.playJumpSound();
         this.jumpAnimationActive = true;
         this.jumpAnimationFrame = 0;
