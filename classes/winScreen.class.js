@@ -135,12 +135,14 @@ class GameWinScreen extends DrawableObject {
         this.stopWinSound();
 
         if (this.world) {
-            this.world.clearAllGameIntervals();
+            if (this.world.intervallManager) {
+                this.world.intervallManager.clearAllGameIntervals();
+            }
+            this.resetGameAndWorldState(this.world);
         }
 
         let world = this.world || window.world;
         if (world) {
-            this.resetGameAndWorldState(world);
             this.startGameAndCollisionDetection(world);
         } else {
             this.handleMissingWorld();

@@ -149,7 +149,6 @@ function stopGame() {
         if (typeof world.clearAllGameIntervals === 'function') {
             world.clearAllGameIntervals();
         } else {
-            console.warn('clearAllGameIntervals method not found on world object');
         }
     }
 }

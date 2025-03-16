@@ -208,7 +208,7 @@ class Character extends MovableObject {
     */
     hit() {
         super.hit();
-        this.lastMoveTime = Date.now(); 
+        this.lastMoveTime = Date.now();
         this.stopSnoringSound();
     }
 
@@ -218,19 +218,47 @@ class Character extends MovableObject {
      */
     handleJumpAnimation() {
         if (this.jumpAnimationComplete) {
-            this.img = this.imageCache[this.IMAGES_JUMPING[this.IMAGES_JUMPING.length - 1]];
+            this.showFinalJumpFrame();
         } else {
-            let frameIndex = Math.min(
-                this.jumpAnimationFrame,
-                this.IMAGES_JUMPING.length - 1
-            );
-            this.img = this.imageCache[this.IMAGES_JUMPING[frameIndex]];
-            this.jumpAnimationFrame++;
-            if (this.jumpAnimationFrame >= this.IMAGES_JUMPING.length) {
-                this.jumpAnimationComplete = true;
-            }
+            this.progressJumpAnimation();
         }
 
+        this.resetIdleTimer();
+    }
+
+    /**
+     * Shows the final frame of the jump animation
+     */
+    showFinalJumpFrame() {
+        this.img = this.imageCache[this.IMAGES_JUMPING[this.IMAGES_JUMPING.length - 1]];
+    }
+
+    /**
+     * Progresses to the next frame in the jump animation sequence
+     */
+    progressJumpAnimation() {
+        let frameIndex = Math.min(
+            this.jumpAnimationFrame,
+            this.IMAGES_JUMPING.length - 1
+        );
+        this.img = this.imageCache[this.IMAGES_JUMPING[frameIndex]];
+        this.jumpAnimationFrame++;
+        this.checkJumpAnimationComplete();
+    }
+
+    /**
+     * Checks if the jump animation has completed
+     */
+    checkJumpAnimationComplete() {
+        if (this.jumpAnimationFrame >= this.IMAGES_JUMPING.length) {
+            this.jumpAnimationComplete = true;
+        }
+    }
+
+    /**
+     * Resets the idle timer to prevent entering idle state
+     */
+    resetIdleTimer() {
         this.lastMoveTime = Date.now();
     }
 
