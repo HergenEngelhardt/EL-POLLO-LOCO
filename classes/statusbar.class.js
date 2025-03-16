@@ -112,18 +112,22 @@ class Statusbar extends DrawableObject {
      * @returns {number} Index of the image to display.
      */
     resolveImageIndex() {
-        if(this.percentage == 0){
-            return 0;
-        } else if(this.percentage > 0 && this.percentage <= 20){
-            return 1;
-        } else if(this.percentage > 20 && this.percentage <= 40){
-            return 2;
-        } else if(this.percentage > 40 && this.percentage <= 60){
-            return 3;
-        } else if(this.percentage > 60 && this.percentage <= 80){
-            return 4;
+        if (this.type === 'bottle') {
+            return Math.round(this.percentage / 20);
         } else {
-            return 5;
+            if(this.percentage == 0){
+                return 0;
+            } else if(this.percentage > 0 && this.percentage <= 20){
+                return 1;
+            } else if(this.percentage > 20 && this.percentage <= 40){
+                return 2;
+            } else if(this.percentage > 40 && this.percentage <= 60){
+                return 3;
+            } else if(this.percentage > 60 && this.percentage <= 80){
+                return 4;
+            } else {
+                return 5;
+            }
         }
     }
 }

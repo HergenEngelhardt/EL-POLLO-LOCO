@@ -67,6 +67,7 @@ class World {
      * Throws a bottle if available
      */
     throwBottle() {
+        console.log(`Before throw: bottles collected=${this.bottlesCollected}, throwable bottles=${this.throwableBottles.length}`);
         if (this.throwableBottles.length > 0) {
             let bottle = this.throwableBottles.pop();
             bottle.throw(this.character.x, this.character.y, this);
@@ -78,6 +79,7 @@ class World {
 
             this.bottlesCollected--;
             this.updateBottleStatusBar();
+            console.log(`After throw: bottles collected=${this.bottlesCollected}, throwable bottles=${this.throwableBottles.length}`);
         }
     }
 
@@ -101,7 +103,7 @@ class World {
      */
     updateBottleStatusBar() {
         let bottlePercentage = (this.bottlesCollected / this.totalInitialBottles) * 100;
-        this.statusbarBottle.setBottlePercentage(bottlePercentage);
+        this.statusbarBottle.setBottlePercentage(Math.max(0, Math.min(bottlePercentage, 100)));
     }
 
     /**
