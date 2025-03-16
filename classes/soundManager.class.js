@@ -206,7 +206,6 @@ class SoundManager {
      * Stops all sounds
      */
     static stopAll() {
-        // Stop preloaded sounds
         for (let name in this.sounds) {
             this.stop(name);
         }

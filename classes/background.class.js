@@ -33,9 +33,7 @@ class Background extends MovableObject {
      * @returns {boolean} True if rendering should proceed, false otherwise
      */
     shouldRender() {
-        // Check if we're on mobile and in portrait mode
         if (this.isInPortraitMode()) {
-            // Don't render when orientation message is visible
             return false;
         }
         return true;
@@ -46,13 +44,11 @@ class Background extends MovableObject {
      * @returns {boolean} True if in portrait mode on mobile
      */
     isInPortraitMode() {
-        // Check if orientation message is visible
-        const orientationMessage = document.getElementById('orientation-message');
+        let orientationMessage = document.getElementById('orientation-message');
         if (orientationMessage && !orientationMessage.classList.contains('d-none')) {
             return true;
         }
         
-        // Additional check for mobile in portrait orientation
         if (isMobileDevice && window.innerHeight > window.innerWidth) {
             return true;
         }

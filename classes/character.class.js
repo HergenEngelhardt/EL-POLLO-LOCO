@@ -207,9 +207,9 @@ class Character extends MovableObject {
     * Wakes character from idle mode when hit
     */
     hit() {
-        super.hit(); // Call the parent class hit method
-        this.lastMoveTime = Date.now(); // Reset the idle timer
-        this.stopSnoringSound(); // Stop snoring sound immediately
+        super.hit();
+        this.lastMoveTime = Date.now(); 
+        this.stopSnoringSound();
     }
 
     /**

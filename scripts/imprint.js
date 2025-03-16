@@ -77,12 +77,8 @@ function loadImprintContent(imprintElement) {
 function appendContentWithBackButton(imprintElement, data) {
     let backButtonHTML = '<button class="btn" onclick="showMenu()">Back to Menu</button>';
     let closeButtonHTML = '<button class="close-btn" onclick="hideImprint(document.getElementById(\'imprint\'))">×</button>';
-    
-    // Add the close button at the beginning of the content
     imprintElement.innerHTML = closeButtonHTML + data + backButtonHTML;
     imprintElement.classList.add('loaded');
-    
-    // Add click outside listener
     addClickOutsideListener(imprintElement);
 }
 

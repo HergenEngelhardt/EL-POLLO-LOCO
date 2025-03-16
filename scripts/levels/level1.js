@@ -18,7 +18,7 @@ let level1;
  */
 function initLevel1() {
     let backgrounds = [];
-    let segmentWidth = 720;
+    let segmentWidth = 719;
     for (let i = -1; i <= 6; i++) {
         let variant = (i % 2 === 0) ? '1' : '2';
         let xPos = i * segmentWidth;
