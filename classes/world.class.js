@@ -158,25 +158,26 @@ class World {
         }
     }
 
-    /**
-     * Starts the game and initializes level
-     */
-    startGame() {
-        this.gameStarted = true;
-        this.gameOver = false;
-        document.getElementById('soundBtn').classList.remove('d-none');
-        document.getElementById('menuBtn').classList.remove('d-none'); // Add this line to show the menu button
-        document.querySelector('.button-container').classList.add('d-none');
-        initLevel1();
-        this.level = level1;
-        this.setWorld();
-        this.totalCoins = this.level.coins.length;
-        this.totalBottles = this.level.salsaBottles.length;
-        this.collisionManager.startCollisionDetection();
-        setTimeout(() => {
-            this.character.startAnimations();
-        }, 150);
-    }
+/**
+ * Starts the game and initializes level
+ */
+startGame() {
+    this.gameStarted = true;
+    this.gameOver = false;
+    document.getElementById('soundBtn').classList.remove('d-none');
+    document.getElementById('menuBtn').classList.remove('d-none');
+    document.getElementById('mobileMenuBtn').classList.add('d-none'); 
+    document.querySelector('.button-container').classList.add('d-none');
+    initLevel1();
+    this.level = level1;
+    this.setWorld();
+    this.totalCoins = this.level.coins.length;
+    this.totalBottles = this.level.salsaBottles.length;
+    this.collisionManager.startCollisionDetection();
+    setTimeout(() => {
+        this.character.startAnimations();
+    }, 150);
+}
 
     /**
      * Draws the game over screen

@@ -95,6 +95,7 @@ function showMenu() {
     document.getElementById('mobileMenu').classList.add('d-none');
     document.getElementById('soundBtn').classList.add('d-none');
     document.getElementById('menuBtn').classList.add('d-none');
+    document.getElementById('mobileMenuBtn').classList.remove('d-none'); 
     document.querySelector('.button-container').classList.remove('d-none');
     
     if (world) {
