@@ -144,10 +144,13 @@ function stopGame() {
         world.gameStarted = false;
         world.gameOver = false;
         world.gameWon = false;
-        
         world.stopAllBackgroundSounds();
         
-        world.clearAllGameIntervals();
+        if (typeof world.clearAllGameIntervals === 'function') {
+            world.clearAllGameIntervals();
+        } else {
+            console.warn('clearAllGameIntervals method not found on world object');
+        }
     }
 }
 

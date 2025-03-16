@@ -44,13 +44,17 @@ class Background extends MovableObject {
      * @returns {boolean} True if in portrait mode on mobile
      */
     isInPortraitMode() {
-        let orientationMessage = document.getElementById('orientation-message');
-        if (orientationMessage && !orientationMessage.classList.contains('d-none')) {
-            return true;
-        }
-        
-        if (isMobileDevice && window.innerHeight > window.innerWidth) {
-            return true;
+        try {
+            let orientationMessage = document.getElementById('orientation-message');
+            if (orientationMessage && !orientationMessage.classList.contains('d-none')) {
+                return true;
+            }
+            
+            if (typeof isMobileDevice === 'function' && isMobileDevice() && window.innerHeight > window.innerWidth) {
+                return true;
+            }
+        } catch (error) {
+            console.error('Error checking portrait mode:', error);
         }
         
         return false;
