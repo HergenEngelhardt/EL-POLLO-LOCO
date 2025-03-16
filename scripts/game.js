@@ -51,7 +51,6 @@ function appendContentWithBackButton(imprintElement, data) {
     imprintElement.classList.add('loaded');
 }
 
-
 /**
  * Toggles fullscreen mode for the game
  */

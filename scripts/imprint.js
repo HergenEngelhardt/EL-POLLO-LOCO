@@ -25,11 +25,16 @@ function toggleImprint() {
 }
 
 /**
- * Hides the imprint panel
+ * Hides the imprint panel and removes outside click handlers
  * @param {HTMLElement} imprintElement - The imprint panel element
  */
 function hideImprint(imprintElement) {
     imprintElement.classList.add('d-none');
+    if (window.imprintClickOutsideHandler) {
+        document.removeEventListener('mousedown', window.imprintClickOutsideHandler);
+        document.removeEventListener('touchstart', window.imprintClickOutsideHandler);
+        window.imprintClickOutsideHandler = null;
+    }
 }
 
 /**
@@ -86,26 +91,19 @@ function appendContentWithBackButton(imprintElement, data) {
  * @param {HTMLElement} imprintElement - The imprint panel element
  */
 function addClickOutsideListener(imprintElement) {
-    document.removeEventListener('mousedown', window.imprintClickOutsideHandler);
-    window.imprintClickOutsideHandler = function(event) {
-        if (!imprintElement.contains(event.target) && 
-            !event.target.closest('#imprint-btn')) {
-            hideImprint(imprintElement);
-            document.removeEventListener('mousedown', window.imprintClickOutsideHandler);
-        }
-    };
-    setTimeout(() => {
-        document.addEventListener('mousedown', window.imprintClickOutsideHandler);
-    }, 100);
-}
-
-/**
- * Hides the imprint panel and removes outside click handler
- * @param {HTMLElement} imprintElement - The imprint panel element
- */
-function hideImprint(imprintElement) {
-    imprintElement.classList.add('d-none');
     if (window.imprintClickOutsideHandler) {
         document.removeEventListener('mousedown', window.imprintClickOutsideHandler);
+        document.removeEventListener('touchstart', window.imprintClickOutsideHandler);
     }
+    
+    window.imprintClickOutsideHandler = function(event) {
+        if (event.target.closest('#imprint-btn')) {
+            return;
+        }
+        if (!imprintElement.contains(event.target)) {
+            hideImprint(imprintElement);
+        }
+    };
+    document.addEventListener('mousedown', window.imprintClickOutsideHandler);
+    document.addEventListener('touchstart', window.imprintClickOutsideHandler, {passive: true});
 }
