@@ -28,13 +28,15 @@ class IntervallManager {
         /**
      * Clears all game-related intervals properly
      */
-    clearAllGameIntervals() {
-        if (this.intervallManager) {
-            this.intervallManager.clearAllGameIntervals();
-        } else {
-            console.warn('IntervalManager not initialized, cannot clear intervals');
+        clearAllGameIntervals() {
+            this.clearCharacterIntervals();
+            this.clearEnemyIntervals();
+            this.clearBottleIntervals();
+            if (this.collisionManager && this.collisionManager.collisionInterval) {
+                clearInterval(this.collisionManager.collisionInterval);
+                this.collisionManager.collisionInterval = null;
+            }
         }
-    }
 
     /**
      * Clears character-specific animation intervals
