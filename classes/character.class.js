@@ -13,6 +13,7 @@ class Character extends MovableObject {
     jumpAnimationActive = false;
     jumpAnimationFrame = 0;
     jumpAnimationComplete = false;
+    lastBottleThrow = 0;
 
     IMAGES_IDLE = [
         './assets/img/2_character_pepe/1_idle/idle/I-1.png',
@@ -94,9 +95,9 @@ class Character extends MovableObject {
         this.world = {};
         this.offset = {
             top: 85,
-            bottom: 10,
-            left: 10,
-            right: 20
+            bottom: 20,
+            left: 25,
+            right: 35
         };
     }
 
@@ -340,12 +341,18 @@ class Character extends MovableObject {
     }
 
     /**
-     * Triggers bottle throwing action and updates last move time
+     * Triggers bottle throwing action with a cooldown period
+     * @param {number} cooldownMs - Cooldown time in milliseconds (default: 1000)
+     * @returns {boolean} - Whether the bottle was thrown
      */
-    throwBottle() {
-        if (this.world) {
+    throwBottle(cooldownMs = 20000) {
+        const currentTime = Date.now();
+        if (this.world && (!this.lastBottleThrow || currentTime - this.lastBottleThrow >= cooldownMs)) {
             this.world.throwBottle();
-            this.lastMoveTime = Date.now();
+            this.lastMoveTime = currentTime;
+            this.lastBottleThrow = currentTime;
+            return true;
         }
+        return false;
     }
 }

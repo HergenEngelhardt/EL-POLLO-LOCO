@@ -14,10 +14,10 @@ class Coin extends MovableObject {
         this.height = 100;
         this.width = 100;
         this.offset = { 
-            left: 20,
-            right: 20,
-            top: 20,
-            bottom: 20 
+            left: 35,
+            right: 35,
+            top: 35,
+            bottom: 35 
         };
     }
 

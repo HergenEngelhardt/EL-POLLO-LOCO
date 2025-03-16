@@ -32,8 +32,8 @@ class SalsaBottle extends MovableObject {
         this.width = 80;
         this.hasBeenThrown = false;
         this.offset = {
-            left: 20,
-            right: 10,
+            left: 35,
+            right: 35,
             top: 40,
             bottom: 10
         };
