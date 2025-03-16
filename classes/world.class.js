@@ -35,10 +35,10 @@ class World {
         this.collisionManager = new CollisionManager(this);
         this.renderManager = new RenderManager(this, this.ctx);
         this.intervallManager = new IntervallManager(this);
-        this.inputHandler = new WorldInputHandler(this, canvas);
+        this.inputHandler = new WorldInputHandler(this);
         this.draw();
         this.setWorld();
-        this.inputHandler.addMouseEvents();
+        this.inputHandler.addMouseEvents();  
         this.initCollisionDetection();
         this.totalInitialBottles = 5;
         this.gameWon = false;
@@ -161,25 +161,6 @@ class World {
         this.percentage = percentage;
         let path = this.STATUSBAR_BOTTLE[this.resolveImageIndex()];
         this.img = this.imageCache[path];
-    }
-
-    /**
-     * Adds mouse event listeners for game controls
-     */
-    addMouseEvents() {
-        this.canvas.addEventListener('click', (event) => {
-            this.handlePointerEvent(event);
-        });
-        this.canvas.addEventListener('touchstart', (event) => {
-            event.preventDefault();
-            if (event.touches.length > 0) {
-                let touch = event.touches[0];
-                this.handlePointerEvent({
-                    clientX: touch.clientX,
-                    clientY: touch.clientY
-                });
-            }
-        });
     }
 
     /**
