@@ -61,13 +61,17 @@ class ChickenBoss extends MovableObject {
     lastHit = 0;
     deathAnimationPlayed = false;
     deathAnimationIndex = 0;
+    canJump = true;
+    isJumping = false;
+    jumpCooldown = 0;
+    jumpSpeed = 25;
 
     /**
      * Creates a new ChickenBoss instance and initializes animations
      */
     constructor() {
         super().loadImage(this.IMAGES_WALKING[0]);
-        this.speed = 7.5;
+        this.speed = 20;
         this.loadImages(this.IMAGES_ALERT);
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_ATTACK);
@@ -244,22 +248,6 @@ class ChickenBoss extends MovableObject {
     }
 
     /**
-     * Handles boss behavior when in attack range
-     * @param {number} distanceToCharacter - Distance to the character
-     * @param {boolean} characterIsLeft - Whether character is to the left of boss
-     */
-    handleAttackingBehavior(distanceToCharacter, characterIsLeft) {
-        this.animateImages(this.IMAGES_ATTACK);
-        this.updateMovementDirection(characterIsLeft);
-        this.applyMovement();
-
-        if (distanceToCharacter < 80 && !this.world.character.isHurt()) {
-            this.world.character.hit();
-            this.world.updateHealthStatusBar();
-        }
-    }
-
-    /**
     * Handles normal movement behavior
     * @param {boolean} characterIsLeft - Whether character is to the left of boss
     */
@@ -279,22 +267,8 @@ class ChickenBoss extends MovableObject {
     }
 
     /**
-     * Applies movement based on current direction
-     */
-    applyMovement() {
-        if (this.movingDirection > 0) {
-            this.x += this.speed;
-            this.otherDirection = true;
-        } else {
-            this.x -= this.speed;
-            this.otherDirection = false;
-        }
-        this.playMovementSound();
-    }
-
-    /**
- * Plays boss movement sound with throttling to prevent sound overlap
- */
+    * Plays boss movement sound with throttling to prevent sound overlap
+    */
     playMovementSound() {
         let now = new Date().getTime();
 
