@@ -77,8 +77,6 @@ class ChickenBoss extends MovableObject {
             left: 20,
             right: 20
         };
-        
-        // Initialize components
         this.animation = new ChickenBossAnimation(this);
         this.movement = new ChickenBossMovement(this);
         this.combat = new ChickenBossCombat(this);

@@ -62,7 +62,7 @@ class ChickenBossAnimation {
      * Plays the death animation sequence and triggers game completion when finished
      */
     playDeathAnimation() {
-        const ANIMATION_FRAME_DELAY = 200;
+        let ANIMATION_FRAME_DELAY = 200;
         let deathInterval = setInterval(() => {
             if (this.isDeathAnimationComplete()) {
                 this.finalizeDeathAnimation(deathInterval);

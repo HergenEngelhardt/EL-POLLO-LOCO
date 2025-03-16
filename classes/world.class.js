@@ -31,12 +31,14 @@ class World {
         this.canvas = canvas;
         this.gameOverScreen = new GameOverScreen();
         this.gameOverScreen.setWorld(this);
+        this.soundManager = new WorldSoundManager(this);
         this.collisionManager = new CollisionManager(this);
         this.renderManager = new RenderManager(this, this.ctx);
         this.intervallManager = new IntervallManager(this);
+        this.inputHandler = new WorldInputHandler(this, canvas);
         this.draw();
         this.setWorld();
-        this.addMouseEvents();
+        this.inputHandler.addMouseEvents();
         this.initCollisionDetection();
         this.totalInitialBottles = 5;
         this.gameWon = false;
@@ -117,7 +119,7 @@ class World {
      * Throws a bottle if available
      */
     throwBottle() {
-        const bottle = this.getBottleForThrowing();
+        let bottle = this.getBottleForThrowing();
 
         if (bottle) {
             bottle.throw(this.character.x, this.character.y, this);
@@ -188,9 +190,9 @@ class World {
      * @returns {Object} Object with x and y canvas coordinates
      */
     convertToCanvasCoordinates(clientX, clientY) {
-        const rect = this.canvas.getBoundingClientRect();
-        const scaleX = this.canvas.width / rect.width;
-        const scaleY = this.canvas.height / rect.height;
+        let rect = this.canvas.getBoundingClientRect();
+        let scaleX = this.canvas.width / rect.width;
+        let scaleY = this.canvas.height / rect.height;
 
         return {
             x: (clientX - rect.left) * scaleX,
@@ -213,12 +215,20 @@ class World {
     }
 
     /**
+     * Toggles the background music on/off
+     * Delegates to the soundManager to handle the toggle functionality
+     */
+    toggleBackgroundMusic() {
+        this.soundManager.toggleBackgroundMusic();
+    }
+
+    /**
      * Processes pointer events (mouse clicks or touch) on the canvas
      * 
      * @param {Event} event - The mouse or touch event containing clientX and clientY coordinates
      */
     handlePointerEvent(event) {
-        const canvasCoords = this.convertToCanvasCoordinates(event.clientX, event.clientY);
+        let canvasCoords = this.convertToCanvasCoordinates(event.clientX, event.clientY);
 
         if (!this.gameStarted) {
             this.handleStartScreenActions(canvasCoords.x, canvasCoords.y);
@@ -298,14 +308,14 @@ class World {
     }
 
     /**
-    * Checks game state and continues animation loop if needed
-    */
+     * Checks game state and continues animation loop if needed
+     */
     checkGameStateAndContinue() {
         if (this.gameOver) {
-            this.stopAllBackgroundSounds();
+            this.soundManager.stopAllBackgroundSounds();
             this.drawGameOverScreen();
         } else if (this.gameWon) {
-            this.stopAllBackgroundSounds();
+            this.soundManager.stopAllBackgroundSounds();
             this.winScreen.draw(this.ctx);
         } else {
             let self = this;
@@ -313,6 +323,14 @@ class World {
                 self.draw();
             });
         }
+    }
+
+    /**
+     * Stops all background music and sound effects in the game
+     * Delegates to the soundManager to handle all audio stopping logic
+     */
+    stopAllBackgroundSounds() {
+        this.soundManager.stopAllBackgroundSounds();
     }
 
     /**
@@ -325,18 +343,6 @@ class World {
             setTimeout(() => {
                 this.throwCooldown = false;
             }, 300);
-        }
-    }
-
-
-    /**
-    * Toggles background music on/off
-    */
-    toggleBackgroundMusic() {
-        if (!SoundManager.sounds['backgroundMusic'] || SoundManager.sounds['backgroundMusic'].paused) {
-            SoundManager.playBackgroundMusic();
-        } else {
-            SoundManager.stopBackgroundMusic();
         }
     }
 
@@ -371,60 +377,4 @@ class World {
             this.checkWinCondition();
         }
     }
-
-/**
- * Stops character sounds
- */
-stopCharacterSounds() {
-    if (this.character) {
-        this.character.stopRunningSound();
-        this.character.stopSnoringSound();
-    }
-}
-
-/**
- * Stops enemy sounds, particularly for boss enemies
- */
-stopEnemySounds() {
-    if (this.level && this.level.enemies) {
-        this.level.enemies.forEach(enemy => {
-            if (enemy instanceof ChickenBoss) {
-                this.stopBossEnemySounds(enemy);
-            }
-        });
-    }
-}
-
-/**
- * Stops sounds specific to boss enemies
- * @param {ChickenBoss} bossEnemy - The boss enemy to stop sounds for
- */
-stopBossEnemySounds(bossEnemy) {
-    // Disable the movement sound function
-    bossEnemy.playMovementSound = function () { };
-    
-    // Stop and reset alert sound if it exists
-    if (bossEnemy.alertSound) {
-        bossEnemy.alertSound.pause();
-        bossEnemy.alertSound.currentTime = 0;
-        bossEnemy.alertSound = null;
-    }
-}
-
-/**
- * Stops all game sound effects
- */
-stopGameSounds() {
-    SoundManager.stopBackgroundMusic();
-    SoundManager.stopAll();
-}
-
-/**
- * Stops all background sounds when game ends
- */
-stopAllBackgroundSounds() {
-    this.stopCharacterSounds();
-    this.stopEnemySounds();
-    this.stopGameSounds();
-}
 }

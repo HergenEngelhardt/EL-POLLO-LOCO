@@ -48,7 +48,7 @@ class ChickenBossCombat {
      * @returns {boolean} True if the boss was recently hit, false otherwise
      */
     isHurt() {
-        const timeSinceHit = new Date().getTime() - this.lastHit;
+        let timeSinceHit = new Date().getTime() - this.lastHit;
         return timeSinceHit < 500;
     }
 
