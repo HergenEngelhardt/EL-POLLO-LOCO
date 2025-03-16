@@ -101,7 +101,7 @@ class ChickenBoss extends MovableObject {
      * Sets up the main animation interval
      */
     setupAnimationLoop() {
-        setInterval(() => {
+        this.animationInterval = setInterval(() => {
             if (!this.processCurrentState()) {
                 this.handleCharacterInteraction();
             }

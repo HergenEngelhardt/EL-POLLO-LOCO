@@ -335,11 +335,45 @@ class World {
     clearEnemyIntervals() {
         if (this.level && this.level.enemies) {
             this.level.enemies.forEach(enemy => {
-                if (enemy.animationInterval) {
-                    clearInterval(enemy.animationInterval);
-                    enemy.animationInterval = null;
+                this.clearBasicEnemyIntervals(enemy);
+
+                if (enemy instanceof ChickenBoss) {
+                    this.clearBossEnemyIntervals(enemy);
                 }
             });
+        }
+    }
+
+    /**
+     * Clears basic animation intervals for any enemy type
+     * @param {MovableObject} enemy - The enemy object
+     */
+    clearBasicEnemyIntervals(enemy) {
+        if (enemy.animationInterval) {
+            clearInterval(enemy.animationInterval);
+            enemy.animationInterval = null;
+        }
+    }
+
+    /**
+     * Clears ChickenBoss-specific intervals and sounds
+     * @param {ChickenBoss} boss - The boss enemy object
+     */
+    clearBossEnemyIntervals(boss) {
+        if (boss.attackInterval) {
+            clearInterval(boss.attackInterval);
+            boss.attackInterval = null;
+        }
+
+        if (boss.alertSound) {
+            boss.alertSound.pause();
+            boss.alertSound.currentTime = 0;
+            boss.alertSound = null;
+        }
+
+        if (boss.movementSoundInterval) {
+            clearInterval(boss.movementSoundInterval);
+            boss.movementSoundInterval = null;
         }
     }
 
