@@ -17,4 +17,46 @@ class Background extends MovableObject {
         this.x = x;
         this.y = yPosition !== undefined ? yPosition : 480 - this.height;
     }
+    
+    /**
+     * Overrides the draw method to prevent rendering in portrait mode on mobile
+     * @param {CanvasRenderingContext2D} ctx - The canvas rendering context
+     */
+    draw(ctx) {
+        if (this.shouldRender()) {
+            super.draw(ctx);
+        }
+    }
+    
+    /**
+     * Determines if the background should render based on device orientation
+     * @returns {boolean} True if rendering should proceed, false otherwise
+     */
+    shouldRender() {
+        // Check if we're on mobile and in portrait mode
+        if (this.isInPortraitMode()) {
+            // Don't render when orientation message is visible
+            return false;
+        }
+        return true;
+    }
+    
+    /**
+     * Checks if device is in portrait mode on mobile
+     * @returns {boolean} True if in portrait mode on mobile
+     */
+    isInPortraitMode() {
+        // Check if orientation message is visible
+        const orientationMessage = document.getElementById('orientation-message');
+        if (orientationMessage && !orientationMessage.classList.contains('d-none')) {
+            return true;
+        }
+        
+        // Additional check for mobile in portrait orientation
+        if (isMobileDevice && window.innerHeight > window.innerWidth) {
+            return true;
+        }
+        
+        return false;
+    }
 }
