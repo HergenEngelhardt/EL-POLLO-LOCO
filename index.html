@@ -21,10 +21,13 @@
     <script src="./classes/statusbar.class.js"></script>
     <script src="./classes/background.class.js"></script>
     <script src="./classes/clouds.class.js"></script>
-    <script src="./classes/world.class.js"></script>
     <script src="./classes/intervallManager.class.js"></script>
+    <script src="./classes/world.class.js"></script>
     <script src="./classes/collision.class.js"></script>
     <script src="./classes/renderManager.class.js"></script>
+    <script src="classes/chickenBossAnimation.class.js"></script>
+    <script src="classes/chickenBossMovement.class.js"></script>
+    <script src="classes/chickenBossCombat.class.js"></script>
     <script src="./classes/chickenBoss.class.js"></script>
     <script src="./classes/keyboard.class.js"></script>
     <script src="./scripts/game.js"></script>
@@ -45,7 +48,7 @@
     </canvas>
     <div id="fullscreenBtn">
         <img src="./assets/icons/fullscreen.png" alt="Fullscreen">
-    </div>                                                
+    </div>
     <div id="soundBtn" class="d-none">
         <img src="./assets/icons/music.png" alt="Toggle Sound">
     </div>
@@ -83,7 +86,7 @@
     <div id="mobileMenuBtn" class="mobile-only" onclick="toggleMobileMenu()">
         <img src="./assets/icons/settingsBTN.png" alt="Menu" onclick="event.stopPropagation(); toggleMobileMenu();">
     </div>
-    
+
     <div id="mobileMenu" class="mobile-menu d-none">
         <button class="mobile-menu-btn" onclick="showInstructions()">Instructions</button>
         <button class="mobile-menu-btn" onclick="showImprint()">Imprint</button>
