@@ -26,6 +26,8 @@ class SalsaBottle extends MovableObject {
      */
     constructor() {
         super().loadImage('./assets/img/6_salsa_bottle/1_salsa_bottle_on_ground.png');
+        this.loadImages(this.IMAGES_ROTATE);
+        this.loadImages(this.IMAGES_SPLASH);
         this.x = 250 + Math.random() * 3500;
         this.y = 350;
         this.height = 100;
@@ -120,14 +122,18 @@ class SalsaBottle extends MovableObject {
         }
 
         this.splashInterval = setInterval(() => {
-            this.animateImages(this.IMAGES_SPLASH);
             if (this.currentImage >= this.IMAGES_SPLASH.length) {
                 clearInterval(this.splashInterval);
                 this.splashInterval = null;
                 setTimeout(() => {
                     this.removeBottle();
                 }, 100);
+                return;
             }
+            
+            let path = this.IMAGES_SPLASH[this.currentImage];
+            this.img = this.imageCache[path];
+            this.currentImage++;
         }, 100);
     }
 
@@ -136,15 +142,24 @@ class SalsaBottle extends MovableObject {
      * Cleans up resources and moves the bottle offscreen.
      */
     removeBottle() {
+        if (this.moveInterval) {
+            clearInterval(this.moveInterval);
+            this.moveInterval = null;
+        }
+        if (this.animationInterval) {
+            clearInterval(this.animationInterval);
+            this.animationInterval = null;
+        }
+        if (this.splashInterval) {
+            clearInterval(this.splashInterval);
+            this.splashInterval = null;
+        }
         if (this.world && this.world.activeThrowableBottles) {
-            let index = this.world.activeThrowableBottles.indexOf(this);
+            const index = this.world.activeThrowableBottles.indexOf(this);
             if (index > -1) {
                 this.world.activeThrowableBottles.splice(index, 1);
             }
-        } else {
-            console.warn('Cannot remove bottle: world reference or activeThrowableBottles missing');
         }
-        this.img = null;
         this.x = -1000;
         this.y = -1000;
         if (this.world && this.world.character) {

@@ -39,7 +39,7 @@ class CollisionManager {
      */
     handleJumpOnEnemies() {
         let isJumpingOnEnemy = false;
-    
+
         this.world.level.enemies.forEach((enemy) => {
             if (this.world.character.speedY < 0 && this.world.character.isCollidingFromTop(enemy) && !enemy.isDead) {
                 enemy.die();
@@ -49,11 +49,11 @@ class CollisionManager {
                 this.world.character.jumpAnimationActive = true;
                 this.world.character.jumpAnimationFrame = 0;
                 this.world.character.jumpAnimationComplete = false;
-                
+
                 isJumpingOnEnemy = true;
             }
         });
-    
+
         return isJumpingOnEnemy;
     }
 
@@ -114,70 +114,67 @@ class CollisionManager {
         });
     }
 
-/**
- * Handles collisions between thrown bottles and enemies or ground
- */
-handleThrowableBottleCollisions() {
-    if (!this.world.activeThrowableBottles || !this.world.level || !this.world.level.enemies) return;
+    /**
+     * Handles collisions between thrown bottles and enemies or ground
+     */
+    handleThrowableBottleCollisions() {
+        if (!this.world.activeThrowableBottles || !this.world.level || !this.world.level.enemies) return;
 
-    for (let i = this.world.activeThrowableBottles.length - 1; i >= 0; i--) {
-        let bottle = this.world.activeThrowableBottles[i];
-        
-        if (this.checkBottleEnemyCollision(bottle, i)) continue;
-        this.checkBottleGroundCollision(bottle, i);
-    }
-}
+        for (let i = this.world.activeThrowableBottles.length - 1; i >= 0; i--) {
+            let bottle = this.world.activeThrowableBottles[i];
 
-/**
- * Checks if a bottle collides with any enemy
- * @param {object} bottle - The bottle to check
- * @param {number} bottleIndex - Index of the bottle in activeThrowableBottles array
- * @returns {boolean} - True if bottle hit an enemy
- */
-checkBottleEnemyCollision(bottle, bottleIndex) {
-    for (let enemy of this.world.level.enemies) {
-        if (bottle.isColliding(enemy)) {
-            this.processBottleHit(bottle, enemy, bottleIndex);
-            return true;
+            if (this.checkBottleEnemyCollision(bottle, i)) {
+                // Skip ground collision check if bottle hit an enemy
+                continue;
+            }
+
+            this.checkBottleGroundCollision(bottle, i);
         }
     }
-    return false;
-}
 
-/**
- * Processes the actions when a bottle hits an enemy
- * @param {object} bottle - The bottle that hit
- * @param {object} enemy - The enemy that was hit
- * @param {number} bottleIndex - Index of the bottle in activeThrowableBottles array
- */
-processBottleHit(bottle, enemy, bottleIndex) {
-    bottle.splash();
-
-    if (enemy instanceof ChickenBoss) {
-        enemy.hit();
-    } else {
-        enemy.hitByBottle();
+    /**
+     * Checks if a bottle collides with any enemy
+     * @param {object} bottle - The bottle to check
+     * @param {number} bottleIndex - Index of the bottle in activeThrowableBottles array
+     * @returns {boolean} - True if bottle hit an enemy
+     */
+    checkBottleEnemyCollision(bottle, bottleIndex) {
+        for (let enemy of this.world.level.enemies) {
+            if (bottle.isColliding(enemy)) {
+                this.processBottleHit(bottle, enemy, bottleIndex);
+                return true;
+            }
+        }
+        return false;
     }
 
-    if (this.world.activeThrowableBottles && bottleIndex > -1) {
-        this.world.activeThrowableBottles.splice(bottleIndex, 1);
-    }
-}
-
-/**
- * Checks if a bottle hits the ground
- * @param {object} bottle - The bottle to check
- * @param {number} bottleIndex - Index of the bottle in activeThrowableBottles array
- */
-checkBottleGroundCollision(bottle, bottleIndex) {
-    if (bottle.y > 350) {
+    /**
+     * Processes the actions when a bottle hits an enemy
+     * @param {object} bottle - The bottle that hit
+     * @param {object} enemy - The enemy that was hit
+     * @param {number} bottleIndex - Index of the bottle in activeThrowableBottles array
+     */
+    processBottleHit(bottle, enemy, bottleIndex) {
         bottle.splash();
-        
-        if (this.world.activeThrowableBottles && bottleIndex > -1) {
-            this.world.activeThrowableBottles.splice(bottleIndex, 1);
+
+        if (enemy instanceof ChickenBoss) {
+            enemy.hit();
+        } else {
+            enemy.hitByBottle();
+        }
+
+    }
+
+    /**
+     * Checks if a bottle hits the ground
+     * @param {object} bottle - The bottle to check
+     * @param {number} bottleIndex - Index of the bottle in activeThrowableBottles array
+     */
+    checkBottleGroundCollision(bottle, bottleIndex) {
+        if (bottle.y > 350 && bottle.hasBeenThrown) {
+            bottle.splash();
         }
     }
-}
 
     /**
      * Clears the collision detection interval
