@@ -33,7 +33,7 @@ class World {
         this.gameOverScreen.setWorld(this);
         this.collisionManager = new CollisionManager(this);
         this.renderManager = new RenderManager(this, this.ctx);
-        this.intervallManager = new IntervallManager(this); 
+        this.intervallManager = new IntervallManager(this);
         this.draw();
         this.setWorld();
         this.addMouseEvents();
@@ -67,23 +67,63 @@ class World {
     }
 
     /**
+     * Checks if bottles are available to throw
+     * @returns {boolean} True if bottles are available
+     */
+    hasAvailableBottles() {
+        return this.throwableBottles.length > 0;
+    }
+
+    /**
+     * Gets a bottle from the collection and prepares it for throwing
+     * @returns {Object|null} The bottle object or null if none available
+     */
+    getBottleForThrowing() {
+        if (!this.hasAvailableBottles()) {
+            return null;
+        }
+        return this.throwableBottles.pop();
+    }
+
+    /**
+     * Adds a bottle to the active throwable bottles array
+     * @param {Object} bottle - The bottle being thrown
+     */
+    trackActiveBottle(bottle) {
+        if (!this.activeThrowableBottles) {
+            this.activeThrowableBottles = [];
+        }
+        this.activeThrowableBottles.push(bottle);
+    }
+
+    /**
+     * Decrements bottle count and updates the UI
+     */
+    decrementBottleCount() {
+        this.bottlesCollected--;
+        this.updateBottleStatusBar();
+    }
+
+    /**
+     * Resets the throw cooldown after a throw
+     */
+    resetThrowCooldown() {
+        setTimeout(() => {
+            this.throwInProgress = false;
+        }, 300);
+    }
+
+    /**
      * Throws a bottle if available
      */
     throwBottle() {
-        if (this.throwableBottles.length > 0) {
-            let bottle = this.throwableBottles.pop();
+        const bottle = this.getBottleForThrowing();
+
+        if (bottle) {
             bottle.throw(this.character.x, this.character.y, this);
-
-            if (!this.activeThrowableBottles) {
-                this.activeThrowableBottles = [];
-            }
-            this.activeThrowableBottles.push(bottle);
-
-            this.bottlesCollected--;
-            this.updateBottleStatusBar();
-            setTimeout(() => {
-                this.throwInProgress = false;
-            }, 300);
+            this.trackActiveBottle(bottle);
+            this.decrementBottleCount();
+            this.resetThrowCooldown();
         }
     }
 
@@ -141,49 +181,97 @@ class World {
     }
 
     /**
+     * Converts client coordinates to canvas coordinates
+     * 
+     * @param {number} clientX - Client X coordinate
+     * @param {number} clientY - Client Y coordinate
+     * @returns {Object} Object with x and y canvas coordinates
+     */
+    convertToCanvasCoordinates(clientX, clientY) {
+        const rect = this.canvas.getBoundingClientRect();
+        const scaleX = this.canvas.width / rect.width;
+        const scaleY = this.canvas.height / rect.height;
+
+        return {
+            x: (clientX - rect.left) * scaleX,
+            y: (clientY - rect.top) * scaleY
+        };
+    }
+
+    /**
+     * Handles menu actions when the game hasn't started yet
+     * 
+     * @param {number} x - Canvas X coordinate
+     * @param {number} y - Canvas Y coordinate
+     */
+    handleStartScreenActions(x, y) {
+        if (this.startScreen.isPlayButtonClicked(x, y)) {
+            this.startGame();
+        } else if (this.startScreen.isGuitarButtonClicked(x, y)) {
+            this.toggleBackgroundMusic();
+        }
+    }
+
+    /**
      * Processes pointer events (mouse clicks or touch) on the canvas
-     * Converts client coordinates to canvas coordinates with proper scaling
-     * Detects if the play button was clicked and starts the game accordingly
      * 
      * @param {Event} event - The mouse or touch event containing clientX and clientY coordinates
      */
     handlePointerEvent(event) {
-        let rect = this.canvas.getBoundingClientRect();
-        let x = event.clientX - rect.left;
-        let y = event.clientY - rect.top;
-        let scaleX = this.canvas.width / rect.width;
-        let scaleY = this.canvas.height / rect.height;
-        x *= scaleX;
-        y *= scaleY;
+        const canvasCoords = this.convertToCanvasCoordinates(event.clientX, event.clientY);
 
         if (!this.gameStarted) {
-            if (this.startScreen.isPlayButtonClicked(x, y)) {
-                this.startGame();
-            } else if (this.startScreen.isGuitarButtonClicked(x, y)) {
-                this.toggleBackgroundMusic();
-            }
+            this.handleStartScreenActions(canvasCoords.x, canvasCoords.y);
         }
+    }
+
+    /**
+     * Sets game state flags for a new game
+     */
+    initializeGameState() {
+        this.gameStarted = true;
+        this.gameOver = false;
+    }
+
+    /**
+     * Updates UI elements for game mode
+     */
+    updateGameUI() {
+        document.getElementById('soundBtn').classList.remove('d-none');
+        document.getElementById('menuBtn').classList.remove('d-none');
+        document.getElementById('mobileMenuBtn').classList.add('d-none');
+        document.querySelector('.button-container').classList.add('d-none');
+    }
+
+    /**
+     * Initializes the game level and related properties
+     */
+    initializeLevel() {
+        initLevel1();
+        this.level = level1;
+        this.setWorld();
+        this.totalCoins = this.level.coins.length;
+        this.totalBottles = this.level.salsaBottles.length;
+    }
+
+    /**
+     * Starts all game systems and animations
+     */
+    startGameSystems() {
+        this.collisionManager.startCollisionDetection();
+        setTimeout(() => {
+            this.character.startAnimations();
+        }, 150);
     }
 
     /**
      * Starts the game and initializes level
      */
     startGame() {
-        this.gameStarted = true;
-        this.gameOver = false;
-        document.getElementById('soundBtn').classList.remove('d-none');
-        document.getElementById('menuBtn').classList.remove('d-none');
-        document.getElementById('mobileMenuBtn').classList.add('d-none');
-        document.querySelector('.button-container').classList.add('d-none');
-        initLevel1();
-        this.level = level1;
-        this.setWorld();
-        this.totalCoins = this.level.coins.length;
-        this.totalBottles = this.level.salsaBottles.length;
-        this.collisionManager.startCollisionDetection();
-        setTimeout(() => {
-            this.character.startAnimations();
-        }, 150);
+        this.initializeGameState();
+        this.updateGameUI();
+        this.initializeLevel();
+        this.startGameSystems();
     }
 
     /**
@@ -271,7 +359,7 @@ class World {
             this.intervallManager.clearAllGameIntervals();
             this.gameOverScreen.showWinLoseScreen('win');
         }
-        
+
     }
 
     /**
@@ -284,30 +372,59 @@ class World {
         }
     }
 
-
-    /**
-     * Stops all background sounds when game ends
-     */
-    stopAllBackgroundSounds() {
-        if (this.character) {
-            this.character.stopRunningSound();
-            this.character.stopSnoringSound();
-        }
-        if (this.level && this.level.enemies) {
-            this.level.enemies.forEach(enemy => {
-                if (enemy instanceof ChickenBoss) {
-                    enemy.playMovementSound = function () { };
-                    if (enemy.alertSound) {
-                        enemy.alertSound.pause();
-                        enemy.alertSound.currentTime = 0;
-                        enemy.alertSound = null;
-                    }
-                }
-            });
-        }
-        SoundManager.stopBackgroundMusic();
-        SoundManager.stopAll();
+/**
+ * Stops character sounds
+ */
+stopCharacterSounds() {
+    if (this.character) {
+        this.character.stopRunningSound();
+        this.character.stopSnoringSound();
     }
+}
 
+/**
+ * Stops enemy sounds, particularly for boss enemies
+ */
+stopEnemySounds() {
+    if (this.level && this.level.enemies) {
+        this.level.enemies.forEach(enemy => {
+            if (enemy instanceof ChickenBoss) {
+                this.stopBossEnemySounds(enemy);
+            }
+        });
+    }
+}
 
+/**
+ * Stops sounds specific to boss enemies
+ * @param {ChickenBoss} bossEnemy - The boss enemy to stop sounds for
+ */
+stopBossEnemySounds(bossEnemy) {
+    // Disable the movement sound function
+    bossEnemy.playMovementSound = function () { };
+    
+    // Stop and reset alert sound if it exists
+    if (bossEnemy.alertSound) {
+        bossEnemy.alertSound.pause();
+        bossEnemy.alertSound.currentTime = 0;
+        bossEnemy.alertSound = null;
+    }
+}
+
+/**
+ * Stops all game sound effects
+ */
+stopGameSounds() {
+    SoundManager.stopBackgroundMusic();
+    SoundManager.stopAll();
+}
+
+/**
+ * Stops all background sounds when game ends
+ */
+stopAllBackgroundSounds() {
+    this.stopCharacterSounds();
+    this.stopEnemySounds();
+    this.stopGameSounds();
+}
 }
