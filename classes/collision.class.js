@@ -114,20 +114,20 @@ class CollisionManager {
         });
     }
 
-/**
- * Handles collisions between thrown bottles and enemies or ground
- */
-handleThrowableBottleCollisions() {
-    if (!this.world.activeThrowableBottles || !this.world.level || !this.world.level.enemies) return;
+    /**
+     * Handles collisions between thrown bottles and enemies or ground
+     */
+    handleThrowableBottleCollisions() {
+        if (!this.world.activeThrowableBottles || !this.world.level || !this.world.level.enemies) return;
 
-    for (let i = this.world.activeThrowableBottles.length - 1; i >= 0; i--) {
-        let bottle = this.world.activeThrowableBottles[i];
-        
-        if (bottle.isSplashing) continue;
-        if (this.checkBottleEnemyCollision(bottle, i)) continue;
-        this.checkBottleGroundCollision(bottle, i);
+        for (let i = this.world.activeThrowableBottles.length - 1; i >= 0; i--) {
+            let bottle = this.world.activeThrowableBottles[i];
+
+            if (bottle.isSplashing) continue;
+            if (this.checkBottleEnemyCollision(bottle, i)) continue;
+            this.checkBottleGroundCollision(bottle, i);
+        }
     }
-}
 
     /**
      * Checks if a bottle collides with any enemy
@@ -145,24 +145,28 @@ handleThrowableBottleCollisions() {
         return false;
     }
 
-    /**
-     * Processes the actions when a bottle hits an enemy
-     * @param {object} bottle - The bottle that hit
-     * @param {object} enemy - The enemy that was hit
-     * @param {number} bottleIndex - Index of the bottle in activeThrowableBottles array
-     */
-    processBottleHit(bottle, enemy, bottleIndex) {
-        if (bottle.isSplashing) return;
-        bottle.isSplashing = true;
-        
-        // Let the enemy take damage
-        if (enemy instanceof ChickenBoss) {
-            enemy.hit();
-        } else {
-            enemy.hitByBottle();
-        }
-        bottle.splash();
+/**
+ * Processes the actions when a bottle hits an enemy
+ * @param {object} bottle - The bottle that hit
+ * @param {object} enemy - The enemy that was hit
+ * @param {number} bottleIndex - Index of the bottle in activeThrowableBottles array
+ */
+processBottleHit(bottle, enemy, bottleIndex) {
+    if (bottle.isSplashing) return;
+    bottle.isSplashing = true;
+    bottle.x = enemy.x + (enemy.width / 2) - (bottle.width / 2);
+    bottle.y = enemy.y + (enemy.height / 2) - (bottle.height / 2);
+    if (bottle.moveInterval) {
+        clearInterval(bottle.moveInterval);
+        bottle.moveInterval = null;
     }
+    if (enemy instanceof ChickenBoss) {
+        enemy.hit();
+    } else {
+        enemy.hitByBottle();
+    }
+    bottle.splash();
+}
 
     /**
      * Checks if a bottle hits the ground
