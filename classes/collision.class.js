@@ -114,23 +114,20 @@ class CollisionManager {
         });
     }
 
-    /**
-     * Handles collisions between thrown bottles and enemies or ground
-     */
-    handleThrowableBottleCollisions() {
-        if (!this.world.activeThrowableBottles || !this.world.level || !this.world.level.enemies) return;
+/**
+ * Handles collisions between thrown bottles and enemies or ground
+ */
+handleThrowableBottleCollisions() {
+    if (!this.world.activeThrowableBottles || !this.world.level || !this.world.level.enemies) return;
 
-        for (let i = this.world.activeThrowableBottles.length - 1; i >= 0; i--) {
-            let bottle = this.world.activeThrowableBottles[i];
-
-            if (this.checkBottleEnemyCollision(bottle, i)) {
-                // Skip ground collision check if bottle hit an enemy
-                continue;
-            }
-
-            this.checkBottleGroundCollision(bottle, i);
-        }
+    for (let i = this.world.activeThrowableBottles.length - 1; i >= 0; i--) {
+        let bottle = this.world.activeThrowableBottles[i];
+        
+        if (bottle.isSplashing) continue;
+        if (this.checkBottleEnemyCollision(bottle, i)) continue;
+        this.checkBottleGroundCollision(bottle, i);
     }
+}
 
     /**
      * Checks if a bottle collides with any enemy
@@ -155,14 +152,16 @@ class CollisionManager {
      * @param {number} bottleIndex - Index of the bottle in activeThrowableBottles array
      */
     processBottleHit(bottle, enemy, bottleIndex) {
-        bottle.splash();
-
+        if (bottle.isSplashing) return;
+        bottle.isSplashing = true;
+        
+        // Let the enemy take damage
         if (enemy instanceof ChickenBoss) {
             enemy.hit();
         } else {
             enemy.hitByBottle();
         }
-
+        bottle.splash();
     }
 
     /**
@@ -171,7 +170,8 @@ class CollisionManager {
      * @param {number} bottleIndex - Index of the bottle in activeThrowableBottles array
      */
     checkBottleGroundCollision(bottle, bottleIndex) {
-        if (bottle.y > 350 && bottle.hasBeenThrown) {
+        if (bottle.y > 350 && !bottle.isSplashing) {
+            bottle.isSplashing = true;
             bottle.splash();
         }
     }
