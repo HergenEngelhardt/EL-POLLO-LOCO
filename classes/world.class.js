@@ -35,7 +35,6 @@ class World {
         this.renderManager = new RenderManager(this, this.ctx);
         this.draw();
         this.setWorld();
-        this.addKeyboardEvents();
         this.addMouseEvents();
         this.initCollisionDetection();
         this.totalInitialBottles = 5;
@@ -67,7 +66,6 @@ class World {
      * Throws a bottle if available
      */
     throwBottle() {
-        console.log(`Before throw: bottles collected=${this.bottlesCollected}, throwable bottles=${this.throwableBottles.length}`);
         if (this.throwableBottles.length > 0) {
             let bottle = this.throwableBottles.pop();
             bottle.throw(this.character.x, this.character.y, this);
@@ -79,7 +77,9 @@ class World {
 
             this.bottlesCollected--;
             this.updateBottleStatusBar();
-            console.log(`After throw: bottles collected=${this.bottlesCollected}, throwable bottles=${this.throwableBottles.length}`);
+            setTimeout(() => {
+                this.throwInProgress = false;
+            }, 300);
         }
     }
 
@@ -102,8 +102,9 @@ class World {
      * Updates the bottle status bar based on collected bottles
      */
     updateBottleStatusBar() {
-        let bottlePercentage = (this.bottlesCollected / this.totalInitialBottles) * 100;
-        this.statusbarBottle.setBottlePercentage(Math.max(0, Math.min(bottlePercentage, 100)));
+        const maxBottles = 5;
+        let bottlePercentage = (this.bottlesCollected / maxBottles) * 100;
+        this.statusbarBottle.setBottlePercentage(bottlePercentage);
     }
 
     /**
@@ -160,26 +161,26 @@ class World {
         }
     }
 
-/**
- * Starts the game and initializes level
- */
-startGame() {
-    this.gameStarted = true;
-    this.gameOver = false;
-    document.getElementById('soundBtn').classList.remove('d-none');
-    document.getElementById('menuBtn').classList.remove('d-none');
-    document.getElementById('mobileMenuBtn').classList.add('d-none'); 
-    document.querySelector('.button-container').classList.add('d-none');
-    initLevel1();
-    this.level = level1;
-    this.setWorld();
-    this.totalCoins = this.level.coins.length;
-    this.totalBottles = this.level.salsaBottles.length;
-    this.collisionManager.startCollisionDetection();
-    setTimeout(() => {
-        this.character.startAnimations();
-    }, 150);
-}
+    /**
+     * Starts the game and initializes level
+     */
+    startGame() {
+        this.gameStarted = true;
+        this.gameOver = false;
+        document.getElementById('soundBtn').classList.remove('d-none');
+        document.getElementById('menuBtn').classList.remove('d-none');
+        document.getElementById('mobileMenuBtn').classList.add('d-none');
+        document.querySelector('.button-container').classList.add('d-none');
+        initLevel1();
+        this.level = level1;
+        this.setWorld();
+        this.totalCoins = this.level.coins.length;
+        this.totalBottles = this.level.salsaBottles.length;
+        this.collisionManager.startCollisionDetection();
+        setTimeout(() => {
+            this.character.startAnimations();
+        }, 150);
+    }
 
     /**
      * Draws the game over screen
@@ -224,31 +225,17 @@ startGame() {
 
     /**
      * Checks and processes keyboard input states for game actions
-     * Handles the bottle throwing action when the THROW key is activated
-     * Calls either character's throwBottle method if available or falls back to world's implementation
-     * Resets the keyboard state after processing
      */
     checkKeyboardStates() {
-        if (this.keyboard.THROW) {
-            if (typeof this.character.throwBottle === 'function') {
-                this.character.throwBottle();
-            } else {
-                this.throwBottle();
-            }
-            this.keyboard.THROW = false;
+        if (this.keyboard.THROW && !this.throwCooldown && this.bottlesCollected > 0) {
+            this.throwBottle();
+            this.throwCooldown = true;
+            setTimeout(() => {
+                this.throwCooldown = false;
+            }, 300);
         }
     }
 
-    /**
-     * Adds keyboard event listeners
-     */
-    addKeyboardEvents() {
-        window.addEventListener('keydown', (event) => {
-            if (event.code === 'ControlLeft') {
-                this.character.throwBottle();
-            }
-        });
-    }
 
     /**
     * Toggles background music on/off

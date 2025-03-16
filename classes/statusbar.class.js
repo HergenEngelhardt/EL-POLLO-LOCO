@@ -107,13 +107,12 @@ class Statusbar extends DrawableObject {
         }
     }
 
-    /**
-     * Determines the image index for coin and bottle status bars based on current percentage.
-     * @returns {number} Index of the image to display.
-     */
     resolveImageIndex() {
         if (this.type === 'bottle') {
-            return Math.round(this.percentage / 20);
+            let index = Math.floor(this.percentage / 20);
+            if (index > 5) index = 5;
+            if (index < 0) index = 0;
+            return index;
         } else {
             if(this.percentage == 0){
                 return 0;
