@@ -179,19 +179,29 @@ class CharacterStateManager {
      * Initiates jump animation sequence
      */
     startJumpAnimation() {
-        this.jumpAnimationActive = true;
-        this.jumpAnimationFrame = 0;
-        this.jumpAnimationComplete = false;
-        
         if (this.jumpAnimationInterval) {
             clearInterval(this.jumpAnimationInterval);
         }
-        
+        this.jumpAnimationActive = true;
+        this.jumpAnimationFrame = 0;
+        this.jumpAnimationComplete = false;
+        this.character.img = this.character.imageCache[this.character.IMAGES_JUMPING[0]];
         this.jumpAnimationInterval = setInterval(() => {
             this.progressJumpAnimation();
             if (this.jumpAnimationComplete) {
                 clearInterval(this.jumpAnimationInterval);
             }
-        }, 150);
+        }, 100);
+    }
+
+    /**
+     * Progresses to the next frame in the jump animation sequence
+     */
+    progressJumpAnimation() {
+        this.jumpAnimationFrame++;
+        if (this.jumpAnimationFrame < this.character.IMAGES_JUMPING.length) {
+            this.character.img = this.character.imageCache[this.character.IMAGES_JUMPING[this.jumpAnimationFrame]];
+        }
+        this.checkJumpAnimationComplete();
     }
 }
