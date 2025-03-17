@@ -29,12 +29,21 @@ class ChickenSmall extends MovableObject {
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_DEAD);
         this.animate();
+        this.world = null;
         this.offset = {
             top: 105,
             bottom: 10,
             left: 5,
             right: 5
         };
+    }
+
+    /**
+    * Sets the reference to the world object
+    * @param {World} world - The game world
+    */
+    setWorld(world) {
+        this.world = world;
     }
 
     /**
@@ -69,14 +78,12 @@ class ChickenSmall extends MovableObject {
 
     /**
     * Handles the small chicken being hit by a salsa bottle.
-    * Kills the chicken on hit.
+    * Kills the chicken on hit and plays sound effect.
     */
     hitByBottle() {
         if (!this.isDead) {
             this.die();
-            if (this.world) {
-               SoundManager.play('punch');
-            }
+            SoundManager.play('punch'); 
         }
     }
 }

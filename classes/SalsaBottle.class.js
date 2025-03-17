@@ -69,6 +69,9 @@ class SalsaBottle extends MovableObject {
         if (this.moveInterval) clearInterval(this.moveInterval);
         this.animate();
         this.move();
+        if (this.world && this.world.character && typeof this.world.character.resetIdleTimer === 'function') {
+            this.world.character.resetIdleTimer();
+        }
     }
 
     /**
@@ -108,7 +111,6 @@ class SalsaBottle extends MovableObject {
         this.loadImages(this.IMAGES_SPLASH);
         this.currentImage = 0;
         this.animateSplash();
-        SoundManager.play('bottleSplash');
     }
 
     /**
@@ -148,9 +150,6 @@ class SalsaBottle extends MovableObject {
         this.img = null;
         this.x = -1000;
         this.y = -1000;
-        if (this.world && this.world.character) {
-            this.world.character.resetIdleTimer();
-        }
     }
 
     /**
