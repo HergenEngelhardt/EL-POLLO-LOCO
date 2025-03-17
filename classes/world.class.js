@@ -119,10 +119,15 @@ class World {
      * Throws a bottle if available
      */
     throwBottle() {
+        if (this.character.isImmobilized) {
+            return; 
+        }
         let bottle = this.getBottleForThrowing();
-
+    
         if (bottle) {
-            bottle.throw(this.character.x, this.character.y, this);
+            let x = this.character.x + this.character.width / 2;
+            let y = this.character.y + this.character.height / 2;
+            bottle.throw(x, y, this);
             this.trackActiveBottle(bottle);
             this.decrementBottleCount();
             this.resetThrowCooldown();

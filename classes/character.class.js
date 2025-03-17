@@ -14,6 +14,7 @@ class Character extends MovableObject {
     jumpAnimationFrame = 0;
     jumpAnimationComplete = false;
     lastBottleThrow = 0;
+    originalThrowBottle = null;
 
     IMAGES_IDLE = [
         './assets/img/2_character_pepe/1_idle/idle/I-1.png',
@@ -109,6 +110,7 @@ class Character extends MovableObject {
      */
     startAnimations() {
         this.lastMoveTime = Date.now();
+        this.originalThrowBottle = this.world.throwBottle;
         this.animate();
     }
 
@@ -216,19 +218,57 @@ class Character extends MovableObject {
         SoundManager.stop('running');
     }
 
-    /**
-     * Triggers bottle throwing action with a cooldown period
-     * @param {number} cooldownMs - Cooldown time in milliseconds (default: 1000)
-     * @returns {boolean} - Whether the bottle was thrown
-     */
-    throwBottle(cooldownMs = 20000) {
-        let currentTime = Date.now();
-        if (this.world && (!this.lastBottleThrow || currentTime - this.lastBottleThrow >= cooldownMs)) {
-            this.world.throwBottle();
-            this.lastMoveTime = currentTime;
-            this.lastBottleThrow = currentTime;
-            return true;
-        }
+/**
+ * Checks if any boss in the world is in alert phase
+ * @returns {boolean} True if a boss is in alert phase
+ */
+isBossInAlertPhase() {
+    if (!this.world || !this.world.level || !this.world.level.enemies) {
         return false;
     }
+    
+    // Check if any enemy is a boss in alert phase
+    for (let enemy of this.world.level.enemies) {
+        // More robust check for boss in alert phase
+        if (enemy.constructor.name === 'ChickenBoss' && enemy.alertPhase) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
+ * Triggers bottle throwing action with a cooldown period
+ * @param {number} cooldownMs - Cooldown time in milliseconds (default: 1000)
+ * @returns {boolean} - Whether the bottle was thrown
+ */
+throwBottle(cooldownMs = 20000) {
+
+    if (this.world && this.world.level && this.world.level.enemies) {
+        for (let enemy of this.world.level.enemies) {
+            if (enemy instanceof ChickenBoss && enemy.alertPhase) {
+                console.log('Boss is in alert phase, cannot throw bottle');
+                return false; 
+            }
+        }
+    }
+    
+    let currentTime = Date.now();
+    if (this.world && (!this.lastBottleThrow || currentTime - this.lastBottleThrow >= cooldownMs)) {
+        this.lastMoveTime = currentTime;
+        this.lastBottleThrow = currentTime;
+        return true;
+    }
+    return false;
+}
+
+/**
+ * Resets the world.throwBottle method to its original state
+ */
+resetThrowBottle() {
+    if (this.originalThrowBottle) {
+        this.world.throwBottle = this.originalThrowBottle;
+        this.originalThrowBottle = null;
+    }
+}
 }
