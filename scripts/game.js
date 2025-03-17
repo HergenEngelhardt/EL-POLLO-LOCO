@@ -236,6 +236,7 @@ function playAgain() {
  */
 function restartGame() {
     if (world) {
+        SoundManager.stopAll(); 
         stopGameIntervals();
         stopGameSounds();
         world = null;

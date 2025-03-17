@@ -32,6 +32,8 @@ class WorldSoundManager {
                 }
             });
         }
+        SoundManager.stop('chickenboss');
+        SoundManager.stop('bossAlert');
     }
 
     /**
@@ -39,12 +41,25 @@ class WorldSoundManager {
      * @param {ChickenBoss} bossEnemy - The boss enemy to stop sounds for
      */
     stopBossEnemySounds(bossEnemy) {
-        bossEnemy.playMovementSound = function () { };
+        bossEnemy.playMovementSound = function() {};
+    
+        if (bossEnemy.movement) {
+            bossEnemy.movement.playMovementSound = function() {};
+            bossEnemy.movement.lastMovementSoundTime = Infinity; 
+        }
+        
         if (bossEnemy.alertSound) {
             bossEnemy.alertSound.pause();
             bossEnemy.alertSound.currentTime = 0;
             bossEnemy.alertSound = null;
         }
+        
+        if (bossEnemy.animationInterval) {
+            clearInterval(bossEnemy.animationInterval);
+            bossEnemy.animationInterval = null;
+        }
+        
+        bossEnemy.soundDisabled = true;
     }
 
     /**

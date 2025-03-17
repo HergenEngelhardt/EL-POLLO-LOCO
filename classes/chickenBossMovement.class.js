@@ -115,7 +115,11 @@ class ChickenBossMovement {
      */
     playMovementSound() {
         let now = new Date().getTime();
-
+        if (this.boss.soundDisabled || 
+            (this.boss.world && (this.boss.world.gameOver || this.boss.world.gameWon))) {
+            return;  
+        }
+    
         if (!this.boss.isDead() && (!this.lastMovementSoundTime || now - this.lastMovementSoundTime > 1000)) {
             SoundManager.play('chickenboss', 0.3);
             this.lastMovementSoundTime = now;
