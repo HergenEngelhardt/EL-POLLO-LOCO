@@ -163,6 +163,26 @@ class Character extends MovableObject {
     }
 
     /**
+    * Makes the object jump by setting a positive vertical speed
+    * Overriding the parent class method to add custom jump behavior
+    */
+    jump() {
+        super.jump();
+        this.jumpAnimationActive = true;
+        this.jumpAnimationFrame = 0;
+        this.jumpAnimationComplete = false;
+        if (this.jumpAnimationInterval) {
+            clearInterval(this.jumpAnimationInterval);
+        }
+        this.jumpAnimationInterval = setInterval(() => {
+            this.progressJumpAnimation();
+            if (this.jumpAnimationComplete) {
+                clearInterval(this.jumpAnimationInterval);
+            }
+        }, 150);
+    }
+
+    /**
      * Updates the camera position relative to character
      */
     updateCameraPosition() {
@@ -180,6 +200,10 @@ class Character extends MovableObject {
         } else if (this.isAboveGround()) {
             this.handleJumpAnimation();
         } else {
+            if (this.jumpAnimationActive && this.jumpAnimationInterval) {
+                clearInterval(this.jumpAnimationInterval);
+            }
+            
             this.jumpAnimationActive = false;
             this.jumpAnimationFrame = 0;
             this.jumpAnimationComplete = false;
@@ -218,12 +242,15 @@ class Character extends MovableObject {
      * Plays through the jump animation once per jump
      */
     handleJumpAnimation() {
-        if (this.jumpAnimationComplete) {
-            this.showFinalJumpFrame();
+        if (!this.jumpAnimationComplete) {
+            let frameIndex = Math.min(
+                this.jumpAnimationFrame,
+                this.IMAGES_JUMPING.length - 1
+            );
+            this.img = this.imageCache[this.IMAGES_JUMPING[frameIndex]];
         } else {
-            this.progressJumpAnimation();
+            this.showFinalJumpFrame();
         }
-
         this.resetIdleTimer();
     }
 
@@ -238,11 +265,6 @@ class Character extends MovableObject {
      * Progresses to the next frame in the jump animation sequence
      */
     progressJumpAnimation() {
-        let frameIndex = Math.min(
-            this.jumpAnimationFrame,
-            this.IMAGES_JUMPING.length - 1
-        );
-        this.img = this.imageCache[this.IMAGES_JUMPING[frameIndex]];
         this.jumpAnimationFrame++;
         this.checkJumpAnimationComplete();
     }
