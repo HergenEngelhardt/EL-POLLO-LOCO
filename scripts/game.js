@@ -58,21 +58,36 @@ function toggleFullscreen() {
     let gameCanvas = document.getElementById('gameCanvas');
 
     if (!document.fullscreenElement) {
-        if (gameCanvas.requestFullscreen) {
-            gameCanvas.requestFullscreen();
-        } else if (gameCanvas.webkitRequestFullscreen) {
-            gameCanvas.webkitRequestFullscreen();
-        } else if (gameCanvas.msRequestFullscreen) {
-            gameCanvas.msRequestFullscreen();
-        }
+        enterFullscreen(gameCanvas);
     } else {
-        if (document.exitFullscreen) {
-            document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) {
-            document.webkitExitFullscreen();
-        } else if (document.msExitFullscreen) {
-            document.msExitFullscreen();
-        }
+        exitFullscreen();
+    }
+}
+
+/**
+ * Enters fullscreen mode for the specified element
+ * @param {HTMLElement} element - The element to display in fullscreen
+ */
+function enterFullscreen(element) {
+    if (element.requestFullscreen) {
+        element.requestFullscreen();
+    } else if (element.webkitRequestFullscreen) {
+        element.webkitRequestFullscreen();
+    } else if (element.msRequestFullscreen) {
+        element.msRequestFullscreen();
+    }
+}
+
+/**
+ * Exits fullscreen mode
+ */
+function exitFullscreen() {
+    if (document.exitFullscreen) {
+        document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
     }
 }
 
@@ -89,19 +104,118 @@ function hideAllPanels() {
  * Shows the main menu and hides other elements
  */
 function showMenu() {
+    hideGameElements();
+    showMenuElements();
+    resetGameState();
+    ensureWorldInitialized();
+}
+
+/**
+ * Hides all game-related UI elements
+ */
+function hideGameElements() {
     document.getElementById('instructions').classList.add('d-none');
     document.getElementById('imprint').classList.add('d-none');
     document.getElementById('win-loose').classList.add('d-none');
     document.getElementById('mobileMenu').classList.add('d-none');
     document.getElementById('soundBtn').classList.add('d-none');
     document.getElementById('menuBtn').classList.add('d-none');
+}
+
+/**
+ * Shows menu-related UI elements
+ */
+function showMenuElements() {
     document.getElementById('mobileMenuBtn').classList.remove('d-none'); 
     document.querySelector('.button-container').classList.remove('d-none');
-    
-    if (world) {
-        stopGame();
-    }
+}
 
+/**
+ * Resets the game state when returning to menu
+ */
+function resetGameState() {
+    if (world) {
+        stopGameIntervals();
+        stopGameSounds();
+        resetGameFlags();
+        world.draw();
+    }
+}
+
+/**
+ * Stops all game intervals
+ */
+function stopGameIntervals() {
+    if (world && world.intervallManager) {
+        stopMainGameIntervals();
+        stopCharacterIntervals();
+        stopEnemyIntervals();
+    }
+}
+
+/**
+ * Stops main game intervals using the interval manager
+ */
+function stopMainGameIntervals() {
+    world.intervallManager.clearAllGameIntervals();
+}
+
+/**
+ * Stops character-specific animation intervals
+ */
+function stopCharacterIntervals() {
+    if (world.character && world.character.animationInterval) {
+        clearInterval(world.character.animationInterval);
+        world.character.animationInterval = null;
+    }
+}
+
+/**
+ * Stops all enemy-related animation and movement intervals
+ */
+function stopEnemyIntervals() {
+    if (world.level && world.level.enemies) {
+        world.level.enemies.forEach(enemy => {
+            stopSingleEnemyIntervals(enemy);
+        });
+    }
+}
+
+/**
+ * Stops all intervals for a single enemy
+ * @param {Object} enemy - The enemy object
+ */
+function stopSingleEnemyIntervals(enemy) {
+    if (enemy.animationInterval) {
+        clearInterval(enemy.animationInterval);
+        enemy.animationInterval = null;
+    }
+    if (enemy.movementInterval) {
+        clearInterval(enemy.movementInterval);
+        enemy.movementInterval = null;
+    }
+}
+
+/**
+ * Stops all game sounds
+ */
+function stopGameSounds() {
+    world.stopAllBackgroundSounds();
+}
+
+/**
+ * Resets game state flags
+ */
+function resetGameFlags() {
+    world.gameStarted = false;
+    world.gameOver = false;
+    world.gameWon = false;
+}
+
+/**
+ * Ensures the world is initialized
+ */
+function ensureWorldInitialized() {
     if (!world) {
         init();
     }
@@ -118,13 +232,21 @@ function playAgain() {
 }
 
 /**
- * Restarts the game
+ * Restarts the game by completely reinitializing the world
  */
 function restartGame() {
     if (world) {
-        stopGame();
+        stopGameIntervals();
+        stopGameSounds();
+        world = null;
+        setupGameObjects();
+        document.getElementById('soundBtn').classList.remove('d-none');
+        document.getElementById('menuBtn').classList.remove('d-none');
+        document.querySelector('.button-container').classList.add('d-none');
+        world.startGame();
+    } else {
+        init();
     }
-    init();
 }
 
 /**
@@ -141,46 +263,24 @@ function startGame() {
  */
 function stopGame() {
     if (world) {
-        world.gameStarted = false;
-        world.gameOver = false;
-        world.gameWon = false;
-        world.stopAllBackgroundSounds();
-        
-        if (typeof world.clearAllGameIntervals === 'function') {
-            world.clearAllGameIntervals();
-        } else {
-        }
+        resetGameFlags();
+        stopGameSounds();
+        stopGameIntervals();
     }
 }
 
 /**
  * Returns to the main menu from the game
- * Hides the result screen and resets game state to initial values
+ * Hides the result screen and completely resets game state
  */
 function backToMenu() {
     document.getElementById('win-loose').classList.add('d-none');
-    world.gameStarted = false;
-    world.gameOver = false;
+    stopGameIntervals();
+    stopGameSounds();
+    resetGameFlags();
+    showMenuElements();
+    hideGameElements();
     world.draw();
-}
-/**
- * Toggles the visibility of the mobile menu
- * Shows the menu if it's hidden, hides it if it's visible
- */
-function toggleMobileMenu() {
-    document.getElementById('mobileMenu').classList.toggle('d-none');
-}
-
-/**
- * Explicitly closes the mobile menu by hiding it
- * Uses both CSS class and inline style to ensure the menu is hidden
- */
-function closeMobileMenu() {
-    let mobileMenu = document.getElementById('mobileMenu');
-    if (mobileMenu) {
-        mobileMenu.classList.add('d-none');
-        mobileMenu.style.display = 'none';
-    }
 }
 
 /**
@@ -226,83 +326,3 @@ function disableAllSounds() {
     SoundManager.toggleSound(false);
 }
 
-/**
- * Displays the instructions panel and hides other UI elements
- * Shows instructions while ensuring imprint and mobile menu remain hidden
- */
-function showInstructions() {
-    document.getElementById('instructions').classList.remove('d-none');
-    document.getElementById('imprint').classList.add('d-none');
-    document.getElementById('mobileMenu').classList.add('d-none');
-}
-
-/**
- * Sets up event listeners for mobile menu buttons when DOM is fully loaded
- * Attaches click handlers to the mobile menu toggle and close buttons
- */
-document.addEventListener('DOMContentLoaded', function () {
-    let menuBtn = document.getElementById('mobileMenuBtn');
-    if (menuBtn) {
-        menuBtn.addEventListener('click', toggleMobileMenu);
-    }
-    let closeBtn = document.querySelector('#mobileMenu .mobile-menu-btn:last-child');
-    if (closeBtn) {
-        closeBtn.addEventListener('click', closeMobileMenu);
-    }
-});
-
-/**
- * Checks device orientation and displays a message 
- * when the device is held in portrait mode
- */
-function checkMobileAlignment() {
-    if (isMobileDevice()) {
-        let orientationMessage = getOrientationMessageElement();
-        if (orientationMessage) {
-            setupOrientationHandling(orientationMessage);
-        }
-    }
-}
-
-/**
- * Checks if the current device is a mobile device
- * @returns {boolean} True if mobile device, false otherwise
- */
-function isMobileDevice() {
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
-        window.innerWidth <= 1024;
-}
-
-/**
- * Finds the orientation message element in the DOM
- * @returns {HTMLElement|null} The orientation message element or null
- */
-function getOrientationMessageElement() {
-    let orientationMessage = document.getElementById('orientation-message');
-    if (!orientationMessage) {
-        console.error('Orientation message element not found');
-        return null;
-    }
-    return orientationMessage;
-}
-
-/**
- * Sets up orientation monitoring for a given element
- * @param {HTMLElement} orientationMessage - The orientation message element
- */
-function setupOrientationHandling(orientationMessage) {
-    function updateOrientation() {
-        if (window.innerHeight > window.innerWidth) {
-            orientationMessage.classList.remove('d-none');
-            orientationMessage.style.display = 'flex';
-        } else {
-            orientationMessage.classList.add('d-none');
-        }
-    }
-
-    updateOrientation();
-    window.addEventListener('resize', updateOrientation);
-    window.addEventListener('orientationchange', () => {
-        setTimeout(updateOrientation, 100);
-    });
-}
