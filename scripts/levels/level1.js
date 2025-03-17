@@ -18,8 +18,8 @@ let level1;
  */
 function initLevel1() {
     let backgrounds = [];
-    let segmentWidth = 719;
-    for (let i = -1; i <= 6; i++) {
+    let segmentWidth = 720;
+    for (let i = 0; i < 10; i++) { 
         let variant = (i % 2 === 0) ? '1' : '2';
         let xPos = i * segmentWidth;
         backgrounds.push(
@@ -30,47 +30,47 @@ function initLevel1() {
         );
     }
 
-level1 = new Level(
-    [
-    new Chicken(),
-    new Chicken(),
-    new Chicken(),
-    new ChickenSmall(),
-    new ChickenSmall(),
-    new ChickenSmall(),
-    new ChickenSmall(),
-    new ChickenBoss()
-    ],
-    [
-        new Coin(),
-        new Coin(),
-        new Coin(),
-        new Coin(),
-        new Coin()
-    ],
-    [
-        new SalsaBottle(),
-        new SalsaBottle(),
-        new SalsaBottle(),
-        new SalsaBottle(),
-        new SalsaBottle(),
-        new SalsaBottle(),
-        new SalsaBottle(),
-        new SalsaBottle(),
-        new SalsaBottle(),
-        new SalsaBottle(),
-        new SalsaBottle(),
-        new SalsaBottle()
-    ],
-    [
-        new Clouds(),
-        new Clouds(),
-        new Clouds(),
-        new Clouds(),
-        new Clouds(),
-        new Clouds(),
-        new Clouds()
-    ],
-    backgrounds
-);    
+    level1 = new Level(
+        [
+            new Chicken(),
+            new Chicken(),
+            new Chicken(),
+            new ChickenSmall(),
+            new ChickenSmall(),
+            new ChickenSmall(),
+            new ChickenSmall(),
+            new ChickenBoss()
+        ],
+        [
+            new Coin(),
+            new Coin(),
+            new Coin(),
+            new Coin(),
+            new Coin()
+        ],
+        [
+            new SalsaBottle(),
+            new SalsaBottle(),
+            new SalsaBottle(),
+            new SalsaBottle(),
+            new SalsaBottle(),
+            new SalsaBottle(),
+            new SalsaBottle(),
+            new SalsaBottle(),
+            new SalsaBottle(),
+            new SalsaBottle(),
+            new SalsaBottle(),
+            new SalsaBottle()
+        ],
+        [
+            new Clouds(),
+            new Clouds(),
+            new Clouds(),
+            new Clouds(),
+            new Clouds(),
+            new Clouds(),
+            new Clouds()
+        ],
+        backgrounds
+    );
 }

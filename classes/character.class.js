@@ -91,6 +91,8 @@ class Character extends MovableObject {
         this.loadImages(this.IMAGES_JUMPING);
         this.loadImages(this.IMAGES_DEAD);
         this.loadImages(this.IMAGES_HURT);
+        this.stateManager = new CharacterStateManager(this);
+        this.movementController = new CharacterMovementController(this);
         this.applyGravity();
         this.currentImage = 0;
         this.world = {};
@@ -101,8 +103,6 @@ class Character extends MovableObject {
             left: 25,
             right: 35
         };
-        this.stateManager = new CharacterStateManager(this);
-        this.movementController = new CharacterMovementController(this);
     }
 
     /**
