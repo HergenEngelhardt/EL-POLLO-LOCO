@@ -71,10 +71,13 @@ class ChickenBossCombat {
     handleAttackingBehavior(distanceToCharacter, characterIsLeft) {
         this.boss.animation.animateImages(this.boss.IMAGES_ATTACK);
         this.boss.movement.updateMovementDirection(characterIsLeft);
+        this.boss.speed = 30;
         this.boss.movement.applyMovement();
-        if (this.boss.movement.canJump && Math.random() < 1.2) {
+
+        if (this.boss.movement.canJump && Math.random() < 0.35) {
             this.boss.movement.jump();
         }
+
         this.checkAttackCollision(distanceToCharacter);
     }
 
@@ -83,8 +86,9 @@ class ChickenBossCombat {
      * @param {number} distanceToCharacter - The distance between boss and character
      */
     checkAttackCollision(distanceToCharacter) {
-        if (distanceToCharacter < 80 && !this.boss.world.character.isHurt()) {
+        if (distanceToCharacter < 120 && !this.boss.world.character.isHurt()) {
             this.boss.world.character.hit();
+            SoundManager.play('chickenboss', 0.5);
             this.boss.world.updateHealthStatusBar();
         }
     }

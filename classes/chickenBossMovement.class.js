@@ -88,7 +88,7 @@ class ChickenBossMovement {
      * Randomly attempts to initiate a jump with a 3% chance per frame when allowed
      */
     tryToJump() {
-        if (this.canJump && Math.random() < 0.03) {
+        if (this.canJump && Math.random() < 0.06) {
             this.jump();
         }
     }
@@ -100,9 +100,9 @@ class ChickenBossMovement {
     jump() {
         if (!this.isJumping && this.canJump) {
             this.isJumping = true;
-            this.jumpSpeed = 10;
-            this.boss.acceleration = 1.8;
-            this.boss.speed *= 1.2;
+            this.jumpSpeed = 12;
+            this.boss.acceleration = 2;
+            this.boss.speed *= 1.4;
             setTimeout(() => {
                 this.boss.speed = 15;
             }, 1000);
