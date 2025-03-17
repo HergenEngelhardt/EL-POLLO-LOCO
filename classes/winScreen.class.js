@@ -133,7 +133,7 @@ class GameWinScreen extends DrawableObject {
     handleRestartGame() {
         this.removeButtonContainer();
         this.stopWinSound();
-
+        this.stopAllGameSounds();
         if (this.world) {
             if (this.world.intervallManager) {
                 this.world.intervallManager.clearAllGameIntervals();
@@ -189,7 +189,9 @@ class GameWinScreen extends DrawableObject {
      */
     startGameAndCollisionDetection(world) {
         world.startGame();
-
+        if (world.intervallManager) {
+            world.intervallManager.updateReferences(world);
+        }
         if (world.collisionManager) {
             world.collisionManager.startCollisionDetection();
         } else if (typeof world.startCollisionDetection === 'function') {

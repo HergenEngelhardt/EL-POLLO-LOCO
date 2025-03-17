@@ -12,7 +12,7 @@ let soundEnabled = true;
  * Initializes the game by setting up the canvas, world, and UI event listeners
  */
 function init() {
-    soundEnabled = localStorage.getItem('soundEnabled') !== 'false'; 
+    soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
     setupGameObjects();
     setupEventListeners();
     initMobileControls();
@@ -126,7 +126,7 @@ function hideGameElements() {
  * Shows menu-related UI elements
  */
 function showMenuElements() {
-    document.getElementById('mobileMenuBtn').classList.remove('d-none'); 
+    document.getElementById('mobileMenuBtn').classList.remove('d-none');
     document.querySelector('.button-container').classList.remove('d-none');
 }
 
@@ -236,7 +236,13 @@ function playAgain() {
  */
 function restartGame() {
     if (world) {
-        SoundManager.stopAll(); 
+        SoundManager.stopAll();
+        SoundManager.stop('chickenboss');
+        SoundManager.stop('bossAlert');
+        if (world.character && world.character.runningSound) {
+            world.character.runningSound.pause();
+            world.character.runningSound.currentTime = 0;
+        }
         stopGameIntervals();
         stopGameSounds();
         world = null;
@@ -244,6 +250,9 @@ function restartGame() {
         document.getElementById('soundBtn').classList.remove('d-none');
         document.getElementById('menuBtn').classList.remove('d-none');
         document.querySelector('.button-container').classList.add('d-none');
+        if (world && world.intervallManager) {
+            world.intervallManager.updateReferences(world);
+        }
         world.startGame();
     } else {
         init();
@@ -291,7 +300,7 @@ function toggleSound() {
     soundEnabled = !soundEnabled;
     localStorage.setItem('soundEnabled', soundEnabled);
     updateSoundButtonUI();
-    
+
     SoundManager.toggleSound(soundEnabled);
     if (world && world.startScreen && world.startScreen.backgroundMusic) {
         if (!soundEnabled) {

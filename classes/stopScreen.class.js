@@ -235,6 +235,9 @@ class GameOverScreen extends DrawableObject {
      */
     startNewGame(world) {
         world.startGame();
+        if (world.intervallManager) {
+            world.intervallManager.updateReferences(world);
+        }
         this.initializeCollisionDetection(world);
     }
 

@@ -8,6 +8,7 @@ class IntervallManager {
      * @param {World} world - Reference to the world object
      */
     constructor(world) {
+        this.world = world;
         this.character = world.character;
         this.level = world.level;
         this.collisionManager = world.collisionManager;
@@ -19,8 +20,10 @@ class IntervallManager {
      * @param {World} world - Reference to the world object
      */
     updateReferences(world) {
+        this.world = world;
         this.character = world.character;
         this.level = world.level;
+        this.collisionManager = world.collisionManager;
         this.activeThrowableBottles = world.activeThrowableBottles;
     }
 
