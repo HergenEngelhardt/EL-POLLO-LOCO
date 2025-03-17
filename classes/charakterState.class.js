@@ -168,9 +168,10 @@ class CharacterStateManager {
      * Resets the idle timer to prevent entering idle state
      */
     resetIdleTimer() {
-        this.lastMoveTime = Date.now();
-        if (this.isInLongIdleState()) {
-            this.stopSnoringSound();
+        const wasInLongIdleState = this.character.isInLongIdleState();
+        this.character.lastMoveTime = Date.now();
+        if (wasInLongIdleState) {
+            this.character.stopSnoringSound();
         }
     }
 
