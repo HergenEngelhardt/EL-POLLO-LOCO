@@ -107,7 +107,7 @@ class SalsaBottle extends MovableObject {
             clearInterval(this.animationInterval);
             this.animationInterval = null;
         }
-        this.isSplashing = true; 
+        this.isSplashing = true;
         this.loadImages(this.IMAGES_SPLASH);
         this.currentImage = 0;
         this.animateSplash();
@@ -121,7 +121,7 @@ class SalsaBottle extends MovableObject {
         if (this.splashInterval) {
             clearInterval(this.splashInterval);
         }
-    
+
         this.splashInterval = setInterval(() => {
             this.animateImages(this.IMAGES_SPLASH);
             if (this.currentImage >= this.IMAGES_SPLASH.length) {
@@ -158,4 +158,5 @@ class SalsaBottle extends MovableObject {
     playCollectSound() {
         SoundManager.play('collectBottle');
     }
+
 }

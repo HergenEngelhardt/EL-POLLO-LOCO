@@ -153,6 +153,17 @@ class Character extends MovableObject {
     }
 
     /**
+    * Resets the idle timer to wake character from idle/sleeping state
+    * Called when throwing a bottle
+    */
+    resetIdleTimer() {
+        this.lastMoveTime = Date.now();
+        if (this.isInLongIdleState()) {
+            this.stopSnoringSound();
+        }
+    }
+
+    /**
     * Overrides the hit method from MovableObject
     * Wakes character from idle mode when hit
     */
