@@ -59,45 +59,42 @@ class GameOverScreen extends DrawableObject {
         }
     }
 
-/**
- * Shows the win/lose screen with restart and menu buttons.
- * @param {string} result - The result of the game ('win' or 'lose')
- * @param {HTMLCanvasElement} canvas - The game canvas element
- */
-showWinLoseScreen(result, canvas) {
-    // Prevent duplicate button creation
-    if (this.buttonsCreated) {
-        return;
+    /**
+     * Shows the win/lose screen with restart and menu buttons.
+     * @param {string} result - The result of the game ('win' or 'lose')
+     * @param {HTMLCanvasElement} canvas - The game canvas element
+     */
+    showWinLoseScreen(result, canvas) {
+        if (this.buttonsCreated) {
+            return;
+        }
+
+        canvas = this.getValidCanvas(canvas);
+        if (!canvas) {
+            console.error('No valid canvas element found');
+            return;
+        }
+
+        this.removeExistingButtonContainer();
+        this.createButtonsContainer(canvas, result);
+        this.setupEventListeners(result);
+        this.buttonsCreated = true;
     }
 
-    // Find valid canvas element if not provided
-    canvas = this.getValidCanvas(canvas);
-    if (!canvas) {
-        console.error('No valid canvas element found');
-        return;
-    }
+    /**
+     * Gets a valid canvas element
+     * @param {HTMLCanvasElement} canvas - The provided canvas element
+     * @returns {HTMLCanvasElement|null} - A valid canvas element or null
+     */
+    getValidCanvas(canvas) {
+        if (canvas && canvas instanceof HTMLCanvasElement && document.body.contains(canvas)) {
+            return canvas;
+        }
 
-    // Set up the game end screen
-    this.removeExistingButtonContainer();
-    this.createButtonsContainer(canvas, result);
-    this.setupEventListeners(result);
-    this.buttonsCreated = true;
-}
-
-/**
- * Gets a valid canvas element
- * @param {HTMLCanvasElement} canvas - The provided canvas element
- * @returns {HTMLCanvasElement|null} - A valid canvas element or null
- */
-getValidCanvas(canvas) {
-    if (canvas && canvas instanceof HTMLCanvasElement && document.body.contains(canvas)) {
-        return canvas;
+        return document.getElementById('canvas') ||
+            document.getElementById('gameCanvas') ||
+            document.querySelector('canvas');
     }
-    
-    return document.getElementById('canvas') ||
-        document.getElementById('gameCanvas') ||
-        document.querySelector('canvas');
-}
 
     /**
      * Removes any existing button container from the DOM.

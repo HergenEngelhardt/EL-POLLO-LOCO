@@ -39,10 +39,10 @@ class ChickenBossAnimation {
     */
     updateAlertAnimation(characterIsLeft) {
         this.boss.otherDirection = !characterIsLeft;
-        const totalFrames = this.boss.IMAGES_ALERT.length;
-        const repeatCount = Math.floor(24 / totalFrames);
+        let totalFrames = this.boss.IMAGES_ALERT.length;
+        let repeatCount = Math.floor(24 / totalFrames);
         if (repeatCount > 1) {
-            const currentCycle = Math.floor(this.alertFrameCount / totalFrames);
+            let currentCycle = Math.floor(this.alertFrameCount / totalFrames);
             if (currentCycle < repeatCount) {
                 this.animateImages(this.boss.IMAGES_ALERT);
             }

@@ -100,6 +100,8 @@ class Character extends MovableObject {
             left: 25,
             right: 35
         };
+        this.stateManager = new CharacterStateManager(this);
+        this.movementController = new CharacterMovementController(this);
     }
 
     /**
@@ -115,172 +117,21 @@ class Character extends MovableObject {
      */
     animate() {
         this.animationInterval = setInterval(() => {
-            this.handleMovement();
+            this.movementController.handleMovement();
         }, 1000 / 175);
 
         this.imageAnimationInterval = setInterval(() => {
-            this.updateCharacterImages();
+            this.stateManager.updateCharacterImages();
         }, 200);
     }
 
     /**
-     * Handles character movement based on keyboard input
+     * Makes the object jump by setting a positive vertical speed
+     * Overriding the parent class method to add custom jump behavior
      */
-    handleMovement() {
-        if (this.isImmobilized) {
-            return;
-        }
-
-        if (!this.isDead() || !this.deadAnimationPlayed) {
-            this.handleHorizontalMovement();
-            this.handleJump();
-            this.updateCameraPosition();
-        } else {
-            clearInterval(this.animationInterval);
-            this.world.gameOver = true;
-        }
-    }
-
-    /**
-     * Handles left/right movement based on keyboard input
-     */
-    handleHorizontalMovement() {
-        if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
-            this.moveRight();
-            this.otherDirection = false;
-            this.lastMoveTime = Date.now();
-        } else if (this.world.keyboard.LEFT && this.x > 0) {
-            this.moveLeft();
-            this.otherDirection = true;
-            this.lastMoveTime = Date.now();
-        } else {
-            this.stopRunningSound();
-        }
-    }
-
-    /**
-     * Handles jump action based on keyboard input
-     */
-    handleJump() {
-        if (this.world.keyboard.JUMP && !this.isAboveGround()) {
-            this.jump();
-        }
-    }
-
-    /**
-    * Makes the object jump by setting a positive vertical speed
-    * Overriding the parent class method to add custom jump behavior
-    */
     jump() {
         super.jump();
-        this.jumpAnimationActive = true;
-        this.jumpAnimationFrame = 0;
-        this.jumpAnimationComplete = false;
-        if (this.jumpAnimationInterval) {
-            clearInterval(this.jumpAnimationInterval);
-        }
-        this.jumpAnimationInterval = setInterval(() => {
-            this.progressJumpAnimation();
-            if (this.jumpAnimationComplete) {
-                clearInterval(this.jumpAnimationInterval);
-            }
-        }, 150);
-    }
-
-    /**
-     * Updates the camera position relative to character
-     */
-    updateCameraPosition() {
-        this.world.camera_x = -this.x;
-    }
-
-    /**
-     * Updates character images based on current state
-     */
-    updateCharacterImages() {
-        if (this.isDead()) {
-            this.handleDeadState();
-        } else if (this.isHurt()) {
-            this.handleHurtState();
-        } else if (this.isImmobilized) {
-            this.handleImmobilizedState();
-        } else if (this.isAboveGround()) {
-            this.handleJumpAnimation();
-        } else {
-            this.handleGroundedState();
-        }
-    }
-
-    /**
-     * Handles the character's dead state animation
-     */
-    handleDeadState() {
-        this.animateImages(this.IMAGES_DEAD);
-    }
-
-    /**
-     * Handles the character's hurt state animation
-     */
-    handleHurtState() {
-        this.animateImages(this.IMAGES_HURT);
-    }
-
-    /**
-     * Handles the character's immobilized state
-     * Freezes character in a specific stance
-     */
-    handleImmobilizedState() {
-        this.img = this.imageCache[this.IMAGES_IDLE[0]];
-        this.stopSnoringSound();
-        this.lastMoveTime = Date.now();
-    }
-
-    /**
-     * Handles the character's grounded state
-     * Resets jump animation and updates ground animations
-     */
-    handleGroundedState() {
-        this.resetJumpAnimation();
-        this.updateGroundedImages();
-    }
-
-    /**
-     * Resets all jump animation related properties and intervals
-     */
-    resetJumpAnimation() {
-        if (this.jumpAnimationActive && this.jumpAnimationInterval) {
-            clearInterval(this.jumpAnimationInterval);
-        }
-
-        this.jumpAnimationActive = false;
-        this.jumpAnimationFrame = 0;
-        this.jumpAnimationComplete = false;
-    }
-
-    /**
-     * Updates images for character when on the ground
-     */
-    updateGroundedImages() {
-        if (this.isImmobilized) {
-            this.handleImmobilizedGroundState();
-            return;
-        }
-
-        if (this.isMoving()) {
-            this.handleMovingState();
-        } else if (this.isInLongIdleState()) {
-            this.handleLongIdleState();
-        } else {
-            this.handleShortIdleState();
-        }
-    }
-
-    /**
-     * Handles the character's immobilized state when on ground
-     */
-    handleImmobilizedGroundState() {
-        this.img = this.imageCache[this.IMAGES_IDLE[0]];
-        this.stopSnoringSound();
+        this.stateManager.startJumpAnimation();
     }
 
     /**
@@ -289,14 +140,6 @@ class Character extends MovableObject {
      */
     isMoving() {
         return this.world.keyboard.RIGHT || this.world.keyboard.LEFT;
-    }
-
-    /**
-     * Handles the character's moving state
-     */
-    handleMovingState() {
-        this.animateImages(this.IMAGES_WALKING);
-        this.stopSnoringSound();
     }
 
     /**
@@ -310,22 +153,6 @@ class Character extends MovableObject {
     }
 
     /**
-     * Handles the character's long idle state
-     */
-    handleLongIdleState() {
-        this.animateImages(this.IMAGES_IDLE_LONG);
-        this.playSnoringSound();
-    }
-
-    /**
-     * Handles the character's short idle state
-     */
-    handleShortIdleState() {
-        this.animateImages(this.IMAGES_IDLE);
-        this.stopSnoringSound();
-    }
-
-    /**
     * Overrides the hit method from MovableObject
     * Wakes character from idle mode when hit
     */
@@ -333,54 +160,6 @@ class Character extends MovableObject {
         super.hit();
         this.lastMoveTime = Date.now();
         this.stopSnoringSound();
-    }
-
-    /**
-     * Handles the jump animation sequence
-     * Plays through the jump animation once per jump
-     */
-    handleJumpAnimation() {
-        if (!this.jumpAnimationComplete) {
-            let frameIndex = Math.min(
-                this.jumpAnimationFrame,
-                this.IMAGES_JUMPING.length - 1
-            );
-            this.img = this.imageCache[this.IMAGES_JUMPING[frameIndex]];
-        } else {
-            this.showFinalJumpFrame();
-        }
-        this.resetIdleTimer();
-    }
-
-    /**
-     * Shows the final frame of the jump animation
-     */
-    showFinalJumpFrame() {
-        this.img = this.imageCache[this.IMAGES_JUMPING[this.IMAGES_JUMPING.length - 1]];
-    }
-
-    /**
-     * Progresses to the next frame in the jump animation sequence
-     */
-    progressJumpAnimation() {
-        this.jumpAnimationFrame++;
-        this.checkJumpAnimationComplete();
-    }
-
-    /**
-     * Checks if the jump animation has completed
-     */
-    checkJumpAnimationComplete() {
-        if (this.jumpAnimationFrame >= this.IMAGES_JUMPING.length) {
-            this.jumpAnimationComplete = true;
-        }
-    }
-
-    /**
-     * Resets the idle timer to prevent entering idle state
-     */
-    resetIdleTimer() {
-        this.lastMoveTime = Date.now();
     }
 
     /**
@@ -413,40 +192,6 @@ class Character extends MovableObject {
     }
 
     /**
-     * Moves the character right and handles sound effects
-     */
-    moveRight() {
-        if (this.isAboveGround()) {
-            this.x += this.speed * 0.9;
-        } else {
-            this.x += this.speed;
-        }
-
-        if (!this.isAboveGround()) {
-            this.playRunningSound();
-        } else {
-            this.stopRunningSound();
-        }
-    }
-
-    /**
-     * Moves the character left and handles sound effects
-     */
-    moveLeft() {
-        if (this.isAboveGround()) {
-            this.x -= this.speed * 0.65;
-        } else {
-            this.x -= this.speed;
-        }
-
-        if (!this.isAboveGround()) {
-            this.playRunningSound();
-        } else {
-            this.stopRunningSound();
-        }
-    }
-
-    /**
      * Plays the running sound effect if not already playing
      */
     playRunningSound() {
@@ -466,7 +211,7 @@ class Character extends MovableObject {
      * @returns {boolean} - Whether the bottle was thrown
      */
     throwBottle(cooldownMs = 20000) {
-        const currentTime = Date.now();
+        let currentTime = Date.now();
         if (this.world && (!this.lastBottleThrow || currentTime - this.lastBottleThrow >= cooldownMs)) {
             this.world.throwBottle();
             this.lastMoveTime = currentTime;
