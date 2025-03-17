@@ -1,3 +1,4 @@
+
 /**
  * Manages collision detection and handling between game entities
  */
