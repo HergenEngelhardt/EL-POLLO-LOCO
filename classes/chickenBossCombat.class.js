@@ -86,7 +86,7 @@ class ChickenBossCombat {
      * @param {number} distanceToCharacter - The distance between boss and character
      */
     checkAttackCollision(distanceToCharacter) {
-        if (distanceToCharacter < 120 && !this.boss.world.character.isHurt()) {
+        if (distanceToCharacter < 150 && !this.boss.world.character.isHurt()) {
             this.boss.world.character.hit();
             SoundManager.play('chickenboss', 0.5);
             this.boss.world.updateHealthStatusBar();
