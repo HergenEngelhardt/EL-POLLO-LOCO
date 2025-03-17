@@ -25,18 +25,23 @@ class IntervallManager {
     }
 
 
-        /**
-     * Clears all game-related intervals properly
-     */
-        clearAllGameIntervals() {
-            this.clearCharacterIntervals();
-            this.clearEnemyIntervals();
-            this.clearBottleIntervals();
-            if (this.collisionManager && this.collisionManager.collisionInterval) {
-                clearInterval(this.collisionManager.collisionInterval);
-                this.collisionManager.collisionInterval = null;
+    /**
+    * Clears all game-related intervals properly
+    */
+    clearAllGameIntervals() {
+        this.clearCharacterIntervals();
+        this.clearEnemyIntervals();
+        this.clearBottleIntervals();
+        this.clearCollisionIntervals();
+        this.clearBackgroundIntervals();
+
+        if (this.world) {
+            if (this.world.drawInterval) {
+                clearInterval(this.world.drawInterval);
+                this.world.drawInterval = null;
             }
         }
+    }
 
     /**
      * Clears character-specific animation intervals
@@ -63,6 +68,30 @@ class IntervallManager {
 
                 if (enemy instanceof ChickenBoss) {
                     this.clearBossEnemyIntervals(enemy);
+                }
+            });
+        }
+    }
+
+    /**
+    * Clears collision-related intervals
+    */
+    clearCollisionIntervals() {
+        if (this.collisionManager && this.collisionManager.collisionInterval) {
+            clearInterval(this.collisionManager.collisionInterval);
+            this.collisionManager.collisionInterval = null;
+        }
+    }
+
+    /**
+     * Clears background-related intervals
+     */
+    clearBackgroundIntervals() {
+        if (this.level && this.level.clouds) {
+            this.level.clouds.forEach(cloud => {
+                if (cloud.animationInterval) {
+                    clearInterval(cloud.animationInterval);
+                    cloud.animationInterval = null;
                 }
             });
         }

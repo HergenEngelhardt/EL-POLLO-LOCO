@@ -179,6 +179,10 @@ class GameOverScreen extends DrawableObject {
 
         let world = this.world || window.world;
         if (world) {
+            if (world.intervallManager) {
+                world.intervallManager.clearAllGameIntervals();
+            }
+            this.resetAnimationCounters(world);
             this.prepareGameRestart(world);
             this.startNewGame(world);
         } else {
@@ -255,6 +259,29 @@ class GameOverScreen extends DrawableObject {
 
         if (world.character.animationInterval) {
             clearInterval(world.character.animationInterval);
+        }
+    }
+
+    /**
+    * Resets animation counters to prevent speed-up on restart
+    * @param {World} world - The game world object
+    */
+    resetAnimationCounters(world) {
+        // Reset character animation counters
+        if (world.character) {
+            world.character.currentImage = 0;
+            world.character.jumpAnimationFrame = 0;
+        }
+
+        // Reset enemy animation counters
+        if (world.level && world.level.enemies) {
+            world.level.enemies.forEach(enemy => {
+                enemy.currentImage = 0;
+                if (enemy instanceof ChickenBoss && enemy.animation) {
+                    enemy.animation.deathAnimationIndex = 0;
+                    enemy.animation.alertFrameCount = 0;
+                }
+            });
         }
     }
 

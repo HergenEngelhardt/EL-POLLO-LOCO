@@ -138,6 +138,8 @@ class GameWinScreen extends DrawableObject {
             if (this.world.intervallManager) {
                 this.world.intervallManager.clearAllGameIntervals();
             }
+
+            this.resetAnimationCounters(this.world);
             this.resetGameAndWorldState(this.world);
         }
 
@@ -158,6 +160,27 @@ class GameWinScreen extends DrawableObject {
         this.resetCharacterState(world);
         this.resetWorldState(world);
         this.reinitializeLevel(world);
+    }
+
+    /**
+    * Resets animation counters to prevent speed-up on restart
+    * @param {World} world - The game world object
+    */
+    resetAnimationCounters(world) {
+        if (world.character) {
+            world.character.currentImage = 0;
+            world.character.jumpAnimationFrame = 0;
+        }
+
+        if (world.level && world.level.enemies) {
+            world.level.enemies.forEach(enemy => {
+                enemy.currentImage = 0;
+                if (enemy instanceof ChickenBoss && enemy.animation) {
+                    enemy.animation.deathAnimationIndex = 0;
+                    enemy.animation.alertFrameCount = 0;
+                }
+            });
+        }
     }
 
     /**
