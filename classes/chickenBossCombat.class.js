@@ -11,13 +11,14 @@ class ChickenBossCombat {
         this.boss = boss;
         this.attackCooldown = 0;
         this.lastHit = 0;
+        this.bottleHitCount = 0;
     }
 
     /**
      * Applies damage to the boss and updates its state
      */
     hit() {
-        this.boss.energy -= 25;
+        this.boss.energy -= 20;
         this.lastHit = new Date().getTime();
         if (this.boss.world && !this.boss.world.gameWon && !this.boss.world.gameOver) {
             this.playHitSound();

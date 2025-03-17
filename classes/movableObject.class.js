@@ -52,7 +52,7 @@ class MovableObject extends DrawableObject {
      * Makes the object jump by setting a positive vertical speed
      */
     jump() {
-        this.speedY = 20;
+        this.speedY = 18;
         this.acceleration = 1.5;
         this.playJumpSound();
         this.jumpAnimationActive = true;
