@@ -14,7 +14,7 @@ class ChickenBossMovement {
         this.canJump = true;
         this.isJumping = false;
         this.jumpCooldown = 0;
-        this.jumpSpeed = 25;
+        this.jumpSpeed = 30;
     }
 
     /**
@@ -101,7 +101,7 @@ class ChickenBossMovement {
         if (!this.isJumping && this.canJump) {
             this.isJumping = true;
             this.jumpSpeed = 18;
-            this.boss.acceleration = 2;
+            this.boss.acceleration = 1.8;
             this.boss.speed *= 1.4;
             setTimeout(() => {
                 this.boss.speed = 15;

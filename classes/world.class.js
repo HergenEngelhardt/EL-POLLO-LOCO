@@ -44,6 +44,7 @@ class World {
         this.gameWon = false;
         this.winScreen = new GameWinScreen();
         this.winScreen.setWorld(this);
+        this.throwCooldown = false;
     }
 
     /**
@@ -328,7 +329,7 @@ class World {
             this.throwCooldown = true;
             setTimeout(() => {
                 this.throwCooldown = false;
-            }, 300);
+            }, 1000);
         }
     }
 

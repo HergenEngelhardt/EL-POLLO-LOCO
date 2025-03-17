@@ -74,7 +74,7 @@ class ChickenBossCombat {
         this.boss.speed = 30;
         this.boss.movement.applyMovement();
 
-        if (this.boss.movement.canJump && Math.random() < 0.35) {
+        if (this.boss.movement.canJump && Math.random() < 0.75) {
             this.boss.movement.jump();
         }
 
