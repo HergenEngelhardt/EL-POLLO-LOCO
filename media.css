@@ -49,3 +49,32 @@
       object-fit: contain;
     }
   }
+
+  @media only screen and (max-width: 800px) {
+    .button-container {
+        display: none;
+    }
+
+    #mobileMenuBtn,
+    .mobile-only {
+        display: flex;
+    }
+
+    #fullscreenBtn {
+        display: none;
+    }
+
+    #soundBtn {
+        top: 10px;
+        right: 10px;
+        position: fixed;
+        z-index: 999;
+    }
+
+    #menuBtn {
+        top: 10px;
+        right: 70px;
+        position: fixed;
+        z-index: 999;
+    }
+}
