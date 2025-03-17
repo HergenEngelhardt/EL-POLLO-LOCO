@@ -80,7 +80,7 @@ class ChickenBoss extends MovableObject {
         this.animation = new ChickenBossAnimation(this);
         this.movement = new ChickenBossMovement(this);
         this.combat = new ChickenBossCombat(this);
-        
+
         this.animate();
     }
 
@@ -160,19 +160,52 @@ class ChickenBoss extends MovableObject {
      */
     handleFirstContact(distanceToCharacter, characterIsLeft) {
         if (!this.hadfirstContact && distanceToCharacter < 500) {
-            this.hadfirstContact = true;
-            this.alertPhase = true;
-            this.animation.alertFrameCount = 0;
-            this.otherDirection = !characterIsLeft;
-            if (!this.alertSound) {
-                this.alertSound = SoundManager.play('bossAlert', 0.5);
-            }
-            setTimeout(() => {
-                if (this.alertSound) {
-                    this.alertSound.pause();
-                    this.alertSound.currentTime = 0;
-                }
-            }, 5000);
+            this.initiateAlertPhase(characterIsLeft);
+            this.immobilizeCharacter();
+            this.playAlertSound();
+        }
+    }
+
+    /**
+     * Initiates the boss alert phase
+     * @param {boolean} characterIsLeft - Whether character is to the left of boss
+     */
+    initiateAlertPhase(characterIsLeft) {
+        this.hadfirstContact = true;
+        this.alertPhase = true;
+        this.animation.alertFrameCount = 0;
+        this.otherDirection = !characterIsLeft;
+    }
+
+    /**
+     * Immobilizes the character during the alert phase
+     */
+    immobilizeCharacter() {
+        if (this.world && this.world.character) {
+            this.world.character.isImmobilized = true;
+        }
+    }
+
+    /**
+     * Plays the boss alert sound with auto-stop timer
+     */
+    playAlertSound() {
+        if (!this.alertSound) {
+            this.alertSound = SoundManager.play('bossAlert', 0.5);
+        }
+
+        setTimeout(() => {
+            this.stopAlertSound();
+        }, 10000);
+    }
+
+    /**
+     * Stops the alert sound and resets it
+     */
+    stopAlertSound() {
+        if (this.alertSound) {
+            this.alertSound.pause();
+            this.alertSound.currentTime = 0;
         }
     }
 

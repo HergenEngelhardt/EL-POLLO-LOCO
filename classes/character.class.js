@@ -93,6 +93,7 @@ class Character extends MovableObject {
         this.applyGravity();
         this.currentImage = 0;
         this.world = {};
+        this.isImmobilized = false;
         this.offset = {
             top: 85,
             bottom: 20,
@@ -126,6 +127,10 @@ class Character extends MovableObject {
      * Handles character movement based on keyboard input
      */
     handleMovement() {
+        if (this.isImmobilized) {
+            return;
+        }
+
         if (!this.isDead() || !this.deadAnimationPlayed) {
             this.handleHorizontalMovement();
             this.handleJump();
@@ -194,37 +199,130 @@ class Character extends MovableObject {
      */
     updateCharacterImages() {
         if (this.isDead()) {
-            this.animateImages(this.IMAGES_DEAD);
+            this.handleDeadState();
         } else if (this.isHurt()) {
-            this.animateImages(this.IMAGES_HURT);
+            this.handleHurtState();
+        } else if (this.isImmobilized) {
+            this.handleImmobilizedState();
         } else if (this.isAboveGround()) {
             this.handleJumpAnimation();
         } else {
-            if (this.jumpAnimationActive && this.jumpAnimationInterval) {
-                clearInterval(this.jumpAnimationInterval);
-            }
-            
-            this.jumpAnimationActive = false;
-            this.jumpAnimationFrame = 0;
-            this.jumpAnimationComplete = false;
-            this.updateGroundedImages();
+            this.handleGroundedState();
         }
+    }
+
+    /**
+     * Handles the character's dead state animation
+     */
+    handleDeadState() {
+        this.animateImages(this.IMAGES_DEAD);
+    }
+
+    /**
+     * Handles the character's hurt state animation
+     */
+    handleHurtState() {
+        this.animateImages(this.IMAGES_HURT);
+    }
+
+    /**
+     * Handles the character's immobilized state
+     * Freezes character in a specific stance
+     */
+    handleImmobilizedState() {
+        this.img = this.imageCache[this.IMAGES_IDLE[0]];
+        this.stopSnoringSound();
+        this.lastMoveTime = Date.now();
+    }
+
+    /**
+     * Handles the character's grounded state
+     * Resets jump animation and updates ground animations
+     */
+    handleGroundedState() {
+        this.resetJumpAnimation();
+        this.updateGroundedImages();
+    }
+
+    /**
+     * Resets all jump animation related properties and intervals
+     */
+    resetJumpAnimation() {
+        if (this.jumpAnimationActive && this.jumpAnimationInterval) {
+            clearInterval(this.jumpAnimationInterval);
+        }
+
+        this.jumpAnimationActive = false;
+        this.jumpAnimationFrame = 0;
+        this.jumpAnimationComplete = false;
     }
 
     /**
      * Updates images for character when on the ground
      */
     updateGroundedImages() {
-        if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-            this.animateImages(this.IMAGES_WALKING);
-            this.stopSnoringSound();
-        } else if (Date.now() - this.lastMoveTime > 6000 && !this.world.gameOver && !this.world.gameWon) {
-            this.animateImages(this.IMAGES_IDLE_LONG);
-            this.playSnoringSound();
-        } else {
-            this.animateImages(this.IMAGES_IDLE);
-            this.stopSnoringSound();
+        if (this.isImmobilized) {
+            this.handleImmobilizedGroundState();
+            return;
         }
+
+        if (this.isMoving()) {
+            this.handleMovingState();
+        } else if (this.isInLongIdleState()) {
+            this.handleLongIdleState();
+        } else {
+            this.handleShortIdleState();
+        }
+    }
+
+    /**
+     * Handles the character's immobilized state when on ground
+     */
+    handleImmobilizedGroundState() {
+        this.img = this.imageCache[this.IMAGES_IDLE[0]];
+        this.stopSnoringSound();
+    }
+
+    /**
+     * Checks if the character is currently moving
+     * @returns {boolean} True if moving left or right
+     */
+    isMoving() {
+        return this.world.keyboard.RIGHT || this.world.keyboard.LEFT;
+    }
+
+    /**
+     * Handles the character's moving state
+     */
+    handleMovingState() {
+        this.animateImages(this.IMAGES_WALKING);
+        this.stopSnoringSound();
+    }
+
+    /**
+     * Checks if the character is in a long idle state
+     * @returns {boolean} True if idle for more than 6 seconds and game is active
+     */
+    isInLongIdleState() {
+        return Date.now() - this.lastMoveTime > 6000 &&
+            !this.world.gameOver &&
+            !this.world.gameWon;
+    }
+
+    /**
+     * Handles the character's long idle state
+     */
+    handleLongIdleState() {
+        this.animateImages(this.IMAGES_IDLE_LONG);
+        this.playSnoringSound();
+    }
+
+    /**
+     * Handles the character's short idle state
+     */
+    handleShortIdleState() {
+        this.animateImages(this.IMAGES_IDLE);
+        this.stopSnoringSound();
     }
 
     /**

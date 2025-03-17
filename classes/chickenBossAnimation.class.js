@@ -25,17 +25,73 @@ class ChickenBossAnimation {
      * @param {boolean} characterIsLeft - Whether the player character is to the left of the boss
      */
     handleAlertPhase(characterIsLeft) {
-        this.boss.otherDirection = !characterIsLeft;
-        this.animateImages(this.boss.IMAGES_ALERT);
-        this.alertFrameCount++;
+        this.updateAlertAnimation(characterIsLeft);
+        this.incrementAlertCounter();
 
-        if (this.alertFrameCount >= 12) {
-            this.boss.alertPhase = false;
-            this.boss.showHealthBar = true;
-            if (this.boss.alertSound) {
-                this.boss.alertSound.pause();
-                this.boss.alertSound.currentTime = 0;
+        if (this.isAlertPhaseComplete()) {
+            this.completeAlertPhase();
+        }
+    }
+
+    /**
+    * Updates the animation during the alert phase
+    * @param {boolean} characterIsLeft - Whether the player character is to the left of the boss
+    */
+    updateAlertAnimation(characterIsLeft) {
+        this.boss.otherDirection = !characterIsLeft;
+        const totalFrames = this.boss.IMAGES_ALERT.length;
+        const repeatCount = Math.floor(24 / totalFrames);
+        if (repeatCount > 1) {
+            const currentCycle = Math.floor(this.alertFrameCount / totalFrames);
+            if (currentCycle < repeatCount) {
+                this.animateImages(this.boss.IMAGES_ALERT);
             }
+        } else {
+            this.animateImages(this.boss.IMAGES_ALERT);
+        }
+    }
+
+    /**
+     * Increments the alert animation frame counter
+     */
+    incrementAlertCounter() {
+        this.alertFrameCount++;
+    }
+
+    /**
+     * Checks if the alert phase has completed its animation cycle
+     * @returns {boolean} True if alert phase should end
+     */
+    isAlertPhaseComplete() {
+        return this.alertFrameCount >= 24;
+    }
+
+    /**
+     * Completes the alert phase and transitions to combat
+     */
+    completeAlertPhase() {
+        this.boss.alertPhase = false;
+        this.boss.showHealthBar = true;
+        this.releaseCharacter();
+        this.stopAlertSound();
+    }
+
+    /**
+     * Releases the character from immobilization
+     */
+    releaseCharacter() {
+        if (this.boss.world && this.boss.world.character) {
+            this.boss.world.character.isImmobilized = false;
+        }
+    }
+
+    /**
+     * Stops the alert sound effect
+     */
+    stopAlertSound() {
+        if (this.boss.alertSound) {
+            this.boss.alertSound.pause();
+            this.boss.alertSound.currentTime = 0;
         }
     }
 
