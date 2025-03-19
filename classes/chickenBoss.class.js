@@ -62,11 +62,27 @@ class ChickenBoss extends MovableObject {
     constructor() {
         super().loadImage(this.IMAGES_WALKING[0]);
         this.speed = 23;
+        this.loadAllImages();
+        this.setupInitialState();
+        this.createComponents();
+        this.animate();
+    }
+
+    /**
+     * Loads all required image sets
+     */
+    loadAllImages() {
         this.loadImages(this.IMAGES_ALERT);
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_ATTACK);
         this.loadImages(this.IMAGES_HURT);
         this.loadImages(this.IMAGES_DEAD);
+    }
+
+    /**
+     * Sets up initial state properties
+     */
+    setupInitialState() {
         this.world = {};
         this.toDelete = false;
         this.healthBar.width = 180;
@@ -77,11 +93,15 @@ class ChickenBoss extends MovableObject {
             left: 20,
             right: 20
         };
+    }
+
+    /**
+     * Creates animation, movement and combat components
+     */
+    createComponents() {
         this.animation = new ChickenBossAnimation(this);
         this.movement = new ChickenBossMovement(this);
         this.combat = new ChickenBossCombat(this);
-
-        this.animate();
     }
 
     /**
@@ -124,7 +144,7 @@ class ChickenBoss extends MovableObject {
      * Handles all character interaction logic
      */
     handleCharacterInteraction() {
-        if (!this.world || !this.world.character) {
+        if (!this.isWorldCharacterAvailable()) {
             return;
         }
 
@@ -132,6 +152,22 @@ class ChickenBoss extends MovableObject {
         this.combat.checkCharacterCollision();
         this.handleFirstContact(metrics.distance, metrics.isLeft);
 
+        this.updateBehaviorBasedOnContact(metrics);
+    }
+
+    /**
+     * Checks if world character reference is available
+     * @returns {boolean} True if world and character are available
+     */
+    isWorldCharacterAvailable() {
+        return this.world && this.world.character;
+    }
+
+    /**
+     * Updates behavior based on first contact status
+     * @param {Object} metrics - Metrics containing distance and position data
+     */
+    updateBehaviorBasedOnContact(metrics) {
         if (this.hadfirstContact) {
             this.handleBossActiveBehavior(metrics.distance, metrics.isLeft);
         } else {
@@ -216,15 +252,32 @@ class ChickenBoss extends MovableObject {
      */
     handleBossActiveBehavior(distanceToCharacter, characterIsLeft) {
         if (this.alertPhase) {
-            this.animation.handleAlertPhase(characterIsLeft);
+            this.handleAlertPhaseBehavior(characterIsLeft);
         } else {
-            this.combat.updateHealthBarPosition();
+            this.handleActiveCombatBehavior(distanceToCharacter, characterIsLeft);
+        }
+    }
 
-            if (distanceToCharacter < 300) {
-                this.combat.handleAttackingBehavior(distanceToCharacter, characterIsLeft);
-            } else {
-                this.handleNormalMovement(characterIsLeft);
-            }
+    /**
+     * Handles behavior during alert phase
+     * @param {boolean} characterIsLeft - Whether character is to the left
+     */
+    handleAlertPhaseBehavior(characterIsLeft) {
+        this.animation.handleAlertPhase(characterIsLeft);
+    }
+
+    /**
+     * Handles behavior during active combat
+     * @param {number} distanceToCharacter - Distance to the character
+     * @param {boolean} characterIsLeft - Whether character is to the left
+     */
+    handleActiveCombatBehavior(distanceToCharacter, characterIsLeft) {
+        this.combat.updateHealthBarPosition();
+
+        if (distanceToCharacter < 300) {
+            this.combat.handleAttackingBehavior(distanceToCharacter, characterIsLeft);
+        } else {
+            this.handleNormalMovement(characterIsLeft);
         }
     }
 

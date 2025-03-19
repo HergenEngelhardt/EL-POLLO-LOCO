@@ -53,7 +53,9 @@ class GameEndScreenSoundManager {
      */
     stopCharacterSound() {
         let world = this.parentScreen.world;
-        if (world && world.character && world.character.runningSound) {
+        if (!world || !world.character) return;
+        
+        if (world.character.runningSound) {
             world.character.runningSound.pause();
             world.character.runningSound.currentTime = 0;
         }

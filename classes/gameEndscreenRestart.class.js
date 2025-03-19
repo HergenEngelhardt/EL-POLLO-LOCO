@@ -44,15 +44,32 @@ class GameEndScreenRestartManager {
      * Stellt sicher, dass alle Boss-Sounds komplett gestoppt werden
      */
     forceStopAllBossSounds() {
+        this.stopBossSounds();
+        this.rebuildBossSounds();
+        this.stopDomAudio();
+    }
+
+    /**
+     * Stops boss-related sounds
+     */
+    stopBossSounds() {
         SoundManager.stop('chickenboss');
         SoundManager.stop('bossAlert');
-        
-        // Rekonstruiere den ChickenBoss-Sound, um Probleme mit dem Audiokontext zu vermeiden
+    }
+
+    /**
+     * Rebuilds boss sound objects
+     */
+    rebuildBossSounds() {
         if (SoundManager.sounds && SoundManager.sounds['chickenboss']) {
             SoundManager.sounds['chickenboss'] = new Audio('./audio/chickenboss.mp3');
         }
-        
-        // Stoppe alle Audio-Elemente im DOM
+    }
+
+    /**
+     * Stops all DOM audio elements
+     */
+    stopDomAudio() {
         document.querySelectorAll('audio').forEach(audio => {
             audio.pause();
             audio.currentTime = 0;
@@ -298,14 +315,36 @@ class GameEndScreenRestartManager {
      * @param {World} world - The game world object
      */
     resetGameState(world) {
+        this.resetGameFlags(world);
+        this.resetScreenFlags();
+        this.clearCharacterAnimation(world);
+    }
+
+    /**
+     * Resets game state flags
+     * @param {World} world - The game world object
+     */
+    resetGameFlags(world) {
         world.gameOver = false;
         world.gameWon = false;
         world.gameStarted = true;
+    }
+
+    /**
+     * Resets screen state flags
+     */
+    resetScreenFlags() {
         this.parentScreen.screenDisplayed = false;
         this.parentScreen.buttonsCreated = false;
         this.parentScreen.soundPlayed = false;
+    }
 
-        if (world.character.animationInterval) {
+    /**
+     * Clears character animation interval
+     * @param {World} world - The game world object
+     */
+    clearCharacterAnimation(world) {
+        if (world.character && world.character.animationInterval) {
             clearInterval(world.character.animationInterval);
         }
     }
@@ -351,17 +390,25 @@ class GameEndScreenRestartManager {
     resetCharacterAnimationState(character) {
         if (!character.stateManager) return;
         
-        character.stateManager.jumpAnimationActive = false;
-        character.stateManager.jumpAnimationFrame = 0;
-        character.stateManager.jumpAnimationComplete = false;
-        this.clearStateManagerInterval(character);
+        this.resetAnimationFlags(character);
+        this.clearAnimationInterval(character);
     }
 
     /**
-     * Clears the jump animation interval in the state manager
+     * Resets animation state flags
      * @param {Character} character - The character object
      */
-    clearStateManagerInterval(character) {
+    resetAnimationFlags(character) {
+        character.stateManager.jumpAnimationActive = false;
+        character.stateManager.jumpAnimationFrame = 0;
+        character.stateManager.jumpAnimationComplete = false;
+    }
+
+    /**
+     * Clears the jump animation interval
+     * @param {Character} character - The character object
+     */
+    clearAnimationInterval(character) {
         if (!character.stateManager.jumpAnimationInterval) return;
         
         clearInterval(character.stateManager.jumpAnimationInterval);

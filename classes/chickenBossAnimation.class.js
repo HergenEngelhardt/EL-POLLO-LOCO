@@ -114,9 +114,6 @@ class ChickenBossAnimation {
     /**
      * Plays the death animation sequence and triggers game completion when finished
      */
-    /**
-     * Plays the death animation sequence and triggers game completion when finished
-     */
     playDeathAnimation() {
         let ANIMATION_FRAME_DELAY = 200;
         let deathInterval = setInterval(() => {
@@ -146,6 +143,13 @@ class ChickenBossAnimation {
         this.deathAnimationPlayed = true;
         this.boss.toDelete = true;
 
+        this.triggerGameWin();
+    }
+
+    /**
+     * Triggers game win state if world reference exists
+     */
+    triggerGameWin() {
         if (this.boss.world) {
             this.boss.world.gameWon = true;
         }

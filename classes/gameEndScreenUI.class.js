@@ -65,11 +65,20 @@ class GameEndScreenUI {
             if (!this.validateCanvas(canvas)) return;
 
             let position = this.calculateButtonPosition(canvas);
-            let buttonsHTML = this.generateButtonsHTML(position.top, position.left);
+            let buttonsHTML = this.createButtonsHTML(position);
             this.insertButtonsIntoDOM(buttonsHTML);
         } catch (error) {
             console.error('Error creating buttons container:', error);
         }
+    }
+
+    /**
+     * Creates the HTML for the buttons
+     * @param {Object} position - The position for the buttons
+     * @returns {string} - HTML for the buttons
+     */
+    createButtonsHTML(position) {
+        return this.generateButtonsHTML(position.top, position.left);
     }
 
     /**

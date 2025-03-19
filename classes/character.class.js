@@ -85,15 +85,36 @@ class Character extends MovableObject {
       */
     constructor() {
         super().loadImage(this.IMAGES_JUMPING[0]);
+        this.loadAllCharacterImages();
+        this.initializeComponents();
+        this.setupCharacterState();
+    }
+
+    /**
+     * Loads all character image sets
+     */
+    loadAllCharacterImages() {
         this.loadImages(this.IMAGES_IDLE);
         this.loadImages(this.IMAGES_IDLE_LONG);
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_JUMPING);
         this.loadImages(this.IMAGES_DEAD);
         this.loadImages(this.IMAGES_HURT);
+    }
+
+    /**
+     * Initializes character components
+     */
+    initializeComponents() {
         this.stateManager = new CharacterStateManager(this);
         this.movementController = new CharacterMovementController(this);
         this.applyGravity();
+    }
+
+    /**
+     * Sets up initial character state
+     */
+    setupCharacterState() {
         this.currentImage = 0;
         this.world = {};
         this.isImmobilized = false;
