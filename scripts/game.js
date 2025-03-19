@@ -226,8 +226,13 @@ function ensureWorldInitialized() {
  * Hides the result screen and resets the game state
  */
 function playAgain() {
+    ensureAllSoundsStopped();
     document.getElementById('win-loose').classList.add('d-none');
-    world.gameOver = false;
+    if (world && world.intervallManager) {
+        world.intervallManager.clearAllGameIntervals();
+    }
+    resetGameState();
+    world = new World(canvas, keyboard);
     world.startGame();
 }
 

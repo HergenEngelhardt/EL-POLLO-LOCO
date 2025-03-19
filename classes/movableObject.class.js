@@ -16,17 +16,62 @@ class MovableObject extends DrawableObject {
         left: 0,
         right: 0
     };
+    /**
+     * Applies gravity effect to the object, making it fall if above ground
+     */
+    applyGravity() {
+        this.clearGravityInterval();
+        this.setupGravityInterval();
+    }
 
     /**
-         * Applies gravity effect to the object, making it fall if above ground
-         */
-    applyGravity() {
-        setInterval(() => {
-            if (this.isAboveGround() || this.speedY > 0) {
-                this.y -= this.speedY;
-                this.speedY -= this.acceleration;
-            }
+     * Clears any existing gravity interval
+     */
+    clearGravityInterval() {
+        if (this.gravityInterval) {
+            clearInterval(this.gravityInterval);
+        }
+    }
+
+    /**
+     * Sets up the gravity interval based on available systems
+     */
+    setupGravityInterval() {
+        if (this.world && this.world.intervallManager) {
+            this.setupManagedGravityInterval();
+        } else {
+            this.setupDirectGravityInterval();
+        }
+    }
+
+    /**
+     * Sets up gravity using the world's interval manager
+     */
+    setupManagedGravityInterval() {
+        this.gravityInterval = this.world.intervallManager.registerInterval(
+            setInterval(() => {
+                this.applyGravityPhysics();
+            }, 1000 / 25)
+        );
+    }
+
+    /**
+     * Sets up gravity directly with setInterval when no manager is available
+     */
+    setupDirectGravityInterval() {
+        this.gravityInterval = setInterval(() => {
+            this.applyGravityPhysics();
         }, 1000 / 25);
+    }
+
+    /**
+     * Applies gravity physics calculations to the object
+     */
+    applyGravityPhysics() {
+        if (this.isAboveGround() || this.speedY > 0) {
+            this.y -= this.speedY;
+            this.speedY -= this.acceleration;
+        }
     }
 
     /**
@@ -100,7 +145,7 @@ class MovableObject extends DrawableObject {
         return (this.x + this.offset.left + this.width - this.offset.right) > (mo.x + mo.offset.left) &&
             (this.x + this.offset.left) < (mo.x + mo.offset.left + mo.width - mo.offset.right) &&
             (this.y + this.offset.top + this.height - this.offset.bottom) < (mo.y + mo.offset.top + 0) &&
-            (this.y + this.offset.top + this.height - this.offset.bottom) > (mo.y + mo.offset.top - 20) && 
+            (this.y + this.offset.top + this.height - this.offset.bottom) > (mo.y + mo.offset.top - 20) &&
             this.speedY < 0;
     }
 

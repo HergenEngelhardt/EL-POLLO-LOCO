@@ -13,6 +13,27 @@ class IntervallManager {
         this.level = world.level;
         this.collisionManager = world.collisionManager;
         this.activeThrowableBottles = world.activeThrowableBottles;
+        this.intervalRegistry = [];
+    }
+
+    /**
+    * Registers an interval for tracking
+    * @param {number} intervalId - The interval ID to register
+    * @returns {number} The same interval ID
+    */
+    registerInterval(intervalId) {
+        this.intervalRegistry.push(intervalId);
+        return intervalId;
+    }
+
+    /**
+     * Clears all registered intervals
+     */
+    clearAllIntervals() {
+        this.intervalRegistry.forEach(id => {
+            clearInterval(id);
+        });
+        this.intervalRegistry = [];
     }
 
     /**
@@ -37,6 +58,7 @@ class IntervallManager {
         this.clearBottleIntervals();
         this.clearCollisionIntervals();
         this.clearBackgroundIntervals();
+        this.clearGravityIntervals();
 
         if (this.world) {
             if (this.world.drawInterval) {
@@ -87,6 +109,52 @@ class IntervallManager {
     }
 
     /**
+     * Clears gravity intervals on all movable objects
+     */
+    clearGravityIntervals() {
+        this.clearCharacterGravityInterval();
+        this.clearEnemyGravityIntervals();
+        this.clearBottleGravityIntervals();
+    }
+
+    /**
+     * Clears the character's gravity interval
+     */
+    clearCharacterGravityInterval() {
+        if (this.character && this.character.gravityInterval) {
+            clearInterval(this.character.gravityInterval);
+            this.character.gravityInterval = null;
+        }
+    }
+
+    /**
+     * Clears gravity intervals for all enemies
+     */
+    clearEnemyGravityIntervals() {
+        if (this.level && this.level.enemies) {
+            this.level.enemies.forEach(enemy => {
+                if (enemy.gravityInterval) {
+                    clearInterval(enemy.gravityInterval);
+                    enemy.gravityInterval = null;
+                }
+            });
+        }
+    }
+
+    /**
+     * Clears gravity intervals for all throwable bottles
+     */
+    clearBottleGravityIntervals() {
+        if (this.activeThrowableBottles) {
+            this.activeThrowableBottles.forEach(bottle => {
+                if (bottle.gravityInterval) {
+                    clearInterval(bottle.gravityInterval);
+                    bottle.gravityInterval = null;
+                }
+            });
+        }
+    }
+    /**
      * Clears background-related intervals
      */
     clearBackgroundIntervals() {
@@ -108,6 +176,15 @@ class IntervallManager {
         if (enemy.animationInterval) {
             clearInterval(enemy.animationInterval);
             enemy.animationInterval = null;
+        }
+        if (enemy.moveInterval) {
+            clearInterval(enemy.moveInterval);
+            enemy.moveInterval = null;
+        }
+
+        if (enemy.animateInterval) {
+            clearInterval(enemy.animateInterval);
+            enemy.animateInterval = null;
         }
     }
 

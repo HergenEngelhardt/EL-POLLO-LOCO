@@ -50,19 +50,49 @@ class ChickenSmall extends MovableObject {
      * Sets up animation intervals for movement and sprite changes
      */
     animate() {
-        setInterval(() => {
-            if (!this.isDead) {
-                this.moveLeft();
-            }
-        }, 1000 / 60);
+        this.clearAnimationIntervals();
+        this.setupMovementAnimation();
+        this.setupImageAnimation();
+    }
 
-        setInterval(() => {
-            if (this.isDead) {
-                this.loadImage(this.IMAGES_DEAD[0]);
-            } else {
-                this.animateImages(this.IMAGES_WALKING);
-            }
-        }, 200);
+    /**
+     * Clears any existing animation intervals
+     */
+    clearAnimationIntervals() {
+        if (this.moveInterval) {
+            clearInterval(this.moveInterval);
+        }
+        if (this.animateInterval) {
+            clearInterval(this.animateInterval);
+        }
+    }
+
+    /**
+     * Sets up the movement animation interval
+     */
+    setupMovementAnimation() {
+        this.moveInterval = this.world.intervallManager.registerInterval(
+            setInterval(() => {
+                if (!this.isDead) {
+                    this.moveLeft();
+                }
+            }, 1000 / 60)
+        );
+    }
+
+    /**
+     * Sets up the image animation interval
+     */
+    setupImageAnimation() {
+        this.animateInterval = this.world.intervallManager.registerInterval(
+            setInterval(() => {
+                if (this.isDead) {
+                    this.loadImage(this.IMAGES_DEAD[0]);
+                } else {
+                    this.animateImages(this.IMAGES_WALKING);
+                }
+            }, 200)
+        );
     }
 
     /**
@@ -83,7 +113,7 @@ class ChickenSmall extends MovableObject {
     hitByBottle() {
         if (!this.isDead) {
             this.die();
-            SoundManager.play('punch'); 
+            SoundManager.play('punch');
         }
     }
 }

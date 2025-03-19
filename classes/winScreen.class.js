@@ -134,11 +134,11 @@ class GameWinScreen extends DrawableObject {
         this.removeButtonContainer();
         this.stopWinSound();
         this.stopAllGameSounds();
+
         if (this.world) {
             if (this.world.intervallManager) {
                 this.world.intervallManager.clearAllGameIntervals();
             }
-
             this.resetAnimationCounters(this.world);
             this.resetGameAndWorldState(this.world);
         }
@@ -156,7 +156,41 @@ class GameWinScreen extends DrawableObject {
      * @param {World} world - The game world object
      */
     resetGameAndWorldState(world) {
+        if (world.intervallManager) {
+            world.intervallManager.clearAllGameIntervals();
+        }
+
+        if (world.collisionInterval) {
+            clearInterval(world.collisionInterval);
+            world.collisionInterval = null;
+        }
+
+        if (world.collisionManager) {
+            if (world.collisionManager.collisionInterval) {
+                clearInterval(world.collisionManager.collisionInterval);
+                world.collisionManager.collisionInterval = null;
+            }
+            world.collisionManager = new CollisionManager(world);
+        }
+        if (world.level && world.level.enemies) {
+            world.level.enemies.forEach(enemy => {
+                if (enemy instanceof ChickenBoss) {
+                    if (enemy.alertSound) {
+                        enemy.alertSound.pause();
+                        enemy.alertSound.currentTime = 0;
+                    }
+                    if (enemy.animation) {
+                        if (typeof enemy.animation.stopAllAnimations === 'function') {
+                            enemy.animation.stopAllAnimations();
+                        }
+                    }
+                }
+            });
+        }
+
         this.resetGameState(world);
+        world.gameOver = false;
+        world.gameWon = false;
         this.resetCharacterState(world);
         this.resetWorldState(world);
         this.reinitializeLevel(world);
@@ -321,6 +355,10 @@ class GameWinScreen extends DrawableObject {
      * - Specific game sounds (snoring and chickenboss)
      */
     stopAllGameSounds() {
+        if (this.world && typeof this.world.stopAllSounds === 'function') {
+            this.world.stopAllSounds();
+            return;
+        }
         SoundManager.stopAll();
         if (this.world && this.world.character) {
             if (this.world.character.runningSound) {
@@ -328,7 +366,17 @@ class GameWinScreen extends DrawableObject {
                 this.world.character.runningSound.currentTime = 0;
             }
         }
-        SoundManager.stop('snoring');
         SoundManager.stop('chickenboss');
+        SoundManager.stop('winning');
+        SoundManager.stop('losing');
+        SoundManager.stop('bossAlert');
+        SoundManager.stop('snoring');
+        SoundManager.stop('backgroundMusic');
+        document.querySelectorAll('audio').forEach(audio => {
+            audio.pause();
+            audio.currentTime = 0;
+        });
+        ensureAllSoundsStopped();
     }
+
 }

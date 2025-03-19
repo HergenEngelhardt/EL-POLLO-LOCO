@@ -42,21 +42,47 @@ class GameOverScreen extends DrawableObject {
      * @param {CanvasRenderingContext2D} ctx - The canvas rendering context
      */
     draw(ctx) {
-        if (!ctx || !this.world) return;
+        if (!this.canDraw(ctx)) return;
 
         if (this.world.gameOver) {
-            if (!this.screenDisplayed) {
-                this.stopAllSounds();
-                this.screenDisplayed = true;
-
-                if (ctx && ctx.canvas) {
-                    this.showWinLoseScreen('lose', ctx.canvas);
-                }
-            }
-
-            ctx.drawImage(this.img, (ctx.canvas.width - this.width) / 2, (ctx.canvas.height - this.height) / 2, this.width, this.height);
+            this.initializeGameOverScreenIfNeeded(ctx);
+            this.renderGameOverScreen(ctx);
             this.playGameOverSound();
         }
+    }
+
+    /**
+     * Checks if drawing is possible
+     * @param {CanvasRenderingContext2D} ctx - The canvas rendering context
+     * @returns {boolean} Whether drawing can proceed
+     */
+    canDraw(ctx) {
+        return ctx && this.world;
+    }
+
+    /**
+     * Initializes the game over screen if it hasn't been displayed yet
+     * @param {CanvasRenderingContext2D} ctx - The canvas rendering context
+     */
+    initializeGameOverScreenIfNeeded(ctx) {
+        if (!this.screenDisplayed) {
+            this.stopAllSounds();
+            this.screenDisplayed = true;
+
+            if (ctx && ctx.canvas) {
+                this.showWinLoseScreen('lose', ctx.canvas);
+            }
+        }
+    }
+
+    /**
+     * Renders the game over image on the canvas
+     * @param {CanvasRenderingContext2D} ctx - The canvas rendering context
+     */
+    renderGameOverScreen(ctx) {
+        const x = (ctx.canvas.width - this.width) / 2;
+        const y = (ctx.canvas.height - this.height) / 2;
+        ctx.drawImage(this.img, x, y, this.width, this.height);
     }
 
     /**
@@ -68,13 +94,11 @@ class GameOverScreen extends DrawableObject {
         if (this.buttonsCreated) {
             return;
         }
-
         canvas = this.getValidCanvas(canvas);
         if (!canvas) {
             console.error('No valid canvas element found');
             return;
         }
-
         this.removeExistingButtonContainer();
         this.createButtonsContainer(canvas, result);
         this.setupEventListeners(result);
@@ -188,19 +212,56 @@ class GameOverScreen extends DrawableObject {
      * Handles the restart game button click.
      */
     handleRestartGame() {
+        this.cleanupBeforeRestart();
+        this.restartGameWithWorld();
+    }
+
+    /**
+     * Performs cleanup operations before restarting the game
+     */
+    cleanupBeforeRestart() {
         this.removeButtonContainer();
         this.stopAllSounds();
+    }
 
-        let world = this.world || window.world;
+    /**
+     * Restarts the game using the available world reference
+     */
+    restartGameWithWorld() {
+        let world = this.getWorldReference();
         if (world) {
-            if (world.intervallManager) {
-                world.intervallManager.clearAllGameIntervals();
-            }
-            this.resetAnimationCounters(world);
-            this.prepareGameRestart(world);
-            this.startNewGame(world);
+            this.performGameRestart(world);
         } else {
             this.handleMissingWorld();
+        }
+    }
+
+    /**
+     * Gets the world reference from either this.world or window.world
+     * @returns {World|null} - The world reference or null if not found
+     */
+    getWorldReference() {
+        return this.world || window.world;
+    }
+
+    /**
+     * Performs the actual game restart with the given world object
+     * @param {World} world - The game world object
+     */
+    performGameRestart(world) {
+        this.clearGameIntervals(world);
+        this.resetAnimationCounters(world);
+        this.prepareGameRestart(world);
+        this.startNewGame(world);
+    }
+
+    /**
+     * Clears all game intervals if an interval manager exists
+     * @param {World} world - The game world object 
+     */
+    clearGameIntervals(world) {
+        if (world.intervallManager) {
+            world.intervallManager.clearAllGameIntervals();
         }
     }
 
@@ -208,14 +269,69 @@ class GameOverScreen extends DrawableObject {
      * Stops all game sounds
      */
     stopAllSounds() {
-        SoundManager.stopAll();
-        if (this.world && this.world.character) {
-            if (this.world.character.runningSound) {
-                this.world.character.runningSound.pause();
-                this.world.character.runningSound.currentTime = 0;
-            }
+        if (this.canUseWorldSoundStopper()) {
+            this.useWorldSoundStopper();
+        } else {
+            this.useFallbackSoundStopper();
         }
+        ensureAllSoundsStopped();
+    }
+
+    /**
+     * Checks if the world has its own sound stopping method
+     * @returns {boolean} Whether the world can stop sounds
+     */
+    canUseWorldSoundStopper() {
+        return this.world && typeof this.world.stopAllSounds === 'function';
+    }
+
+    /**
+     * Uses the world's own sound stopping method
+     */
+    useWorldSoundStopper() {
+        this.world.stopAllSounds();
+    }
+
+    /**
+     * Uses fallback methods to stop all sounds
+     */
+    useFallbackSoundStopper() {
+        SoundManager.stopAll();
+        this.stopCharacterSound();
+        this.stopNamedSounds();
+        this.stopAllHtmlAudioElements();
+    }
+
+    /**
+     * Stops the character's running sound
+     */
+    stopCharacterSound() {
+        if (this.world && this.world.character && this.world.character.runningSound) {
+            this.world.character.runningSound.pause();
+            this.world.character.runningSound.currentTime = 0;
+        }
+    }
+
+    /**
+     * Stops specific named sounds using the SoundManager
+     */
+    stopNamedSounds() {
         SoundManager.stop('chickenboss');
+        SoundManager.stop('winning');
+        SoundManager.stop('losing');
+        SoundManager.stop('bossAlert');
+        SoundManager.stop('snoring');
+        SoundManager.stop('backgroundMusic');
+    }
+
+    /**
+     * Stops all HTML audio elements on the page
+     */
+    stopAllHtmlAudioElements() {
+        document.querySelectorAll('audio').forEach(audio => {
+            audio.pause();
+            audio.currentTime = 0;
+        });
     }
 
     /**
@@ -223,10 +339,51 @@ class GameOverScreen extends DrawableObject {
      * @param {World} world - The game world object
      */
     prepareGameRestart(world) {
+        this.stopAllSounds();
+        this.clearAllIntervals(world);
+        this.resetCollisionSystem(world);
+        this.resetGameStates(world);
+        this.reinitializeLevel(world);
+    }
+
+    /**
+     * Clears all intervals that need to be reset for a game restart
+     * @param {World} world - The game world object
+     */
+    clearAllIntervals(world) {
+        if (world.intervallManager) {
+            world.intervallManager.clearAllGameIntervals();
+        }
+        if (world.collisionInterval) {
+            clearInterval(world.collisionInterval);
+            world.collisionInterval = null;
+        }
+    }
+
+    /**
+     * Resets the collision detection system
+     * @param {World} world - The game world object
+     */
+    resetCollisionSystem(world) {
+        if (world.collisionManager) {
+            if (world.collisionManager.collisionInterval) {
+                clearInterval(world.collisionManager.collisionInterval);
+                world.collisionManager.collisionInterval = null;
+            }
+            world.collisionManager = new CollisionManager(world);
+        }
+    }
+
+    /**
+     * Resets all game state variables
+     * @param {World} world - The game world object
+     */
+    resetGameStates(world) {
         this.resetGameState(world);
+        world.gameOver = false;
+        world.gameWon = false;
         this.resetCharacterState(world);
         this.resetWorldState(world);
-        this.reinitializeLevel(world);
     }
 
     /**
@@ -284,19 +441,53 @@ class GameOverScreen extends DrawableObject {
     * @param {World} world - The game world object
     */
     resetAnimationCounters(world) {
+        this.resetCharacterAnimations(world);
+        this.resetEnemyAnimations(world);
+    }
+
+    /**
+    * Resets character animation counters
+    * @param {World} world - The game world object
+    */
+    resetCharacterAnimations(world) {
         if (world.character) {
             world.character.currentImage = 0;
             world.character.jumpAnimationFrame = 0;
         }
+    }
 
+    /**
+    * Resets all enemy animation counters
+    * @param {World} world - The game world object
+    */
+    resetEnemyAnimations(world) {
         if (world.level && world.level.enemies) {
             world.level.enemies.forEach(enemy => {
-                enemy.currentImage = 0;
-                if (enemy instanceof ChickenBoss && enemy.animation) {
-                    enemy.animation.deathAnimationIndex = 0;
-                    enemy.animation.alertFrameCount = 0;
-                }
+                this.resetEnemyAnimation(enemy);
             });
+        }
+    }
+
+    /**
+    * Resets animation counters for a specific enemy
+    * @param {Enemy} enemy - The enemy object to reset
+    */
+    resetEnemyAnimation(enemy) {
+        enemy.currentImage = 0;
+
+        if (enemy instanceof ChickenBoss) {
+            this.resetBossAnimations(enemy);
+        }
+    }
+
+    /**
+    * Resets ChickenBoss specific animation counters
+    * @param {ChickenBoss} boss - The boss enemy
+    */
+    resetBossAnimations(boss) {
+        if (boss.animation) {
+            boss.animation.deathAnimationIndex = 0;
+            boss.animation.alertFrameCount = 0;
         }
     }
 
@@ -314,7 +505,7 @@ class GameOverScreen extends DrawableObject {
     }
 
     /**
-     * Resets the world state.
+     * Resets the world state
      * @param {World} world - The game world object
      */
     resetWorldState(world) {
@@ -322,6 +513,7 @@ class GameOverScreen extends DrawableObject {
         world.coinsCollected = 0;
         world.bottlesCollected = 0;
         world.throwableBottles = [];
+        world.activeThrowableBottles = [];
     }
 
     /**

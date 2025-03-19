@@ -48,12 +48,16 @@ class SoundManager {
      * @returns {HTMLAudioElement|null} Audio element or null if disabled
      */
     static play(nameOrPath, volume = 0.2, loop = false) {
-        if (!this.enabled) return null;
+        if (!this.enabled)
+            return null;
 
         let audio = this.getAudioElement(nameOrPath, loop);
+        if (nameOrPath === 'chickenboss' && audio._canPlayAgain === false) {
+            return null;
+        }
+
         this.configureAudio(audio, nameOrPath, volume, loop);
         this.playAudioWithErrorHandling(audio, nameOrPath);
-
         return audio;
     }
 

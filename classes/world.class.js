@@ -38,7 +38,7 @@ class World {
         this.inputHandler = new WorldInputHandler(this);
         this.draw();
         this.setWorld();
-        this.inputHandler.addMouseEvents();  
+        this.inputHandler.addMouseEvents();
         this.initCollisionDetection();
         this.totalInitialBottles = 5;
         this.gameWon = false;
@@ -55,6 +55,17 @@ class World {
         if (this.level && this.level.enemies) {
             this.level.enemies.forEach(enemy => {
                 enemy.world = this;
+                if (typeof enemy.setWorld === 'function') {
+                    enemy.setWorld(this);
+                }
+            });
+        }
+        if (this.level && this.level.clouds) {
+            this.level.clouds.forEach(cloud => {
+                cloud.world = this;
+                if (typeof cloud.setWorld === 'function') {
+                    cloud.setWorld(this);
+                }
             });
         }
         if (this.intervallManager) {
@@ -121,10 +132,10 @@ class World {
      */
     throwBottle() {
         if (this.character.isImmobilized) {
-            return; 
+            return;
         }
         let bottle = this.getBottleForThrowing();
-    
+
         if (bottle) {
             let x = this.character.x + this.character.width / 2;
             let y = this.character.y + this.character.height / 2;
@@ -353,6 +364,37 @@ class World {
             this.gameOverScreen.showWinLoseScreen('win');
         }
 
+    }
+
+    /**
+     * Stops all sounds and completely resets all intervals for a clean game restart
+     */
+    stopAllSounds() {
+        if (this.soundManager) {
+            this.soundManager.stopAllBackgroundSounds();
+        }
+        SoundManager.stopAll();
+        document.querySelectorAll('audio').forEach(audio => {
+            audio.pause();
+            audio.currentTime = 0;
+        });
+        if (this.intervallManager) {
+            this.intervallManager.clearAllGameIntervals();
+        }
+        if (this.level && this.level.enemies) {
+            this.level.enemies.forEach(enemy => {
+                if (enemy instanceof ChickenBoss) {
+                    if (enemy.alertSound) {
+                        enemy.alertSound.pause();
+                        enemy.alertSound.currentTime = 0;
+                        enemy.alertSound = null;
+                    }
+                    if (enemy.animation && typeof enemy.animation.stopAllAnimations === 'function') {
+                        enemy.animation.stopAllAnimations();
+                    }
+                }
+            });
+        }
     }
 
     /**
