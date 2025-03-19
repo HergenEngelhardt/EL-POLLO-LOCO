@@ -69,6 +69,7 @@ class GameEndScreen extends DrawableObject {
     initializeScreenIfNeeded(ctx) {
         if (!this.screenDisplayed) {
             this.soundManager.stopAllSounds();
+            ensureAllIntervalsAndSoundsStopped();
             this.screenDisplayed = true;
 
             if (ctx && ctx.canvas) {
@@ -104,7 +105,7 @@ class GameEndScreen extends DrawableObject {
      */
     handleRestartGame() {
         this.uiManager.removeButtonContainer();
-        this.soundManager.stopAllSounds();
+        ensureAllIntervalsAndSoundsStopped();
         this.restartManager.restartGame();
     }
 
@@ -113,6 +114,7 @@ class GameEndScreen extends DrawableObject {
      */
     handleBackToMenu() {
         this.uiManager.removeButtonContainer();
+        ensureAllIntervalsAndSoundsStopped();
         location.reload();
     }
 }

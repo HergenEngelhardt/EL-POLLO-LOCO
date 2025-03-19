@@ -115,14 +115,28 @@ class ChickenBossMovement {
      */
     playMovementSound() {
         let now = new Date().getTime();
+        
+        // Striktes Sound-Deaktivierungssystem
         if (this.boss.soundDisabled || 
-            (this.boss.world && (this.boss.world.gameOver || this.boss.world.gameWon))) {
+            (this.boss.world && 
+             (this.boss.world.gameOver || this.boss.world.gameWon || 
+              !this.boss.world.gameStarted))) {
             return;  
         }
-    
-        if (!this.boss.isDead() && (!this.lastMovementSoundTime || now - this.lastMovementSoundTime > 1000)) {
-            SoundManager.play('chickenboss', 0.3);
-            this.lastMovementSoundTime = now;
+        
+        // Sicherstellen, dass der Sound nur gespielt wird, wenn der Boss am Leben
+        // und aktiv ist und wir nicht im Reset-Zustand sind
+        if (!this.boss.isDead() && 
+            this.boss.hadfirstContact && 
+            !this.boss.alertPhase &&
+            (!this.lastMovementSoundTime || now - this.lastMovementSoundTime > 1000)) {
+            
+            // Nur beim ersten Mal prüfen - verhindert mehrfache gleichzeitige Wiedergabe
+            let bossSound = SoundManager.sounds['chickenboss'];
+            if (bossSound && bossSound.paused) {
+                SoundManager.play('chickenboss', 0.3);
+                this.lastMovementSoundTime = now;
+            }
         }
     }
 }

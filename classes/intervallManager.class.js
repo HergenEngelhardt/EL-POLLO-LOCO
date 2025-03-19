@@ -66,6 +66,7 @@ class IntervallManager {
                 this.world.drawInterval = null;
             }
         }
+        this.clearAllIntervals();
     }
 
     /**

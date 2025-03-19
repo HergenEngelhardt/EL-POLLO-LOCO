@@ -60,6 +60,7 @@ class Background extends MovableObject {
         return false;
     }
 }
+
 /**
  * Thoroughly stops all game sounds and prevents sound leakage between game sessions
  * This function should be called before restarting the game

@@ -35,6 +35,12 @@ class SoundManager {
      * @param {boolean} loop - Whether sound should loop
      */
     static preload(name, path, loop = false) {
+        // Bei chickenboss immer sicherstellen, dass es ein frisches Objekt ist
+        if (name === 'chickenboss' && this.sounds[name]) {
+            this.sounds[name].pause();
+            this.sounds[name].currentTime = 0;
+        }
+        
         let audio = new Audio(path);
         audio.loop = loop;
         this.sounds[name] = audio;
@@ -210,10 +216,25 @@ class SoundManager {
      * Stops all sounds
      */
     static stopAll() {
-        for (let name in this.sounds) {
-            this.stop(name);
+        // Sound-Element vorsichtig behandeln
+        for (let sound in this.sounds) {
+            if (sound === 'chickenboss' || sound === 'bossAlert') {
+                // Besondere Behandlung für ChickenBoss-Sounds
+                this.sounds[sound].pause();
+                this.sounds[sound].currentTime = 0;
+                // ChickenBoss Sound neu erstellen um Probleme zu vermeiden
+                this.sounds[sound] = new Audio(this.sounds[sound].src);
+            } else {
+                this.stop(sound);
+            }
         }
+        this.stopAllHtmlAudioElements();
+    }
 
+    /**
+     * Stops all HTML audio elements on the page
+     */
+    static stopAllHtmlAudioElements() {
         document.querySelectorAll('audio').forEach(audio => {
             audio.pause();
             audio.currentTime = 0;

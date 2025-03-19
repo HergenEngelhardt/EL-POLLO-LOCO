@@ -101,9 +101,60 @@ function hideAllPanels() {
 }
 
 /**
+ * Ensures all intervals are cleared and sounds are stopped
+ */
+function ensureAllIntervalsAndSoundsStopped() {
+    if (world && world.intervallManager) {
+        world.intervallManager.clearAllGameIntervals();
+    }
+    ensureAllSoundsStopped();
+}
+
+/**
+ * Thoroughly stops all game sounds and prevents sound leakage between game sessions
+ */
+function ensureAllSoundsStopped() {
+    // Stoppt explizit den Boss-Sound und erstellt ihn neu
+    if (SoundManager && SoundManager.sounds) {
+        SoundManager.stop('chickenboss');
+        SoundManager.stop('bossAlert');
+        
+        // Rekonstruiere den ChickenBoss-Sound
+        setTimeout(() => {
+            if (typeof SoundManager.preload === 'function') {
+                SoundManager.preload('chickenboss', './audio/chickenboss.mp3');
+                SoundManager.preload('bossAlert', './audio/boss-alert.mp3');
+            }
+        }, 100);
+    }
+    
+    // Deaktiviere Sound für alle Boss-Instanzen
+    if (window.world && window.world.level && window.world.level.enemies) {
+        window.world.level.enemies.forEach(enemy => {
+            if (enemy instanceof ChickenBoss) {
+                enemy.soundDisabled = true;
+                if (enemy.movement) {
+                    enemy.movement.lastMovementSoundTime = Date.now() + 10000; // 10 Sekunden Cooldown
+                }
+            }
+        });
+    }
+    
+    // Rest der Sounds stoppen
+    SoundManager.stopAll();
+    
+    // Audio DOM-Elemente stoppen
+    document.querySelectorAll('audio').forEach(audio => {
+        audio.pause();
+        audio.currentTime = 0;
+    });
+}
+
+/**
  * Shows the main menu and hides other elements
  */
 function showMenu() {
+    ensureAllIntervalsAndSoundsStopped();
     hideGameElements();
     showMenuElements();
     resetGameState();
@@ -226,11 +277,8 @@ function ensureWorldInitialized() {
  * Hides the result screen and resets the game state
  */
 function playAgain() {
-    ensureAllSoundsStopped();
+    ensureAllIntervalsAndSoundsStopped();
     document.getElementById('win-loose').classList.add('d-none');
-    if (world && world.intervallManager) {
-        world.intervallManager.clearAllGameIntervals();
-    }
     resetGameState();
     world = new World(canvas, keyboard);
     world.startGame();
@@ -277,11 +325,8 @@ function startGame() {
  * Stops the current game and resets game state
  */
 function stopGame() {
-    if (world) {
-        resetGameFlags();
-        stopGameSounds();
-        stopGameIntervals();
-    }
+    ensureAllIntervalsAndSoundsStopped();
+    resetGameFlags();
 }
 
 /**
@@ -289,9 +334,8 @@ function stopGame() {
  * Hides the result screen and completely resets game state
  */
 function backToMenu() {
+    ensureAllIntervalsAndSoundsStopped();
     document.getElementById('win-loose').classList.add('d-none');
-    stopGameIntervals();
-    stopGameSounds();
     resetGameFlags();
     showMenuElements();
     hideGameElements();
