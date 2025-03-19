@@ -132,6 +132,14 @@ class Character extends MovableObject {
     startAnimations() {
         this.lastMoveTime = Date.now();
         this.originalThrowBottle = this.world.throwBottle;
+        
+        // Ensure gravity is correctly applied before starting animations
+        if (this.gravityInterval) {
+            clearInterval(this.gravityInterval);
+            this.gravityInterval = null;
+        }
+        this.applyGravity();
+        
         this.animate();
     }
 
@@ -183,8 +191,14 @@ class Character extends MovableObject {
      * Overriding the parent class method to add custom jump behavior
      */
     jump() {
-        super.jump();
-        this.stateManager.startJumpAnimation();
+        // Only jump if the character is on the ground
+        if (!this.isAboveGround()) {
+            this.speedY = 18;
+            this.acceleration = 1.5;
+            this.playJumpSound();
+            this.lastMoveTime = Date.now();
+            this.stateManager.startJumpAnimation();
+        }
     }
 
     /**

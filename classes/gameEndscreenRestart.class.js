@@ -200,7 +200,7 @@ class GameEndScreenRestartManager {
         character.energy = 100;
         character.deadAnimationPlayed = false;
         character.x = 100;
-        character.y = 180;
+        character.y = 190;
         character.speedY = 0;
         character.otherDirection = false;
     }
@@ -228,6 +228,10 @@ class GameEndScreenRestartManager {
      * @param {Character} character - The character object
      */
     reapplyCharacterPhysics(character) {
+        if (character.gravityInterval) {
+            clearInterval(character.gravityInterval);
+            character.gravityInterval = null;
+        }
         character.applyGravity();
     }
 

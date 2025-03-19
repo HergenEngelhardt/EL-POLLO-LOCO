@@ -30,6 +30,7 @@ class MovableObject extends DrawableObject {
     clearGravityInterval() {
         if (this.gravityInterval) {
             clearInterval(this.gravityInterval);
+            this.gravityInterval = null;
         }
     }
 
@@ -71,6 +72,9 @@ class MovableObject extends DrawableObject {
         if (this.isAboveGround() || this.speedY > 0) {
             this.y -= this.speedY;
             this.speedY -= this.acceleration;
+        } else if (this.y > 180) {
+            // Ensure character is exactly at ground level if below it
+            this.y = 180;
         }
     }
 
