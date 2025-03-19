@@ -158,9 +158,17 @@ class Character extends MovableObject {
     clearAnimationIntervals() {
         if (this.animationInterval) {
             clearInterval(this.animationInterval);
+            this.animationInterval = null;
         }
         if (this.imageAnimationInterval) {
             clearInterval(this.imageAnimationInterval);
+            this.imageAnimationInterval = null;
+        }
+        
+        // Clear any jump animation intervals
+        if (this.stateManager && this.stateManager.jumpAnimationInterval) {
+            clearInterval(this.stateManager.jumpAnimationInterval);
+            this.stateManager.jumpAnimationInterval = null;
         }
     }
 
@@ -346,6 +354,38 @@ class Character extends MovableObject {
         if (this.originalThrowBottle) {
             this.world.throwBottle = this.originalThrowBottle;
             this.originalThrowBottle = null;
+        }
+    }
+
+    /**
+     * Resets the character to its initial state
+     */
+    reset() {
+        // Reset position
+        this.x = 100; 
+        this.y = 80;
+        
+        // Reset movement properties
+        this.speedY = 0;
+        this.otherDirection = false;
+        this.isImmobilized = false;
+        this.deadAnimationPlayed = false;
+        
+        // Reset character state
+        this.energy = 100;
+        this.lastHit = 0;
+        this.lastMoveTime = Date.now();
+        this.lastBottleThrow = 0;
+        
+        // Reset animation state
+        this.currentImage = 0;
+        
+        // Use first idle image
+        this.img = this.imageCache[this.IMAGES_IDLE[0]];
+        
+        // Reset any active states in state manager
+        if (this.stateManager) {
+            this.stateManager.resetJumpAnimation();
         }
     }
 }
