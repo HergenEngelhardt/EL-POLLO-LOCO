@@ -257,9 +257,7 @@ class Character extends MovableObject {
             return false;
         }
 
-        // Check if any enemy is a boss in alert phase
         for (let enemy of this.world.level.enemies) {
-            // More robust check for boss in alert phase
             if (enemy.constructor.name === 'ChickenBoss' && enemy.alertPhase) {
                 return true;
             }

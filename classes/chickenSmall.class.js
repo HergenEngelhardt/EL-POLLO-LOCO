@@ -28,7 +28,6 @@ class ChickenSmall extends MovableObject {
         this.speed = 0.15 + Math.random() * 0.5;
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_DEAD);
-        this.animate();
         this.world = null;
         this.offset = {
             top: 105,
@@ -44,6 +43,7 @@ class ChickenSmall extends MovableObject {
     */
     setWorld(world) {
         this.world = world;
+        this.animate(); 
     }
 
     /**
@@ -51,8 +51,12 @@ class ChickenSmall extends MovableObject {
      */
     animate() {
         this.clearAnimationIntervals();
-        this.setupMovementAnimation();
-        this.setupImageAnimation();
+        if (this.world && this.world.intervallManager) {
+            this.setupMovementAnimation();
+            this.setupImageAnimation();
+        } else {
+            this.setupBasicAnimation(); 
+        }
     }
 
     /**
@@ -65,6 +69,25 @@ class ChickenSmall extends MovableObject {
         if (this.animateInterval) {
             clearInterval(this.animateInterval);
         }
+    }
+
+    /**
+     * Sets up basic animation when interval manager isn't available
+     */
+    setupBasicAnimation() {
+        this.moveInterval = setInterval(() => {
+            if (!this.isDead) {
+                this.moveLeft();
+            }
+        }, 1000 / 60);
+        
+        this.animateInterval = setInterval(() => {
+            if (this.isDead) {
+                this.loadImage(this.IMAGES_DEAD[0]);
+            } else {
+                this.animateImages(this.IMAGES_WALKING);
+            }
+        }, 200);
     }
 
     /**

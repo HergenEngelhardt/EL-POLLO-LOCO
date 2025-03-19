@@ -65,7 +65,6 @@ class Background extends MovableObject {
  * This function should be called before restarting the game
  */
 function ensureAllSoundsStopped() {
-    // Create a timestamp for when sounds were stopped
     window.lastSoundStopTime = new Date().getTime();
     
     stopSoundManagerSounds();
@@ -80,7 +79,6 @@ function ensureAllSoundsStopped() {
  */
 function stopSoundManagerSounds() {
     if (typeof SoundManager === 'undefined') return;
-    
     SoundManager.stopAll();
     stopCriticalSounds();
 }
@@ -89,7 +87,7 @@ function stopSoundManagerSounds() {
  * Stops critical sounds that might persist between game sessions
  */
 function stopCriticalSounds() {
-    const criticalSounds = ['backgroundMusic', 'snoring', 'chickenboss', 'bossAlert', 'running'];
+    let criticalSounds = ['backgroundMusic', 'snoring', 'chickenboss', 'bossAlert', 'running'];
     criticalSounds.forEach(sound => {
         stopSpecificSound(sound);
     });
@@ -126,7 +124,7 @@ function rebuildChickenBossSound() {
  * Stops all audio elements directly in the DOM
  */
 function stopDOMSounds() {
-    const audioElements = document.querySelectorAll('audio');
+    let audioElements = document.querySelectorAll('audio');
     audioElements.forEach(audio => {
         audio.pause();
         audio.currentTime = 0;
@@ -154,7 +152,7 @@ function resetGameScreenSoundStates() {
 function stopCharacterSounds() {
     if (!window.world || !window.world.character) return;
     
-    const character = window.world.character;
+    let character = window.world.character;
     stopSoundIfExists(character.runningSound);
     stopSoundIfExists(character.snoringSound);
 }
