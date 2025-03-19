@@ -8,6 +8,8 @@ class GameEndScreenRestartManager {
      */
     constructor(parentScreen) {
         this.parentScreen = parentScreen;
+        this.animationManager = new RestartAnimationManager();
+        this.enemyManager = new RestartEnemyManager();
     }
 
     /**
@@ -35,35 +37,9 @@ class GameEndScreenRestartManager {
      * @param {World} world - The game world object
      */
     performGameRestart(world) {
-        this.forceStopAllBossSounds();
+        this.enemyManager.forceStopAllBossSounds();
         this.prepareForRestart(world);
         this.scheduleGameStart(world);
-    }
-
-    /**
-     * Stellt sicher, dass alle Boss-Sounds komplett gestoppt werden
-     */
-    forceStopAllBossSounds() {
-        this.stopBossSounds();
-        this.rebuildBossSounds();
-        this.stopDomAudio();
-    }
-
-    /**
-     * Stops boss-related sounds
-     */
-    stopBossSounds() {
-        SoundManager.stop('chickenboss');
-        SoundManager.stop('bossAlert');
-    }
-
-    /**
-     * Rebuilds boss sound objects
-     */
-    rebuildBossSounds() {
-        if (SoundManager.sounds && SoundManager.sounds['chickenboss']) {
-            SoundManager.sounds['chickenboss'] = new Audio('./audio/chickenboss.mp3');
-        }
     }
 
     /**
@@ -82,9 +58,9 @@ class GameEndScreenRestartManager {
      */
     prepareForRestart(world) {
         this.parentScreen.soundManager.stopAllSounds();
-        this.clearGameIntervals(world);
-        this.resetAnimationCounters(world);
-        this.stopAllAnimations(world);
+        this.animationManager.clearGameIntervals(world);
+        this.animationManager.resetAnimationCounters(world);
+        this.animationManager.stopAllAnimations(world);
         this.prepareGameRestart(world);
     }
 
@@ -96,149 +72,6 @@ class GameEndScreenRestartManager {
         setTimeout(() => {
             this.startNewGame(world);
         }, 200);
-    }
-
-    /**
-     * Resets animation counters to prevent speed-up on restart
-     * @param {World} world - The game world object
-     */
-    resetAnimationCounters(world) {
-        this.resetCharacterAnimations(world);
-        this.resetEnemyAnimations(world);
-    }
-
-    /**
-     * Resets character animation counters
-     * @param {World} world - The game world object
-     */
-    resetCharacterAnimations(world) {
-        if (world.character) {
-            world.character.currentImage = 0;
-            world.character.jumpAnimationFrame = 0;
-        }
-    }
-
-    /**
-     * Resets all enemy animation counters
-     * @param {World} world - The game world object
-     */
-    resetEnemyAnimations(world) {
-        if (world.level && world.level.enemies) {
-            world.level.enemies.forEach(enemy => {
-                this.resetEnemyAnimation(enemy);
-            });
-        }
-    }
-
-    /**
-     * Resets animation counters for a specific enemy
-     * @param {Enemy} enemy - The enemy object to reset
-     */
-    resetEnemyAnimation(enemy) {
-        enemy.currentImage = 0;
-
-        if (enemy instanceof ChickenBoss) {
-            this.resetBossAnimations(enemy);
-        }
-    }
-
-    /**
-     * Resets ChickenBoss specific animation counters
-     * @param {ChickenBoss} boss - The boss enemy
-     */
-    resetBossAnimations(boss) {
-        if (boss.animation) {
-            boss.animation.deathAnimationIndex = 0;
-            boss.animation.alertFrameCount = 0;
-        }
-    }
-
-    /**
-     * Stops all ongoing animations
-     * @param {World} world - The game world object
-     */
-    stopAllAnimations(world) {
-        this.stopCharacterAnimations(world);
-        this.stopEnemyAnimations(world);
-    }
-
-    /**
-     * Stops all character animations
-     * @param {World} world - The game world object
-     */
-    stopCharacterAnimations(world) {
-        if (!world.character) return;
-        
-        this.clearCharacterInterval(world.character, 'animationInterval');
-        this.clearCharacterInterval(world.character, 'imageAnimationInterval');
-        this.clearJumpAnimationInterval(world.character);
-    }
-
-    /**
-     * Clears a specific interval on the character
-     * @param {Character} character - The character object
-     * @param {string} intervalName - Name of the interval property
-     */
-    clearCharacterInterval(character, intervalName) {
-        if (!character[intervalName]) return;
-        
-        clearInterval(character[intervalName]);
-        character[intervalName] = null;
-    }
-
-    /**
-     * Clears the jump animation interval
-     * @param {Character} character - The character object
-     */
-    clearJumpAnimationInterval(character) {
-        if (!character.stateManager || !character.stateManager.jumpAnimationInterval) return;
-        
-        clearInterval(character.stateManager.jumpAnimationInterval);
-        character.stateManager.jumpAnimationInterval = null;
-    }
-
-    /**
-     * Stops all enemy animations
-     * @param {World} world - The game world object
-     */
-    stopEnemyAnimations(world) {
-        if (!world.level || !world.level.enemies) return;
-        
-        world.level.enemies.forEach(enemy => {
-            this.clearEnemyIntervals(enemy);
-        });
-    }
-
-    /**
-     * Clears all intervals on an enemy
-     * @param {MovableObject} enemy - The enemy object
-     */
-    clearEnemyIntervals(enemy) {
-        this.clearIntervalIfExists(enemy, 'animationInterval');
-        this.clearIntervalIfExists(enemy, 'moveInterval');
-        this.clearIntervalIfExists(enemy, 'animateInterval');
-    }
-
-    /**
-     * Clears an interval if it exists on an object
-     * @param {Object} obj - The object with the interval
-     * @param {string} intervalName - Name of the interval property
-     */
-    clearIntervalIfExists(obj, intervalName) {
-        if (!obj[intervalName]) return;
-        
-        clearInterval(obj[intervalName]);
-        obj[intervalName] = null;
-    }
-
-    /**
-     * Clears all game intervals if an interval manager exists
-     * @param {World} world - The game world object 
-     */
-    clearGameIntervals(world) {
-        if (world.intervallManager) {
-            world.intervallManager.clearAllGameIntervals();
-        }
     }
 
     /**
@@ -258,9 +91,7 @@ class GameEndScreenRestartManager {
      * @param {World} world - The game world object
      */
     clearAllIntervals(world) {
-        if (world.intervallManager) {
-            world.intervallManager.clearAllGameIntervals();
-        }
+        this.animationManager.clearGameIntervals(world);
         if (world.collisionInterval) {
             clearInterval(world.collisionInterval);
             world.collisionInterval = null;
@@ -356,7 +187,7 @@ class GameEndScreenRestartManager {
     resetCharacterState(world) {
         this.resetBasicCharacterProperties(world.character);
         this.resetJumpProperties(world.character);
-        this.resetCharacterAnimationState(world.character);
+        this.animationManager.resetCharacterAnimationState(world.character);
         this.resetMovementProperties(world.character);
         this.reapplyCharacterPhysics(world.character);
     }
@@ -381,38 +212,6 @@ class GameEndScreenRestartManager {
     resetJumpProperties(character) {
         character.isImmobilized = false;
         character.lastJumpOnEnemy = 0;
-    }
-
-    /**
-     * Resets character animation state properties
-     * @param {Character} character - The character object
-     */
-    resetCharacterAnimationState(character) {
-        if (!character.stateManager) return;
-        
-        this.resetAnimationFlags(character);
-        this.clearAnimationInterval(character);
-    }
-
-    /**
-     * Resets animation state flags
-     * @param {Character} character - The character object
-     */
-    resetAnimationFlags(character) {
-        character.stateManager.jumpAnimationActive = false;
-        character.stateManager.jumpAnimationFrame = 0;
-        character.stateManager.jumpAnimationComplete = false;
-    }
-
-    /**
-     * Clears the jump animation interval
-     * @param {Character} character - The character object
-     */
-    clearAnimationInterval(character) {
-        if (!character.stateManager.jumpAnimationInterval) return;
-        
-        clearInterval(character.stateManager.jumpAnimationInterval);
-        character.stateManager.jumpAnimationInterval = null;
     }
 
     /**
@@ -473,76 +272,7 @@ class GameEndScreenRestartManager {
         
         world.level = level1;
         world.setWorld();
-        this.initializeEnemies(world);
-    }
-
-    /**
-     * Initializes enemies after level reset
-     * @param {World} world - The game world object
-     */
-    initializeEnemies(world) {
-        if (!world.level || !world.level.enemies) return;
-        
-        world.level.enemies.forEach(enemy => {
-            this.initializeSingleEnemy(enemy, world);
-        });
-    }
-
-    /**
-     * Initializes a single enemy
-     * @param {MovableObject} enemy - The enemy object
-     * @param {World} world - The game world
-     */
-    initializeSingleEnemy(enemy, world) {
-        this.setEnemyWorldReference(enemy, world);
-        
-        if (enemy instanceof Chicken || enemy instanceof ChickenSmall) {
-            this.resetChickenEnemy(enemy);
-        } else if (enemy instanceof ChickenBoss) {
-            this.resetChickenBoss(enemy);
-        }
-    }
-
-    /**
-     * Sets the world reference for an enemy
-     * @param {MovableObject} enemy - The enemy object
-     * @param {World} world - The game world
-     */
-    setEnemyWorldReference(enemy, world) {
-        if (typeof enemy.setWorld === 'function') {
-            enemy.setWorld(world);
-        }
-    }
-
-    /**
-     * Resets properties of a chicken enemy
-     * @param {Chicken|ChickenSmall} enemy - The chicken enemy
-     */
-    resetChickenEnemy(enemy) {
-        enemy.isDead = false;
-        enemy.toDelete = false;
-        this.resetChickenOffset(enemy);
-    }
-
-    /**
-     * Resets properties of the ChickenBoss
-     * @param {ChickenBoss} boss - The ChickenBoss enemy
-     */
-    resetChickenBoss(boss) {
-        boss.reset();
-    }
-
-    /**
-     * Resets the offset for collision detection of a chicken enemy
-     * @param {Chicken|ChickenSmall} enemy - The chicken enemy
-     */
-    resetChickenOffset(enemy) {
-        enemy.offset = {
-            top: enemy instanceof ChickenSmall ? 5 : 10,
-            bottom: 10,
-            left: 5,
-            right: 5
-        };
+        this.enemyManager.initializeEnemies(world);
     }
 
     /**
@@ -585,18 +315,7 @@ class GameEndScreenRestartManager {
     reinitializeCharacter(world) {
         if (!world.character) return;
         
-        world.character.clearAnimationIntervals();
-        this.scheduleCharacterAnimations(world.character);
-    }
-
-    /**
-     * Schedules character animations to start
-     * @param {Character} character - The character object
-     */
-    scheduleCharacterAnimations(character) {
-        setTimeout(() => {
-            character.startAnimations();
-        }, 150);
+        this.animationManager.reinitializeCharacterAnimations(world.character);
     }
 
     /**
