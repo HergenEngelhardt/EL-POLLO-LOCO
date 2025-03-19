@@ -195,13 +195,8 @@ class Character extends MovableObject {
      * Overriding the parent class method to add custom jump behavior
      */
     jump() {
-        if (!this.isAboveGround()) {
-            this.speedY = 18;
-            this.acceleration = 1.5;
-            this.playJumpSound();
-            this.lastMoveTime = Date.now();
-            this.stateManager.startJumpAnimation();
-        }
+        super.jump();
+        this.stateManager.startJumpAnimation();
     }
 
     /**
