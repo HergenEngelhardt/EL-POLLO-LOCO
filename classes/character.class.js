@@ -132,8 +132,6 @@ class Character extends MovableObject {
     startAnimations() {
         this.lastMoveTime = Date.now();
         this.originalThrowBottle = this.world.throwBottle;
-        
-        // Ensure gravity is correctly applied before starting animations
         if (this.gravityInterval) {
             clearInterval(this.gravityInterval);
             this.gravityInterval = null;
@@ -164,8 +162,6 @@ class Character extends MovableObject {
             clearInterval(this.imageAnimationInterval);
             this.imageAnimationInterval = null;
         }
-        
-        // Clear any jump animation intervals
         if (this.stateManager && this.stateManager.jumpAnimationInterval) {
             clearInterval(this.stateManager.jumpAnimationInterval);
             this.stateManager.jumpAnimationInterval = null;
@@ -199,7 +195,6 @@ class Character extends MovableObject {
      * Overriding the parent class method to add custom jump behavior
      */
     jump() {
-        // Only jump if the character is on the ground
         if (!this.isAboveGround()) {
             this.speedY = 18;
             this.acceleration = 1.5;
@@ -361,29 +356,18 @@ class Character extends MovableObject {
      * Resets the character to its initial state
      */
     reset() {
-        // Reset position
         this.x = 100; 
         this.y = 80;
-        
-        // Reset movement properties
         this.speedY = 0;
         this.otherDirection = false;
         this.isImmobilized = false;
         this.deadAnimationPlayed = false;
-        
-        // Reset character state
         this.energy = 100;
         this.lastHit = 0;
         this.lastMoveTime = Date.now();
         this.lastBottleThrow = 0;
-        
-        // Reset animation state
         this.currentImage = 0;
-        
-        // Use first idle image
         this.img = this.imageCache[this.IMAGES_IDLE[0]];
-        
-        // Reset any active states in state manager
         if (this.stateManager) {
             this.stateManager.resetJumpAnimation();
         }

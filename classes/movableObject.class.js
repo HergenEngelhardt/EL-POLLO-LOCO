@@ -73,7 +73,6 @@ class MovableObject extends DrawableObject {
             this.y -= this.speedY;
             this.speedY -= this.acceleration;
         } else if (this.y > 180) {
-            // Ensure character is exactly at ground level if below it
             this.y = 180;
         }
     }

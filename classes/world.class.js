@@ -276,17 +276,12 @@ class World {
      * Starts the game, initializing character and enemies
      */
     startGame() {
-        // Reset previous game state if any
         this.gameStarted = true;
         this.gameOver = false;
         this.gameWon = false;
-        
-        // Reset character direction
         if (this.character) {
             this.character.otherDirection = false; 
         }
-        
-        // Start game animations and setup
         this.initializeGameState();
         this.updateGameUI();
         this.initializeLevel();

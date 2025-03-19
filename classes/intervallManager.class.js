@@ -84,22 +84,14 @@ class IntervallManager {
             clearInterval(this.character.imageAnimationInterval);
             this.character.imageAnimationInterval = null;
         }
-        
-        // Clear any state manager intervals
         if (this.character.stateManager && this.character.stateManager.jumpAnimationInterval) {
             clearInterval(this.character.stateManager.jumpAnimationInterval);
             this.character.stateManager.jumpAnimationInterval = null;
         }
-        
-        // Reset jump animation state
         if (this.character.stateManager) {
             this.character.stateManager.resetJumpAnimation();
         }
-        
-        // Clear gravity intervals
         this.clearCharacterGravityInterval();
-        
-        // Stop any character sounds
         this.character.stopRunningSound();
         this.character.stopSnoringSound();
     }
