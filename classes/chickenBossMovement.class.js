@@ -115,28 +115,47 @@ class ChickenBossMovement {
      */
     playMovementSound() {
         let now = new Date().getTime();
-        
-        // Striktes Sound-Deaktivierungssystem
-        if (this.boss.soundDisabled || 
-            (this.boss.world && 
-             (this.boss.world.gameOver || this.boss.world.gameWon || 
-              !this.boss.world.gameStarted))) {
+        if (this.isSoundDisabled()) {
             return;  
         }
         
-        // Sicherstellen, dass der Sound nur gespielt wird, wenn der Boss am Leben
-        // und aktiv ist und wir nicht im Reset-Zustand sind
-        if (!this.boss.isDead() && 
+        if (this.canPlayMovementSound(now)) {
+            this.playBossMovementSound(now);
+        }
+    }
+
+    /**
+     * Checks if sound should be disabled due to game state
+     * @returns {boolean} True if sound should be disabled
+     */
+    isSoundDisabled() {
+        return this.boss.soundDisabled || 
+            (this.boss.world && 
+             (this.boss.world.gameOver || this.boss.world.gameWon || 
+              !this.boss.world.gameStarted));
+    }
+
+    /**
+     * Checks if conditions are right to play movement sound
+     * @param {number} now - Current timestamp
+     * @returns {boolean} True if movement sound can be played
+     */
+    canPlayMovementSound(now) {
+        return !this.boss.isDead() && 
             this.boss.hadfirstContact && 
             !this.boss.alertPhase &&
-            (!this.lastMovementSoundTime || now - this.lastMovementSoundTime > 1000)) {
-            
-            // Nur beim ersten Mal prüfen - verhindert mehrfache gleichzeitige Wiedergabe
-            let bossSound = SoundManager.sounds['chickenboss'];
-            if (bossSound && bossSound.paused) {
-                SoundManager.play('chickenboss', 0.3);
-                this.lastMovementSoundTime = now;
-            }
+            (!this.lastMovementSoundTime || now - this.lastMovementSoundTime > 1000);
+    }
+
+    /**
+     * Plays the boss movement sound and updates timing
+     * @param {number} now - Current timestamp
+     */
+    playBossMovementSound(now) {
+        let bossSound = SoundManager.sounds['chickenboss'];
+        if (bossSound && bossSound.paused) {
+            SoundManager.play('chickenboss', 0.3);
+            this.lastMovementSoundTime = now;
         }
     }
 }

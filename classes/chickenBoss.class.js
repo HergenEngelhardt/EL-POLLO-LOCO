@@ -360,7 +360,7 @@ class ChickenBoss extends MovableObject {
         this.movement.isJumping = false;
         this.movement.jumpCooldown = 0;
         this.movement.jumpSpeed = 30;
-        this.movement.lastMovementSoundTime = Date.now() + 10000; // 10 Sekunden Cooldown
+        this.movement.lastMovementSoundTime = Date.now() + 10000; 
     }
 
     /**

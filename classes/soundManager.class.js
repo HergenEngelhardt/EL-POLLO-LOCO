@@ -35,7 +35,6 @@ class SoundManager {
      * @param {boolean} loop - Whether sound should loop
      */
     static preload(name, path, loop = false) {
-        // Bei chickenboss immer sicherstellen, dass es ein frisches Objekt ist
         if (name === 'chickenboss' && this.sounds[name]) {
             this.sounds[name].pause();
             this.sounds[name].currentTime = 0;
@@ -216,13 +215,10 @@ class SoundManager {
      * Stops all sounds
      */
     static stopAll() {
-        // Sound-Element vorsichtig behandeln
         for (let sound in this.sounds) {
             if (sound === 'chickenboss' || sound === 'bossAlert') {
-                // Besondere Behandlung für ChickenBoss-Sounds
                 this.sounds[sound].pause();
                 this.sounds[sound].currentTime = 0;
-                // ChickenBoss Sound neu erstellen um Probleme zu vermeiden
                 this.sounds[sound] = new Audio(this.sounds[sound].src);
             } else {
                 this.stop(sound);

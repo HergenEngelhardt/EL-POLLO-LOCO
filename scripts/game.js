@@ -114,12 +114,9 @@ function ensureAllIntervalsAndSoundsStopped() {
  * Thoroughly stops all game sounds and prevents sound leakage between game sessions
  */
 function ensureAllSoundsStopped() {
-    // Stoppt explizit den Boss-Sound und erstellt ihn neu
     if (SoundManager && SoundManager.sounds) {
         SoundManager.stop('chickenboss');
         SoundManager.stop('bossAlert');
-        
-        // Rekonstruiere den ChickenBoss-Sound
         setTimeout(() => {
             if (typeof SoundManager.preload === 'function') {
                 SoundManager.preload('chickenboss', './audio/chickenboss.mp3');
@@ -128,22 +125,17 @@ function ensureAllSoundsStopped() {
         }, 100);
     }
     
-    // Deaktiviere Sound für alle Boss-Instanzen
     if (window.world && window.world.level && window.world.level.enemies) {
         window.world.level.enemies.forEach(enemy => {
             if (enemy instanceof ChickenBoss) {
                 enemy.soundDisabled = true;
                 if (enemy.movement) {
-                    enemy.movement.lastMovementSoundTime = Date.now() + 10000; // 10 Sekunden Cooldown
+                    enemy.movement.lastMovementSoundTime = Date.now() + 10000; 
                 }
             }
         });
     }
-    
-    // Rest der Sounds stoppen
     SoundManager.stopAll();
-    
-    // Audio DOM-Elemente stoppen
     document.querySelectorAll('audio').forEach(audio => {
         audio.pause();
         audio.currentTime = 0;
