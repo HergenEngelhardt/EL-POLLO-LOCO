@@ -102,6 +102,7 @@ class ChickenBoss extends MovableObject {
         this.animation = new ChickenBossAnimation(this);
         this.movement = new ChickenBossMovement(this);
         this.combat = new ChickenBossCombat(this);
+        this.resetManager = new ChickenBossReset(this); 
     }
 
     /**
@@ -319,87 +320,6 @@ class ChickenBoss extends MovableObject {
      * Resets the ChickenBoss to its initial state
      */
     reset() {
-        this.resetBasicProperties();
-        this.resetAnimationProperties();
-        this.resetMovementProperties();
-        this.resetCombatProperties();
-        this.resetSounds();
-        this.clearIntervals();
-    }
-
-    /**
-     * Resets the basic properties of the boss
-     */
-    resetBasicProperties() {
-        this.hadfirstContact = false;
-        this.alertPhase = true;
-        this.energy = 100;
-        this.currentImage = 0;
-        this.showHealthBar = false;
-        this.healthBar.setPercentage(this.energy);
-        this.toDelete = false;
-        this.soundDisabled = true;
-    }
-
-    /**
-     * Resets the animation properties of the boss
-     */
-    resetAnimationProperties() {
-        this.animation.deathAnimationIndex = 0;
-        this.animation.deathAnimationPlayed = false;
-        this.animation.alertFrameCount = 0;
-    }
-
-    /**
-     * Resets the movement properties of the boss
-     */
-    resetMovementProperties() {
-        this.movement.movingDirection = -1;
-        this.movement.lastDirectionChange = 0;
-        this.movement.canJump = true;
-        this.movement.isJumping = false;
-        this.movement.jumpCooldown = 0;
-        this.movement.jumpSpeed = 30;
-        this.movement.lastMovementSoundTime = Date.now() + 10000; 
-    }
-
-    /**
-     * Resets the combat properties of the boss
-     */
-    resetCombatProperties() {
-        this.combat.attackCooldown = 0;
-        this.combat.lastHit = 0;
-        this.combat.bottleHitCount = 0;
-    }
-
-    /**
-     * Resets all sound-related resources
-     */
-    resetSounds() {
-        if (this.alertSound) {
-            this.alertSound.pause();
-            this.alertSound.currentTime = 0;
-            this.alertSound = null;
-        }
-        
-        if (this.movementSoundInterval) {
-            clearInterval(this.movementSoundInterval);
-            this.movementSoundInterval = null;
-        }
-    }
-
-    /**
-     * Clears all animation and update intervals
-     */
-    clearIntervals() {
-        if (this.attackInterval) {
-            clearInterval(this.attackInterval);
-            this.attackInterval = null;
-        }
-        
-        if (this.animationInterval) {
-            clearInterval(this.animationInterval);
-            this.animationInterval = null;
-        }
+        this.resetManager.reset();
     }
 }

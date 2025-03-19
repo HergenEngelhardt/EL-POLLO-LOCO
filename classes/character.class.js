@@ -288,27 +288,41 @@ class Character extends MovableObject {
 
     /**
      * Triggers bottle throwing action with a cooldown period
-     * @param {number} cooldownMs - Cooldown time in milliseconds (default: 1000)
+     * @param {number} cooldownMs - Cooldown time in milliseconds (default: 20000)
      * @returns {boolean} - Whether the bottle was thrown
      */
     throwBottle(cooldownMs = 20000) {
-
-        if (this.world && this.world.level && this.world.level.enemies) {
-            for (let enemy of this.world.level.enemies) {
-                if (enemy instanceof ChickenBoss && enemy.alertPhase) {
-                    console.log('Boss is in alert phase, cannot throw bottle');
-                    return false;
-                }
-            }
+        if (this.isBossInAlertPhase()) {
+            return false;
         }
 
-        let currentTime = Date.now();
-        if (this.world && (!this.lastBottleThrow || currentTime - this.lastBottleThrow >= cooldownMs)) {
-            this.lastMoveTime = currentTime;
-            this.lastBottleThrow = currentTime;
+        if (this.hasThrowCooldownExpired(cooldownMs)) {
+            this.updateThrowTimestamps();
             return true;
         }
+        
         return false;
+    }
+
+    /**
+     * Checks if enough time has passed since the last bottle throw
+     * @param {number} cooldownMs - Cooldown time in milliseconds
+     * @returns {boolean} True if cooldown has expired
+     */
+    hasThrowCooldownExpired(cooldownMs) {
+        if (!this.world) return false;
+        
+        let currentTime = Date.now();
+        return !this.lastBottleThrow || currentTime - this.lastBottleThrow >= cooldownMs;
+    }
+
+    /**
+     * Updates timestamps when a bottle is thrown
+     */
+    updateThrowTimestamps() {
+        let currentTime = Date.now();
+        this.lastMoveTime = currentTime;
+        this.lastBottleThrow = currentTime;
     }
 
     /**
