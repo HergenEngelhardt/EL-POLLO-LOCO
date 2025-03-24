@@ -114,7 +114,9 @@ class SoundManager {
     static playAudioWithErrorHandling(audio, nameOrPath) {
         audio.play()
             .catch(error => {
-                console.error(`Error playing sound: ${nameOrPath}`, error);
+                if (error.name !== 'AbortError') {
+                    console.error(`Error playing sound: ${nameOrPath}`, error);
+                }
             });
     }
 

@@ -51,16 +51,20 @@ function ensureAllIntervalsAndSoundsStopped() {
 }
 
 /**
- * Thoroughly stops all game sounds and prevents sound leakage between game sessions
- */
-/**
- * Thoroughly stops all game sounds and prevents sound leakage between game sessions
+ * Ensures all sounds in the game are properly stopped
  */
 function ensureAllSoundsStopped() {
-    stopBossSounds();
-    disableBossEnemySounds();
-    stopAllManagedSounds();
-    stopAllDOMSounds();
+    if (world && world.soundManager) {
+        world.soundManager.stopAllBackgroundSounds();
+    } else {
+        SoundManager.stopAll();
+        SoundManager.stopBackgroundMusic();
+        
+        document.querySelectorAll('audio').forEach(audio => {
+            audio.pause();
+            audio.currentTime = 0;
+        });
+    }
 }
 
 /**
